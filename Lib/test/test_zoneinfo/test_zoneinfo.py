@@ -21,7 +21,7 @@ from test.test_zoneinfo import _support as test_support
 from test.test_zoneinfo._support import OS_ENV_LOCK, TZPATH_TEST_LOCK, ZoneInfoTestBase
 from test.support.import_helper import import_module
 
-lzma = import_module('lzma')
+lzma = import_module("lzma")
 py_zoneinfo, c_zoneinfo = test_support.get_modules()
 
 try:
@@ -510,7 +510,7 @@ class ZoneInfoV1Test(ZoneInfoTest):
         # We will discard zdump examples outside the range epoch +/- 2**31,
         # because they are not well-supported in Version 1 files.
         epoch = datetime(1970, 1, 1)
-        max_offset_32 = timedelta(seconds=2 ** 31)
+        max_offset_32 = timedelta(seconds=2**31)
         min_dt = epoch - max_offset_32
         max_dt = epoch + max_offset_32
 
@@ -630,12 +630,8 @@ class WeirdZoneTest(ZoneInfoTestBase):
 
         transitions = []
         for year in range(1996, 2000):
-            transitions.append(
-                ZoneTransition(datetime(year, 3, 1, 2), STD, DST)
-            )
-            transitions.append(
-                ZoneTransition(datetime(year, 11, 1, 2), DST, STD)
-            )
+            transitions.append(ZoneTransition(datetime(year, 3, 1, 2), STD, DST))
+            transitions.append(ZoneTransition(datetime(year, 11, 1, 2), DST, STD))
 
         after = ""
 
@@ -802,8 +798,8 @@ class WeirdZoneTest(ZoneInfoTestBase):
         trans_times_lists = [[], []]
         trans_idx_lists = [[], []]
 
-        v1_range = (-(2 ** 31), 2 ** 31)
-        v2_range = (-(2 ** 63), 2 ** 63)
+        v1_range = (-(2**31), 2**31)
+        v2_range = (-(2**63), 2**63)
         ranges = [v1_range, v2_range]
 
         def zt_as_tuple(zt):
@@ -831,9 +827,7 @@ class WeirdZoneTest(ZoneInfoTestBase):
                 trans_times = trans_times_lists[v]
                 trans_idx = trans_idx_lists[v]
 
-                if trans_time is not None and not (
-                    dt_min <= trans_time <= dt_max
-                ):
+                if trans_time is not None and not (dt_min <= trans_time <= dt_max):
                     continue
 
                 if offset_before not in offsets:
@@ -981,9 +975,7 @@ class TZStrTest(ZoneInfoTestBase):
                 if dt_type == self.GAP:
                     continue  # Cannot create a gap from UTC
 
-                dt_utc = (dt_naive - offset.utcoffset).replace(
-                    tzinfo=timezone.utc
-                )
+                dt_utc = (dt_naive - offset.utcoffset).replace(tzinfo=timezone.utc)
 
                 # Check that we can go UTC -> Our zone
                 dt_act = dt_utc.astimezone(zi)
@@ -1445,7 +1437,6 @@ class ZoneInfoCacheTest(TzPathUserMixin, ZoneInfoTestBase):
         self.assertIs(tz0, tz1)
 
     def test_no_cache(self):
-
         tz0 = self.klass("Europe/Lisbon")
         tz1 = self.klass.no_cache("Europe/Lisbon")
 
@@ -1489,9 +1480,7 @@ class ZoneInfoCacheTest(TzPathUserMixin, ZoneInfoTestBase):
         dub0 = self.klass("Europe/Dublin")
         tok0 = self.klass("Asia/Tokyo")
 
-        self.klass.clear_cache(
-            only_keys=["America/Los_Angeles", "Europe/Dublin"]
-        )
+        self.klass.clear_cache(only_keys=["America/Los_Angeles", "Europe/Dublin"])
 
         la1 = self.klass("America/Los_Angeles")
         dub1 = self.klass("Europe/Dublin")
@@ -1691,15 +1680,27 @@ class TzPathTest(TzPathUserMixin, ZoneInfoTestBase):
         test_cases = [
             [("path/to/somewhere",), ()],
             [
-                ("/usr/share/zoneinfo", "path/to/somewhere",),
+                (
+                    "/usr/share/zoneinfo",
+                    "path/to/somewhere",
+                ),
                 ("/usr/share/zoneinfo",),
             ],
             [("../relative/path",), ()],
             [
-                ("/usr/share/zoneinfo", "../relative/path",),
+                (
+                    "/usr/share/zoneinfo",
+                    "../relative/path",
+                ),
                 ("/usr/share/zoneinfo",),
             ],
-            [("path/to/somewhere", "../relative/path",), ()],
+            [
+                (
+                    "path/to/somewhere",
+                    "../relative/path",
+                ),
+                (),
+            ],
             [
                 (
                     "/usr/share/zoneinfo",
@@ -1731,11 +1732,24 @@ class TzPathTest(TzPathUserMixin, ZoneInfoTestBase):
     def test_reset_tzpath_relative_paths(self):
         bad_values = [
             ("path/to/somewhere",),
-            ("/usr/share/zoneinfo", "path/to/somewhere",),
+            (
+                "/usr/share/zoneinfo",
+                "path/to/somewhere",
+            ),
             ("../relative/path",),
-            ("/usr/share/zoneinfo", "../relative/path",),
-            ("path/to/somewhere", "../relative/path",),
-            ("/usr/share/zoneinfo", "path/to/somewhere", "../relative/path",),
+            (
+                "/usr/share/zoneinfo",
+                "../relative/path",
+            ),
+            (
+                "path/to/somewhere",
+                "../relative/path",
+            ),
+            (
+                "/usr/share/zoneinfo",
+                "path/to/somewhere",
+                "../relative/path",
+            ),
         ]
         for input_paths in bad_values:
             with self.subTest(input_paths=input_paths):
@@ -2017,12 +2031,7 @@ class ZoneInfoData:
         )
 
         file_size = (
-            timecnt * 5
-            + typecnt * 6
-            + charcnt
-            + leapcnt * 8
-            + isstdcnt
-            + isutcnt
+            timecnt * 5 + typecnt * 6 + charcnt + leapcnt * 8 + isstdcnt + isutcnt
         )
         file_size += header_end
         out = b"TZif" + b"\x00" + contents[5:file_size]
@@ -2238,5 +2247,5 @@ class ZoneDumpData:
     _FIXED_OFFSET_ZONES = None
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

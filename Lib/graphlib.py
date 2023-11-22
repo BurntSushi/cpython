@@ -166,7 +166,6 @@ class TopologicalSorter:
         n2i = self._node2info
 
         for node in nodes:
-
             # Check if we know about this node (it was added previously using add()
             if (nodeinfo := n2i.get(node)) is None:
                 raise ValueError(f"node {node!r} was not added using add()")

@@ -28,9 +28,7 @@ WASM_LIB = pathlib.PurePath("lib")
 WASM_STDLIB_ZIP = (
     WASM_LIB / f"python{sys.version_info.major}{sys.version_info.minor}.zip"
 )
-WASM_STDLIB = (
-    WASM_LIB / f"python{sys.version_info.major}.{sys.version_info.minor}"
-)
+WASM_STDLIB = WASM_LIB / f"python{sys.version_info.major}.{sys.version_info.minor}"
 WASM_DYNLOAD = WASM_STDLIB / "lib-dynload"
 
 
@@ -114,9 +112,7 @@ def get_sysconfigdata(args: argparse.Namespace) -> pathlib.Path:
     assert isinstance(args.builddir, pathlib.Path)
     data_name: str = sysconfig._get_sysconfigdata_name()  # type: ignore[attr-defined]
     if not data_name.startswith(SYSCONFIG_NAMES):
-        raise ValueError(
-            f"Invalid sysconfig data name '{data_name}'.", SYSCONFIG_NAMES
-        )
+        raise ValueError(f"Invalid sysconfig data name '{data_name}'.", SYSCONFIG_NAMES)
     filename = data_name + ".py"
     return args.builddir / filename
 

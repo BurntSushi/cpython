@@ -7,7 +7,6 @@ import warnings
 
 
 class GlobalTests(unittest.TestCase):
-
     def setUp(self):
         self.enterContext(check_warnings())
         warnings.filterwarnings("error", module="<test string>")

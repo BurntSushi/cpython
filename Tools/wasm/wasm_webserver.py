@@ -42,5 +42,6 @@ def main() -> None:
         bind=args.bind,
     )
 
+
 if __name__ == "__main__":
     main()

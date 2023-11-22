@@ -1,8 +1,20 @@
 import sys, unittest
-from ctypes import (Structure, BigEndianStructure, LittleEndianStructure,
-                    c_byte, c_short, c_int, c_long, c_longlong,
-                    c_float, c_double,
-                    c_ushort, c_uint, c_ulong, c_ulonglong)
+from ctypes import (
+    Structure,
+    BigEndianStructure,
+    LittleEndianStructure,
+    c_byte,
+    c_short,
+    c_int,
+    c_long,
+    c_longlong,
+    c_float,
+    c_double,
+    c_ushort,
+    c_uint,
+    c_ulong,
+    c_ulonglong,
+)
 
 
 structures = []
@@ -14,17 +26,27 @@ if sys.byteorder == "little":
 else:
     SwappedStructure = LittleEndianStructure
 
-for typ in [c_short, c_int, c_long, c_longlong,
-            c_float, c_double,
-            c_ushort, c_uint, c_ulong, c_ulonglong]:
+for typ in [
+    c_short,
+    c_int,
+    c_long,
+    c_longlong,
+    c_float,
+    c_double,
+    c_ushort,
+    c_uint,
+    c_ulong,
+    c_ulonglong,
+]:
+
     class X(Structure):
         _pack_ = 1
-        _fields_ = [("pad", c_byte),
-                    ("value", typ)]
+        _fields_ = [("pad", c_byte), ("value", typ)]
+
     class Y(SwappedStructure):
         _pack_ = 1
-        _fields_ = [("pad", c_byte),
-                    ("value", typ)]
+        _fields_ = [("pad", c_byte), ("value", typ)]
+
     structures.append(X)
     byteswapped_structures.append(Y)
 
@@ -45,5 +67,5 @@ class TestStructures(unittest.TestCase):
             self.assertEqual(o.value, 4)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

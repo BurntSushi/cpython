@@ -12,7 +12,6 @@ from . import futures
 
 
 class AsyncIOInteractiveConsole(code.InteractiveConsole):
-
     def __init__(self, locals, loop):
         super().__init__(locals)
         self.compile.compiler.flags |= ast.PyCF_ALLOW_TOP_LEVEL_AWAIT
@@ -66,7 +65,6 @@ class AsyncIOInteractiveConsole(code.InteractiveConsole):
 
 
 class REPLThread(threading.Thread):
-
     def run(self):
         try:
             banner = (
@@ -77,26 +75,30 @@ class REPLThread(threading.Thread):
                 f'{getattr(sys, "ps1", ">>> ")}import asyncio'
             )
 
-            console.interact(
-                banner=banner,
-                exitmsg='exiting asyncio REPL...')
+            console.interact(banner=banner, exitmsg="exiting asyncio REPL...")
         finally:
             warnings.filterwarnings(
-                'ignore',
-                message=r'^coroutine .* was never awaited$',
-                category=RuntimeWarning)
+                "ignore",
+                message=r"^coroutine .* was never awaited$",
+                category=RuntimeWarning,
+            )
 
             loop.call_soon_threadsafe(loop.stop)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
-    repl_locals = {'asyncio': asyncio}
-    for key in {'__name__', '__package__',
-                '__loader__', '__spec__',
-                '__builtins__', '__file__'}:
+    repl_locals = {"asyncio": asyncio}
+    for key in {
+        "__name__",
+        "__package__",
+        "__loader__",
+        "__spec__",
+        "__builtins__",
+        "__file__",
+    }:
         repl_locals[key] = locals()[key]
 
     console = AsyncIOInteractiveConsole(repl_locals, loop)

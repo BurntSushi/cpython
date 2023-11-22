@@ -67,7 +67,9 @@ def _load_metadata_from_source():
 
     return {
         "_specialized_instructions": [
-            op for op in opcode._specialized_opmap.keys() if "__" not in op  # type: ignore
+            op
+            for op in opcode._specialized_opmap.keys()
+            if "__" not in op  # type: ignore
         ],
         "_stats_defines": get_defines(
             Path("Include") / "cpython" / "pystats.h", "EVAL_CALL"

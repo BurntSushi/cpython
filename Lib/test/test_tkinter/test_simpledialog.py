@@ -4,11 +4,10 @@ from test.support import requires, swap_attr
 from test.test_tkinter.support import AbstractDefaultRootTest
 from tkinter.simpledialog import Dialog, askinteger
 
-requires('gui')
+requires("gui")
 
 
 class DefaultRootTest(AbstractDefaultRootTest, unittest.TestCase):
-
     def test_askinteger(self):
         @staticmethod
         def mock_wait_window(w):
@@ -16,7 +15,7 @@ class DefaultRootTest(AbstractDefaultRootTest, unittest.TestCase):
             ismapped = w.master.winfo_ismapped()
             w.destroy()
 
-        with swap_attr(Dialog, 'wait_window', mock_wait_window):
+        with swap_attr(Dialog, "wait_window", mock_wait_window):
             ismapped = None
             askinteger("Go To Line", "Line number")
             self.assertEqual(ismapped, False)

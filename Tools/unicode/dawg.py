@@ -23,14 +23,13 @@ from functools import cached_property
 
 
 class DawgNode:
-
     def __init__(self, dawg):
         self.id = dawg.next_id
         dawg.next_id += 1
         self.final = False
         self.edges = {}
 
-        self.linear_edges = None # later: list of (string, next_state)
+        self.linear_edges = None  # later: list of (string, next_state)
 
     def __str__(self):
         if self.final:
@@ -38,11 +37,12 @@ class DawgNode:
         else:
             arr = ["0"]
 
-        for (label, node) in sorted(self.edges.items()):
+        for label, node in sorted(self.edges.items()):
             arr.append(label)
             arr.append(str(node.id))
 
         return "_".join(arr)
+
     __repr__ = __str__
 
     def _as_tuple(self):
@@ -99,7 +99,9 @@ class Dawg:
         if word <= self.previous_word:
             raise ValueError("Error: Words must be inserted in alphabetical order.")
         if value in self.inverse:
-            raise ValueError(f"value {value} is duplicate, got it for word {self.inverse[value]} and now {word}")
+            raise ValueError(
+                f"value {value} is duplicate, got it for word {self.inverse[value]} and now {word}"
+            )
 
         # find common prefix between word and previous word
         common_prefix = 0
@@ -156,15 +158,15 @@ class Dawg:
             self.unchecked_nodes.pop()
 
     def _lookup(self, word):
-        """ Return an integer 0 <= k < number of strings in dawg
-        where word is the kth successful traversal of the dawg. """
+        """Return an integer 0 <= k < number of strings in dawg
+        where word is the kth successful traversal of the dawg."""
         node = self.root
         skipped = 0  # keep track of number of final nodes that we skipped
         index = 0
         while index < len(word):
             for label, child in node.linear_edges:
                 if word[index] == label[0]:
-                    if word[index:index + len(label)] == label:
+                    if word[index : index + len(label)] == label:
                         if node.final:
                             skipped += 1
                         index += len(label)
@@ -231,10 +233,14 @@ class Dawg:
             node.linear_edges = []
             for label, child in sorted(node.edges.items()):
                 s = [label]
-                while len(child.edges) == 1 and len(incoming[child]) == 1 and not child.final:
-                    (c, child), = child.edges.items()
+                while (
+                    len(child.edges) == 1
+                    and len(incoming[child]) == 1
+                    and not child.final
+                ):
+                    ((c, child),) = child.edges.items()
                     s.append(c)
-                node.linear_edges.append((''.join(s), child))
+                node.linear_edges.append(("".join(s), child))
 
     def _topological_order(self):
         # compute reachable linear nodes, and the set of incoming edges for each node
@@ -286,7 +292,7 @@ class Dawg:
         # self.data into a linear list using these numbers as indexes.
         topoorder[0].num_reachable_linear
         linear_data = [None] * len(self.data)
-        inverse = {} # maps value back to index
+        inverse = {}  # maps value back to index
         for word, value in self.data.items():
             index = self._lookup(word)
             linear_data[index] = value
@@ -296,23 +302,29 @@ class Dawg:
 
     def compute_packed(self, order):
         def compute_chunk(node, offsets):
-            """ compute the packed node/edge data for a node. result is a
+            """compute the packed node/edge data for a node. result is a
             list of bytes as long as order. the jump distance calculations use
             the offsets dictionary to know where in the final big output
-            bytestring the individual nodes will end up. """
+            bytestring the individual nodes will end up."""
             result = bytearray()
             offset = offsets[node]
-            encode_varint_unsigned(number_add_bits(node.num_reachable_linear, node.final), result)
+            encode_varint_unsigned(
+                number_add_bits(node.num_reachable_linear, node.final), result
+            )
             if len(node.linear_edges) == 0:
                 assert node.final
-                encode_varint_unsigned(0, result) # add a 0 saying "done"
+                encode_varint_unsigned(0, result)  # add a 0 saying "done"
             prev_child_offset = offset + len(result)
             for edgeindex, (label, targetnode) in enumerate(node.linear_edges):
-                label = label.encode('ascii')
+                label = label.encode("ascii")
                 child_offset = offsets[targetnode]
                 child_offset_difference = child_offset - prev_child_offset
 
-                info = number_add_bits(child_offset_difference, len(label) == 1, edgeindex == len(node.linear_edges) - 1)
+                info = number_add_bits(
+                    child_offset_difference,
+                    len(label) == 1,
+                    edgeindex == len(node.linear_edges) - 1,
+                )
                 if edgeindex == 0:
                     assert info != 0
                 encode_varint_unsigned(info, result)
@@ -323,10 +335,10 @@ class Dawg:
             return result
 
         def compute_new_offsets(chunks, offsets):
-            """ Given a list of chunks, compute the new offsets (by adding the
+            """Given a list of chunks, compute the new offsets (by adding the
             chunk lengths together). Also check if we cannot shrink the output
             further because none of the node offsets are smaller now. if that's
-            the case return None. """
+            the case return None."""
             new_offsets = {}
             curr_offset = 0
             should_continue = False
@@ -347,8 +359,7 @@ class Dawg:
             # we don't know position of the edge yet, just use something big as
             # the starting position. we'll have to do further iterations anyway,
             # but the size is at least a lower limit then
-            offsets[node] = i * 2 ** 30
-
+            offsets[node] = i * 2**30
 
         # due to the variable integer width encoding of edge targets we need to
         # run this to fixpoint. in the process we shrink the output more and
@@ -360,7 +371,7 @@ class Dawg:
             chunks = [compute_chunk(node, offsets) for node in order]
             last_offsets = offsets
             offsets = compute_new_offsets(chunks, offsets)
-            if offsets is None: # couldn't shrink
+            if offsets is None:  # couldn't shrink
                 break
 
         # build the final packed string
@@ -379,11 +390,13 @@ class Dawg:
 # ______________________________________________________________________
 # the following functions operate on the packed representation
 
+
 def number_add_bits(x, *bits):
     for bit in bits:
         assert bit == 0 or bit == 1
         x = (x << 1) | bit
     return x
+
 
 def encode_varint_unsigned(i, res):
     # https://en.wikipedia.org/wiki/LEB128 unsigned variant
@@ -401,12 +414,14 @@ def encode_varint_unsigned(i, res):
         res.append(lowest7bits)
     return len(res) - startlen
 
+
 def number_split_bits(x, n, acc=()):
     if n == 1:
         return x >> 1, x & 1
     if n == 2:
         return x >> 2, (x >> 1) & 1, x & 1
     assert 0, "implement me!"
+
 
 def decode_varint_unsigned(b, index=0):
     res = 0
@@ -419,15 +434,17 @@ def decode_varint_unsigned(b, index=0):
         if not (byte & 0b10000000):
             return res, index
 
+
 def decode_node(packed, node):
     x, node = decode_varint_unsigned(packed, node)
     node_count, final = number_split_bits(x, 1)
     return node_count, final, node
 
+
 def decode_edge(packed, edgeindex, prev_child_offset, offset):
     x, offset = decode_varint_unsigned(packed, offset)
     if x == 0 and edgeindex == 0:
-        raise KeyError # trying to decode past a final node
+        raise KeyError  # trying to decode past a final node
     child_offset_difference, len1, last_edge = number_split_bits(x, 2)
     child_offset = prev_child_offset + child_offset_difference
     if len1:
@@ -435,6 +452,7 @@ def decode_edge(packed, edgeindex, prev_child_offset, offset):
     else:
         size, offset = decode_varint_unsigned(packed, offset)
     return child_offset, last_edge, size, offset
+
 
 def _match_edge(packed, s, size, node_offset, stringpos):
     if size > 1 and stringpos + size > len(s):
@@ -449,8 +467,10 @@ def _match_edge(packed, s, size, node_offset, stringpos):
             return False
     return True
 
+
 def lookup(packed, data, s):
     return data[_lookup(packed, s)]
+
 
 def _lookup(packed, s):
     stringpos = 0
@@ -458,13 +478,15 @@ def _lookup(packed, s):
     skipped = 0  # keep track of number of final nodes that we skipped
     false = False
     while stringpos < len(s):
-        #print(f"{node_offset=} {stringpos=}")
+        # print(f"{node_offset=} {stringpos=}")
         _, final, edge_offset = decode_node(packed, node_offset)
         prev_child_offset = edge_offset
         edgeindex = 0
         while 1:
-            child_offset, last_edge, size, edgelabel_chars_offset = decode_edge(packed, edgeindex, prev_child_offset, edge_offset)
-            #print(f"    {edge_offset=} {child_offset=} {last_edge=} {size=} {edgelabel_chars_offset=}")
+            child_offset, last_edge, size, edgelabel_chars_offset = decode_edge(
+                packed, edgeindex, prev_child_offset, edge_offset
+            )
+            # print(f"    {edge_offset=} {child_offset=} {last_edge=} {size=} {edgelabel_chars_offset=}")
             edgeindex += 1
             prev_child_offset = child_offset
             if _match_edge(packed, s, size, edgelabel_chars_offset, stringpos):
@@ -484,9 +506,11 @@ def _lookup(packed, s):
         return skipped
     raise KeyError
 
+
 def inverse_lookup(packed, inverse, x):
     pos = inverse[x]
     return _inverse_lookup(packed, pos)
+
 
 def _inverse_lookup(packed, pos):
     result = bytearray()
@@ -500,14 +524,18 @@ def _inverse_lookup(packed, pos):
         prev_child_offset = edge_offset
         edgeindex = 0
         while 1:
-            child_offset, last_edge, size, edgelabel_chars_offset = decode_edge(packed, edgeindex, prev_child_offset, edge_offset)
+            child_offset, last_edge, size, edgelabel_chars_offset = decode_edge(
+                packed, edgeindex, prev_child_offset, edge_offset
+            )
             edgeindex += 1
             prev_child_offset = child_offset
             descendant_count, _, _ = decode_node(packed, child_offset)
             nextpos = pos - descendant_count
             if nextpos < 0:
                 assert edgelabel_chars_offset >= 0
-                result.extend(packed[edgelabel_chars_offset: edgelabel_chars_offset + size])
+                result.extend(
+                    packed[edgelabel_chars_offset : edgelabel_chars_offset + size]
+                )
                 node_offset = child_offset
                 break
             elif not last_edge:
@@ -528,6 +556,6 @@ def build_compression_dawg(ucdata):
     print("size of dawg [KiB]", round(len(packed) / 1024, 2))
     # check that lookup and inverse_lookup work correctly on the input data
     for name, value in ucdata:
-        assert lookup(packed, pos_to_code, name.encode('ascii')) == value
-        assert inverse_lookup(packed, reversedict, value) == name.encode('ascii')
+        assert lookup(packed, pos_to_code, name.encode("ascii")) == value
+        assert inverse_lookup(packed, reversedict, value) == name.encode("ascii")
     return packed, pos_to_code

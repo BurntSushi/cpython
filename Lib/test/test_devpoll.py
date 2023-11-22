@@ -8,8 +8,8 @@ import select
 import unittest
 from test.support import cpython_only
 
-if not hasattr(select, 'devpoll') :
-    raise unittest.SkipTest('test works only on Solaris OS family')
+if not hasattr(select, "devpoll"):
+    raise unittest.SkipTest("test works only on Solaris OS family")
 
 
 def find_ready_matching(ready, flag):
@@ -19,8 +19,8 @@ def find_ready_matching(ready, flag):
             match.append(fd)
     return match
 
-class DevPollTests(unittest.TestCase):
 
+class DevPollTests(unittest.TestCase):
     def test_devpoll1(self):
         # Basic functional test of poll object
         # Create a bunch of pipe and test that poll works with them.
@@ -64,7 +64,8 @@ class DevPollTests(unittest.TestCase):
             buf = os.read(rd, MSG_LEN)
             self.assertEqual(len(buf), MSG_LEN)
             bufs.append(buf)
-            os.close(r2w[rd]) ; os.close(rd)
+            os.close(r2w[rd])
+            os.close(rd)
             p.unregister(r2w[rd])
             p.unregister(rd)
             writers.remove(r2w[rd])
@@ -130,6 +131,7 @@ class DevPollTests(unittest.TestCase):
     @cpython_only
     def test_events_mask_overflow_c_limits(self):
         from _testcapi import USHRT_MAX
+
         pollster = select.devpoll()
         w, r = os.pipe()
         pollster.register(w)
@@ -138,5 +140,5 @@ class DevPollTests(unittest.TestCase):
         self.assertRaises(OverflowError, pollster.modify, 1, USHRT_MAX + 1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

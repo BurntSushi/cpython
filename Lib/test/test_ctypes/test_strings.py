@@ -1,6 +1,12 @@
 import unittest
-from ctypes import (create_string_buffer, create_unicode_buffer,
-                    sizeof, byref, c_char, c_wchar)
+from ctypes import (
+    create_string_buffer,
+    create_unicode_buffer,
+    sizeof,
+    byref,
+    c_char,
+    c_wchar,
+)
 
 
 class StringArrayTestCase(unittest.TestCase):
@@ -75,10 +81,9 @@ class WStringArrayTestCase(unittest.TestCase):
         buf[1] = "Z"
         self.assertEqual(buf.value, "xZCD")
 
-    @unittest.skipIf(sizeof(c_wchar) < 4,
-                     "sizeof(wchar_t) is smaller than 4 bytes")
+    @unittest.skipIf(sizeof(c_wchar) < 4, "sizeof(wchar_t) is smaller than 4 bytes")
     def test_nonbmp(self):
-        u = chr(0x10ffff)
+        u = chr(0x10FFFF)
         w = c_wchar(u)
         self.assertEqual(w.value, u)
 
@@ -123,12 +128,17 @@ class WStringTestCase(unittest.TestCase):
 def run_test(rep, msg, func, arg):
     items = range(rep)
     from time import perf_counter as clock
+
     start = clock()
     for i in items:
-        func(arg); func(arg); func(arg); func(arg); func(arg)
+        func(arg)
+        func(arg)
+        func(arg)
+        func(arg)
+        func(arg)
     stop = clock()
-    print("%20s: %.2f us" % (msg, ((stop-start)*1e6/5/rep)))
+    print("%20s: %.2f us" % (msg, ((stop - start) * 1e6 / 5 / rep)))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

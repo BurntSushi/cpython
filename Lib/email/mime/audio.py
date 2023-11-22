@@ -4,7 +4,7 @@
 
 """Class representing audio/* type MIME documents."""
 
-__all__ = ['MIMEAudio']
+__all__ = ["MIMEAudio"]
 
 from email import encoders
 from email.mime.nonmultipart import MIMENonMultipart
@@ -13,8 +13,15 @@ from email.mime.nonmultipart import MIMENonMultipart
 class MIMEAudio(MIMENonMultipart):
     """Class for generating audio/* MIME documents."""
 
-    def __init__(self, _audiodata, _subtype=None,
-                 _encoder=encoders.encode_base64, *, policy=None, **_params):
+    def __init__(
+        self,
+        _audiodata,
+        _subtype=None,
+        _encoder=encoders.encode_base64,
+        *,
+        policy=None,
+        **_params,
+    ):
         """Create an audio/* type MIME document.
 
         _audiodata contains the bytes for the raw audio data.  If this data
@@ -38,9 +45,8 @@ class MIMEAudio(MIMENonMultipart):
         if _subtype is None:
             _subtype = _what(_audiodata)
         if _subtype is None:
-            raise TypeError('Could not find audio MIME subtype')
-        MIMENonMultipart.__init__(self, 'audio', _subtype, policy=policy,
-                                  **_params)
+            raise TypeError("Could not find audio MIME subtype")
+        MIMENonMultipart.__init__(self, "audio", _subtype, policy=policy, **_params)
         self.set_payload(_audiodata)
         _encoder(self)
 
@@ -72,18 +78,18 @@ def rule(rulefunc):
 
 @rule
 def _aiff(h):
-    if not h.startswith(b'FORM'):
+    if not h.startswith(b"FORM"):
         return None
-    if h[8:12] in {b'AIFC', b'AIFF'}:
-        return 'x-aiff'
+    if h[8:12] in {b"AIFC", b"AIFF"}:
+        return "x-aiff"
     else:
         return None
 
 
 @rule
 def _au(h):
-    if h.startswith(b'.snd'):
-        return 'basic'
+    if h.startswith(b".snd"):
+        return "basic"
     else:
         return None
 
@@ -91,7 +97,7 @@ def _au(h):
 @rule
 def _wav(h):
     # 'RIFF' <len> 'WAVE' 'fmt ' <len>
-    if not h.startswith(b'RIFF') or h[8:12] != b'WAVE' or h[12:16] != b'fmt ':
+    if not h.startswith(b"RIFF") or h[8:12] != b"WAVE" or h[12:16] != b"fmt ":
         return None
     else:
         return "x-wav"

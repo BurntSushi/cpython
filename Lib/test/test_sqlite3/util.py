@@ -24,8 +24,10 @@ def cx_limit(cx, category=sqlite3.SQLITE_LIMIT_SQL_LENGTH, limit=128):
 
 def with_tracebacks(exc, regex="", name=""):
     """Convenience decorator for testing callback tracebacks."""
+
     def decorator(func):
         _regex = re.compile(regex) if regex else None
+
         @functools.wraps(func)
         def wrapper(self, *args, **kwargs):
             with test.support.catch_unraisable_exception() as cm:
@@ -35,7 +37,9 @@ def with_tracebacks(exc, regex="", name=""):
 
             # Then run the test with traceback disabled.
             func(self, *args, **kwargs)
+
         return wrapper
+
     return decorator
 
 
@@ -59,7 +63,6 @@ def check_tracebacks(self, cm, exc, regex, obj_name):
 
 
 class MemoryDatabaseMixin:
-
     def setUp(self):
         self.con = sqlite3.connect(":memory:")
         self.cur = self.con.cursor()

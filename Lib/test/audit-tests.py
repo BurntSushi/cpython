@@ -109,6 +109,7 @@ def test_block_add_hook_baseexception():
 
 def test_marshal():
     import marshal
+
     o = ("a", "b", "c", 1, 2, 3)
     payload = marshal.dumps(o)
 
@@ -302,8 +303,9 @@ def test_unraisablehook():
 
     sys.addaudithook(hook)
     sys.unraisablehook = unraisablehook
-    err_formatunraisable(RuntimeError("nonfatal-error"),
-                         "Exception ignored for audit hook test")
+    err_formatunraisable(
+        RuntimeError("nonfatal-error"), "Exception ignored for audit hook test"
+    )
 
 
 def test_winreg():
@@ -344,7 +346,7 @@ def test_socket():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         # Don't care if this fails, we just want the audit message
-        sock.bind(('127.0.0.1', 8080))
+        sock.bind(("127.0.0.1", 8080))
     except Exception:
         pass
     finally:
@@ -378,11 +380,11 @@ def test_http_client():
 
     sys.addaudithook(hook)
 
-    conn = http.client.HTTPConnection('www.python.org')
+    conn = http.client.HTTPConnection("www.python.org")
     try:
-        conn.request('GET', '/')
+        conn.request("GET", "/")
     except OSError:
-        print('http.client.send', '[cannot send]')
+        print("http.client.send", "[cannot send]")
     finally:
         conn.close()
 
@@ -411,6 +413,7 @@ def test_sqlite3():
     finally:
         cx1.close()
         cx2.close()
+
 
 def test_sys_getframe():
     import sys
@@ -447,7 +450,9 @@ def test_threading():
     lock.acquire()
 
     class test_func:
-        def __repr__(self): return "<test_func>"
+        def __repr__(self):
+            return "<test_func>"
+
         def __call__(self):
             sys.audit("test.test_func")
             lock.release()
@@ -489,6 +494,7 @@ def test_wmi_exec_query():
     sys.addaudithook(hook)
     _wmi.exec_query("SELECT * FROM Win32_OperatingSystem")
 
+
 def test_syslog():
     import syslog
 
@@ -497,12 +503,12 @@ def test_syslog():
             print(event, *args)
 
     sys.addaudithook(hook)
-    syslog.openlog('python')
-    syslog.syslog('test')
+    syslog.openlog("python")
+    syslog.syslog("test")
     syslog.setlogmask(syslog.LOG_DEBUG)
     syslog.closelog()
     # implicit open
-    syslog.syslog('test2')
+    syslog.syslog("test2")
     # open with default ident
     syslog.openlog(logoption=syslog.LOG_NDELAY, facility=syslog.LOG_LOCAL0)
     sys.argv = None
@@ -526,10 +532,11 @@ def test_time(mode):
 
     def hook(event, args):
         if event.startswith("time."):
-            if mode == 'print':
+            if mode == "print":
                 print(event, *args)
-            elif mode == 'fail':
-                raise AssertionError('hook failed')
+            elif mode == "fail":
+                raise AssertionError("hook failed")
+
     sys.addaudithook(hook)
 
     time.sleep(0)
@@ -538,6 +545,7 @@ def test_time(mode):
         time.sleep(-1)
     except ValueError:
         pass
+
 
 def test_sys_monitoring_register_callback():
     import sys

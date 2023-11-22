@@ -126,10 +126,17 @@ def compile_c_extension(
         str(MOD_DIR.parent.parent.parent / "Parser" / "lexer" / "lexer.c"),
         str(MOD_DIR.parent.parent.parent / "Parser" / "lexer" / "state.c"),
         str(MOD_DIR.parent.parent.parent / "Parser" / "lexer" / "buffer.c"),
-        str(MOD_DIR.parent.parent.parent / "Parser" / "tokenizer" / "string_tokenizer.c"),
+        str(
+            MOD_DIR.parent.parent.parent / "Parser" / "tokenizer" / "string_tokenizer.c"
+        ),
         str(MOD_DIR.parent.parent.parent / "Parser" / "tokenizer" / "file_tokenizer.c"),
         str(MOD_DIR.parent.parent.parent / "Parser" / "tokenizer" / "utf8_tokenizer.c"),
-        str(MOD_DIR.parent.parent.parent / "Parser" / "tokenizer" / "readline_tokenizer.c"),
+        str(
+            MOD_DIR.parent.parent.parent
+            / "Parser"
+            / "tokenizer"
+            / "readline_tokenizer.c"
+        ),
         str(MOD_DIR.parent.parent.parent / "Parser" / "tokenizer" / "helpers.c"),
         str(MOD_DIR.parent.parent.parent / "Parser" / "pegen.c"),
         str(MOD_DIR.parent.parent.parent / "Parser" / "pegen_errors.c"),
@@ -165,7 +172,9 @@ def compile_c_extension(
     compiler.set_library_dirs(cmd.library_dirs)
     # build static lib
     if library_dir:
-        library_filename = compiler.library_filename(extension_name, output_dir=library_dir)
+        library_filename = compiler.library_filename(
+            extension_name, output_dir=library_dir
+        )
         if newer_group(common_sources, library_filename, "newer"):
             if sys.platform == "win32":
                 assert compiler.static_lib_format
@@ -214,7 +223,9 @@ def compile_c_extension(
             extra_postargs=extra_compile_args,
         )
     else:
-        objects = compiler.object_filenames(extension.sources, output_dir=cmd.build_temp)
+        objects = compiler.object_filenames(
+            extension.sources, output_dir=cmd.build_temp
+        )
     # Now link the object files together into a "shared object"
     compiler.link_shared_object(
         objects,
@@ -233,7 +244,9 @@ def build_parser(
     grammar_file: str, verbose_tokenizer: bool = False, verbose_parser: bool = False
 ) -> Tuple[Grammar, Parser, Tokenizer]:
     with open(grammar_file) as file:
-        tokenizer = Tokenizer(tokenize.generate_tokens(file.readline), verbose=verbose_tokenizer)
+        tokenizer = Tokenizer(
+            tokenize.generate_tokens(file.readline), verbose=verbose_tokenizer
+        )
         parser = GrammarParser(tokenizer, verbose=verbose_parser)
         grammar = parser.start()
 
@@ -286,7 +299,12 @@ def build_c_generator(
         all_tokens, exact_tok, non_exact_tok = generate_token_definitions(tok_file)
     with open(output_file, "w") as file:
         gen: ParserGenerator = CParserGenerator(
-            grammar, all_tokens, exact_tok, non_exact_tok, file, skip_actions=skip_actions
+            grammar,
+            all_tokens,
+            exact_tok,
+            non_exact_tok,
+            file,
+            skip_actions=skip_actions,
         )
         gen.generate(grammar_file)
 
@@ -308,7 +326,9 @@ def build_python_generator(
     skip_actions: bool = False,
 ) -> ParserGenerator:
     with open(output_file, "w") as file:
-        gen: ParserGenerator = PythonParserGenerator(grammar, file)  # TODO: skip_actions
+        gen: ParserGenerator = PythonParserGenerator(
+            grammar, file
+        )  # TODO: skip_actions
         gen.generate(grammar_file)
     return gen
 
@@ -342,7 +362,9 @@ def build_c_parser_and_generator(
           when compiling the extension module. Defaults to True.
         skip_actions (bool, optional): Whether to pretend no rule has any actions.
     """
-    grammar, parser, tokenizer = build_parser(grammar_file, verbose_tokenizer, verbose_parser)
+    grammar, parser, tokenizer = build_parser(
+        grammar_file, verbose_tokenizer, verbose_parser
+    )
     gen = build_c_generator(
         grammar,
         grammar_file,
@@ -375,7 +397,9 @@ def build_python_parser_and_generator(
           when generating the parser. Defaults to False.
         skip_actions (bool, optional): Whether to pretend no rule has any actions.
     """
-    grammar, parser, tokenizer = build_parser(grammar_file, verbose_tokenizer, verbose_parser)
+    grammar, parser, tokenizer = build_parser(
+        grammar_file, verbose_tokenizer, verbose_parser
+    )
     gen = build_python_generator(
         grammar,
         grammar_file,

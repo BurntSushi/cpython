@@ -261,8 +261,7 @@ def _check_emscripten() -> None:
         # git / upstream / tot-upstream installation
         version = version[:-4]
     version_tuple = cast(
-        Tuple[int, int, int],
-        tuple(int(v) for v in version.split("."))
+        Tuple[int, int, int], tuple(int(v) for v in version.split("."))
     )
     if version_tuple < EMSDK_MIN_VERSION:
         raise ConditionError(
@@ -516,7 +515,7 @@ class BuildProfile:
     def getenv(self) -> Dict[str, Any]:
         """Generate environ dict for platform"""
         env = os.environ.copy()
-        if hasattr(os, 'process_cpu_count'):
+        if hasattr(os, "process_cpu_count"):
             cpu_count = os.process_cpu_count()
         else:
             cpu_count = os.cpu_count()

@@ -3,8 +3,7 @@ from ctypes import Structure, c_int
 
 
 class X(Structure):
-    _fields_ = [("a", c_int),
-                ("b", c_int)]
+    _fields_ = [("a", c_int), ("b", c_int)]
     new_was_called = False
 
     def __new__(cls):

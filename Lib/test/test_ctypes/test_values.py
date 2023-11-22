@@ -7,14 +7,20 @@ import _imp
 import importlib.util
 import sys
 import unittest
-from ctypes import (Structure, CDLL, POINTER, pythonapi,
-                    _pointer_type_cache,
-                    c_ubyte, c_char_p, c_int)
+from ctypes import (
+    Structure,
+    CDLL,
+    POINTER,
+    pythonapi,
+    _pointer_type_cache,
+    c_ubyte,
+    c_char_p,
+    c_int,
+)
 from test.support import import_helper
 
 
 class ValuesTestCase(unittest.TestCase):
-
     def test_an_integer(self):
         # This test checks and changes an integer stored inside the
         # _ctypes_test dll/shared lib.
@@ -23,7 +29,7 @@ class ValuesTestCase(unittest.TestCase):
         x = an_integer.value
         self.assertEqual(x, ctdll.get_an_integer())
         an_integer.value *= 2
-        self.assertEqual(x*2, ctdll.get_an_integer())
+        self.assertEqual(x * 2, ctdll.get_an_integer())
         # To avoid test failures when this test is repeated several
         # times the original value must be restored
         an_integer.value = x
@@ -54,11 +60,13 @@ class PythonValuesTestCase(unittest.TestCase):
         # module, and a __phello__ package containing a spam
         # module.
         class struct_frozen(Structure):
-            _fields_ = [("name", c_char_p),
-                        ("code", POINTER(c_ubyte)),
-                        ("size", c_int),
-                        ("is_package", c_int),
-                        ]
+            _fields_ = [
+                ("name", c_char_p),
+                ("code", POINTER(c_ubyte)),
+                ("size", c_int),
+                ("is_package", c_int),
+            ]
+
         FrozenTable = POINTER(struct_frozen)
 
         modules = []
@@ -90,16 +98,18 @@ class PythonValuesTestCase(unittest.TestCase):
         with import_helper.frozen_modules():
             expected = _imp._frozen_module_names()
         self.maxDiff = None
-        self.assertEqual(modules, expected,
-                         "_PyImport_FrozenBootstrap example "
-                         "in Doc/library/ctypes.rst may be out of date")
+        self.assertEqual(
+            modules,
+            expected,
+            "_PyImport_FrozenBootstrap example "
+            "in Doc/library/ctypes.rst may be out of date",
+        )
 
         del _pointer_type_cache[struct_frozen]
 
     def test_undefined(self):
-        self.assertRaises(ValueError, c_int.in_dll, pythonapi,
-                          "Undefined_Symbol")
+        self.assertRaises(ValueError, c_int.in_dll, pythonapi, "Undefined_Symbol")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -38,13 +38,9 @@ class Test(unittest.TestCase):
         values = [c.pvalues[i].val for i in range(4)]
 
         # These are the expected results: here s the bug!
-        self.assertEqual(
-            (values, dump(val_array)),
-            ([1, 2, 3, 4], "01-02-03-04")
-        )
+        self.assertEqual((values, dump(val_array)), ([1, 2, 3, 4], "01-02-03-04"))
 
     def test_2(self):
-
         val_array = (Value * 4)()
 
         # memory contains 4 NUL bytes now, that's correct
@@ -58,10 +54,7 @@ class Test(unittest.TestCase):
         values = [ptr[i].val for i in range(4)]
 
         # These are the expected results: here s the bug!
-        self.assertEqual(
-            (values, dump(val_array)),
-            ([1, 2, 3, 4], "01-02-03-04")
-        )
+        self.assertEqual((values, dump(val_array)), ([1, 2, 3, 4], "01-02-03-04"))
 
 
 if __name__ == "__main__":

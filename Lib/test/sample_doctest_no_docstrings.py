@@ -5,7 +5,6 @@
 
 
 class Foo(object):
-
     # A class with no docstring.
 
     def __init__(self):

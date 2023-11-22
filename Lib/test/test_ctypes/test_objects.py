@@ -1,4 +1,4 @@
-r'''
+r"""
 This tests the '_objects' attribute of ctypes instances.  '_objects'
 holds references to objects that must be kept alive as long as the
 ctypes instance, to make sure that the memory buffer is valid.
@@ -51,7 +51,7 @@ of 'x' ('_b_base_' is either None, or the root object owning the memory block):
 >>> x.array._b_base_._objects
 {'0:2': b'spam spam spam'}
 >>>
-'''
+"""
 
 import doctest
 import unittest
@@ -62,5 +62,5 @@ def load_tests(loader, tests, pattern):
     return tests
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

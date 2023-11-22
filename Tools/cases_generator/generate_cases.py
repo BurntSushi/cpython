@@ -180,7 +180,9 @@ class Generator(Analyzer):
                     target_instr = self.instrs.get(target)
                     if target_instr is None:
                         macro_instr = self.macro_instrs[target]
-                        popped, pushed = stacking.get_stack_effect_info_for_macro(macro_instr)
+                        popped, pushed = stacking.get_stack_effect_info_for_macro(
+                            macro_instr
+                        )
                     else:
                         target_popped = effect_str(target_instr.input_effects)
                         target_pushed = effect_str(target_instr.output_effects)
@@ -655,7 +657,10 @@ class Generator(Analyzer):
                 if "specializing" in part.instr.annotations:
                     continue
                 # All other component instructions must be viable uops
-                if not part.instr.is_viable_uop() and "replaced" not in part.instr.annotations:
+                if (
+                    not part.instr.is_viable_uop()
+                    and "replaced" not in part.instr.annotations
+                ):
                     # This note just reminds us about macros that cannot
                     # be expanded to Tier 2 uops. It is not an error.
                     # Suppress it using 'replaced op(...)' for macros having
@@ -669,7 +674,10 @@ class Generator(Analyzer):
                     return
                 if not part.active_caches:
                     if part.instr.name == "_SAVE_RETURN_OFFSET":
-                        size, offset = OPARG_SIZES["OPARG_SAVE_RETURN_OFFSET"], cache_offset
+                        size, offset = (
+                            OPARG_SIZES["OPARG_SAVE_RETURN_OFFSET"],
+                            cache_offset,
+                        )
                     else:
                         size, offset = OPARG_SIZES["OPARG_FULL"], 0
                 else:
@@ -729,14 +737,15 @@ class Generator(Analyzer):
             f"{{ .nuops = {len(pieces)}, .uops = {{ {', '.join(pieces)} }} }},"
         )
 
-    def emit_metadata_entry(self, name: str, fmt: str | None, flags: InstructionFlags) -> None:
+    def emit_metadata_entry(
+        self, name: str, fmt: str | None, flags: InstructionFlags
+    ) -> None:
         flag_names = flags.names(value=True)
         if not flag_names:
             flag_names.append("0")
         fmt_macro = "0" if fmt is None else INSTR_FMT_PREFIX + fmt
         self.out.emit(
-            f"[{name}] = {{ true, {fmt_macro},"
-            f" {' | '.join(flag_names)} }},"
+            f"[{name}] = {{ true, {fmt_macro}," f" {' | '.join(flag_names)} }},"
         )
 
     def write_metadata_for_inst(self, instr: Instruction) -> None:
@@ -763,7 +772,7 @@ class Generator(Analyzer):
 
             self.out.write_raw("\n")
             self.out.write_raw("#ifdef TIER_TWO\n")
-            self.out.write_raw("    #error \"This file is for Tier 1 only\"\n")
+            self.out.write_raw('    #error "This file is for Tier 1 only"\n')
             self.out.write_raw("#endif\n")
             self.out.write_raw("#define TIER_ONE 1\n")
 
@@ -805,7 +814,7 @@ class Generator(Analyzer):
 
             self.out.write_raw("\n")
             self.out.write_raw("#ifdef TIER_ONE\n")
-            self.out.write_raw("    #error \"This file is for Tier 2 only\"\n")
+            self.out.write_raw('    #error "This file is for Tier 2 only"\n')
             self.out.write_raw("#endif\n")
             self.out.write_raw("#define TIER_TWO 2\n")
 

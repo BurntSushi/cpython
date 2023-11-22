@@ -1,6 +1,5 @@
 import unittest
-from ctypes import (Structure, POINTER, pointer,  _pointer_type_cache,
-                    c_char_p, c_int)
+from ctypes import Structure, POINTER, pointer, _pointer_type_cache, c_char_p, c_int
 
 
 class SimpleTestCase(unittest.TestCase):
@@ -24,8 +23,7 @@ class SimpleTestCase(unittest.TestCase):
 class StructureTestCase(unittest.TestCase):
     def test_cint_struct(self):
         class X(Structure):
-            _fields_ = [("a", c_int),
-                        ("b", c_int)]
+            _fields_ = [("a", c_int), ("b", c_int)]
 
         x = X()
         self.assertEqual(x._objects, None)
@@ -35,8 +33,8 @@ class StructureTestCase(unittest.TestCase):
 
     def test_ccharp_struct(self):
         class X(Structure):
-            _fields_ = [("a", c_char_p),
-                        ("b", c_char_p)]
+            _fields_ = [("a", c_char_p), ("b", c_char_p)]
+
         x = X()
         self.assertEqual(x._objects, None)
 
@@ -47,6 +45,7 @@ class StructureTestCase(unittest.TestCase):
     def test_struct_struct(self):
         class POINT(Structure):
             _fields_ = [("x", c_int), ("y", c_int)]
+
         class RECT(Structure):
             _fields_ = [("ul", POINT), ("lr", POINT)]
 
@@ -60,12 +59,12 @@ class StructureTestCase(unittest.TestCase):
         r = RECT()
         pt = POINT(1, 2)
         r.ul = pt
-        self.assertEqual(r._objects, {'0': {}})
+        self.assertEqual(r._objects, {"0": {}})
         r.ul.x = 22
         r.ul.y = 44
-        self.assertEqual(r._objects, {'0': {}})
+        self.assertEqual(r._objects, {"0": {}})
         r.lr = POINT()
-        self.assertEqual(r._objects, {'0': {}, '1': {}})
+        self.assertEqual(r._objects, {"0": {}, "1": {}})
 
 
 class ArrayTestCase(unittest.TestCase):
@@ -80,8 +79,7 @@ class ArrayTestCase(unittest.TestCase):
         self.assertEqual(ia._objects, None)
 
         class X(Structure):
-            _fields_ = [("x", c_int),
-                        ("a", INTARR)]
+            _fields_ = [("x", c_int), ("a", INTARR)]
 
         x = X()
         x.x = 1000
@@ -89,23 +87,24 @@ class ArrayTestCase(unittest.TestCase):
         x.a[1] = 96
         self.assertEqual(x._objects, None)
         x.a = ia
-        self.assertEqual(x._objects, {'1': {}})
+        self.assertEqual(x._objects, {"1": {}})
 
 
 class PointerTestCase(unittest.TestCase):
     def test_p_cint(self):
         i = c_int(42)
         x = pointer(i)
-        self.assertEqual(x._objects, {'1': i})
+        self.assertEqual(x._objects, {"1": i})
 
 
 class PointerToStructure(unittest.TestCase):
     def test(self):
         class POINT(Structure):
             _fields_ = [("x", c_int), ("y", c_int)]
+
         class RECT(Structure):
-            _fields_ = [("a", POINTER(POINT)),
-                        ("b", POINTER(POINT))]
+            _fields_ = [("a", POINTER(POINT)), ("b", POINTER(POINT))]
+
         r = RECT()
         p1 = POINT(1, 2)
 

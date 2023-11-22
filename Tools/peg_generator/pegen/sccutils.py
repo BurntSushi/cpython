@@ -113,7 +113,11 @@ def find_cycles_in_scc(
     assert scc <= graph.keys(), scc - graph.keys()
 
     # Reduce the graph to nodes in the SCC.
-    graph = {src: {dst for dst in dsts if dst in scc} for src, dsts in graph.items() if src in scc}
+    graph = {
+        src: {dst for dst in dsts if dst in scc}
+        for src, dsts in graph.items()
+        if src in scc
+    }
     assert start in graph
 
     # Recursive helper that yields cycles.

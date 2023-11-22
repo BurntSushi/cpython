@@ -5,7 +5,7 @@ from test.support import import_helper
 from test.support import os_helper
 
 
-turtle = import_helper.import_module('turtle')
+turtle = import_helper.import_module("turtle")
 Vec2D = turtle.Vec2D
 
 test_config = """\
@@ -51,60 +51,56 @@ visible = False
 
 
 class TurtleConfigTest(unittest.TestCase):
-
     def get_cfg_file(self, cfg_str):
         self.addCleanup(os_helper.unlink, os_helper.TESTFN)
-        with open(os_helper.TESTFN, 'w') as f:
+        with open(os_helper.TESTFN, "w") as f:
             f.write(cfg_str)
         return os_helper.TESTFN
 
     def test_config_dict(self):
-
         cfg_name = self.get_cfg_file(test_config)
         parsed_cfg = turtle.config_dict(cfg_name)
 
         expected = {
-            'width' : 0.75,
-            'height' : 0.8,
-            'canvwidth' : 500,
-            'canvheight': 200,
-            'leftright': 100,
-            'topbottom': 100,
-            'mode': 'world',
-            'colormode': 255,
-            'delay': 100,
-            'undobuffersize': 10000,
-            'shape': 'circle',
-            'pencolor' : 'red',
-            'fillcolor' : 'blue',
-            'resizemode' : 'auto',
-            'visible' : None,
-            'language': 'english',
-            'exampleturtle': 'turtle',
-            'examplescreen': 'screen',
-            'title': 'Python Turtle Graphics',
-            'using_IDLE': '',
+            "width": 0.75,
+            "height": 0.8,
+            "canvwidth": 500,
+            "canvheight": 200,
+            "leftright": 100,
+            "topbottom": 100,
+            "mode": "world",
+            "colormode": 255,
+            "delay": 100,
+            "undobuffersize": 10000,
+            "shape": "circle",
+            "pencolor": "red",
+            "fillcolor": "blue",
+            "resizemode": "auto",
+            "visible": None,
+            "language": "english",
+            "exampleturtle": "turtle",
+            "examplescreen": "screen",
+            "title": "Python Turtle Graphics",
+            "using_IDLE": "",
         }
 
         self.assertEqual(parsed_cfg, expected)
 
     def test_partial_config_dict_with_comments(self):
-
         cfg_name = self.get_cfg_file(test_config_two)
         parsed_cfg = turtle.config_dict(cfg_name)
 
         expected = {
-            'pencolor': 'red',
-            'fillcolor': 'blue',
-            'visible': False,
-            'language': 'english',
-            'using_IDLE': False,
+            "pencolor": "red",
+            "fillcolor": "blue",
+            "visible": False,
+            "language": "english",
+            "using_IDLE": False,
         }
 
         self.assertEqual(parsed_cfg, expected)
 
     def test_config_dict_invalid(self):
-
         cfg_name = self.get_cfg_file(invalid_test_config)
 
         with support.captured_stdout() as stdout:
@@ -112,35 +108,37 @@ class TurtleConfigTest(unittest.TestCase):
 
         err_msg = stdout.getvalue()
 
-        self.assertIn('Bad line in config-file ', err_msg)
-        self.assertIn('fillcolor: blue', err_msg)
+        self.assertIn("Bad line in config-file ", err_msg)
+        self.assertIn("fillcolor: blue", err_msg)
 
-        self.assertEqual(parsed_cfg, {
-            'pencolor': 'red',
-            'visible': False,
-        })
+        self.assertEqual(
+            parsed_cfg,
+            {
+                "pencolor": "red",
+                "visible": False,
+            },
+        )
 
 
 class VectorComparisonMixin:
-
     def assertVectorsAlmostEqual(self, vec1, vec2):
         if len(vec1) != len(vec2):
             self.fail("Tuples are not of equal size")
         for idx, (i, j) in enumerate(zip(vec1, vec2)):
             self.assertAlmostEqual(
-                i, j, msg='values at index {} do not match'.format(idx))
+                i, j, msg="values at index {} do not match".format(idx)
+            )
+
 
 class Multiplier:
-
     def __mul__(self, other):
-        return f'M*{other}'
+        return f"M*{other}"
 
     def __rmul__(self, other):
-        return f'{other}*M'
+        return f"{other}*M"
 
 
 class TestVec2D(VectorComparisonMixin, unittest.TestCase):
-
     def test_constructor(self):
         vec = Vec2D(0.5, 2)
         self.assertEqual(vec[0], 0.5)
@@ -155,7 +153,7 @@ class TestVec2D(VectorComparisonMixin, unittest.TestCase):
 
     def test_repr(self):
         vec = Vec2D(0.567, 1.234)
-        self.assertEqual(repr(vec), '(0.57,1.23)')
+        self.assertEqual(repr(vec), "(0.57,1.23)")
 
     def test_equality(self):
         vec1 = Vec2D(0, 1)
@@ -179,7 +177,6 @@ class TestVec2D(VectorComparisonMixin, unittest.TestCase):
     def _assert_arithmetic_cases(self, test_cases, lambda_operator):
         for test_case in test_cases:
             with self.subTest(case=test_case):
-
                 ((first, second), expected) = test_case
 
                 op1 = Vec2D(*first)
@@ -192,7 +189,6 @@ class TestVec2D(VectorComparisonMixin, unittest.TestCase):
                 self.assertVectorsAlmostEqual(result, expected)
 
     def test_vector_addition(self):
-
         test_cases = [
             (((0, 0), (1, 1)), (1.0, 1.0)),
             (((-1, 0), (2, 2)), (1, 2)),
@@ -202,7 +198,6 @@ class TestVec2D(VectorComparisonMixin, unittest.TestCase):
         self._assert_arithmetic_cases(test_cases, lambda x, y: x + y)
 
     def test_vector_subtraction(self):
-
         test_cases = [
             (((0, 0), (1, 1)), (-1, -1)),
             (((10.625, 0.125), (10, 0)), (0.625, 0.125)),
@@ -211,7 +206,6 @@ class TestVec2D(VectorComparisonMixin, unittest.TestCase):
         self._assert_arithmetic_cases(test_cases, lambda x, y: x - y)
 
     def test_vector_multiply(self):
-
         vec1 = Vec2D(10, 10)
         vec2 = Vec2D(0.5, 3)
         answer = vec1 * vec2
@@ -227,7 +221,7 @@ class TestVec2D(VectorComparisonMixin, unittest.TestCase):
 
         M = Multiplier()
         self.assertEqual(vec * M, Vec2D(f"{vec[0]}*M", f"{vec[1]}*M"))
-        self.assertEqual(M * vec, f'M*{vec}')
+        self.assertEqual(M * vec, f"M*{vec}")
 
     def test_vector_negative(self):
         vec = Vec2D(10, -10)
@@ -240,7 +234,6 @@ class TestVec2D(VectorComparisonMixin, unittest.TestCase):
         self.assertAlmostEqual(abs(Vec2D(2.5, 6)), 6.5)
 
     def test_rotate(self):
-
         cases = [
             (((0, 0), 0), (0, 0)),
             (((0, 1), 90), (-1, 0)),
@@ -258,7 +251,6 @@ class TestVec2D(VectorComparisonMixin, unittest.TestCase):
 
 
 class TestTNavigator(VectorComparisonMixin, unittest.TestCase):
-
     def setUp(self):
         self.nav = turtle.TNavigator()
 
@@ -309,7 +301,7 @@ class TestTNavigator(VectorComparisonMixin, unittest.TestCase):
         expected = Vec2D(0, 150)
         self.assertVectorsAlmostEqual(self.nav.position(), expected)
 
-        self.assertRaises(TypeError, self.nav.forward, 'skldjfldsk')
+        self.assertRaises(TypeError, self.nav.forward, "skldjfldsk")
 
     def test_backwards(self):
         self.nav.back(200)
@@ -325,7 +317,7 @@ class TestTNavigator(VectorComparisonMixin, unittest.TestCase):
     def test_distance(self):
         self.nav.forward(100)
         expected = 100
-        self.assertAlmostEqual(self.nav.distance(Vec2D(0,0)), expected)
+        self.assertAlmostEqual(self.nav.distance(Vec2D(0, 0)), expected)
 
     def test_radians_and_degrees(self):
         self.nav.left(90)
@@ -336,7 +328,6 @@ class TestTNavigator(VectorComparisonMixin, unittest.TestCase):
         self.assertAlmostEqual(self.nav.heading(), 90)
 
     def test_towards(self):
-
         coordinates = [
             # coordinates, expected
             ((100, 0), 0.0),
@@ -355,14 +346,13 @@ class TestTNavigator(VectorComparisonMixin, unittest.TestCase):
             self.assertEqual(self.nav.towards(Vec2D(x, y)), expected)
 
     def test_heading(self):
-
         self.nav.left(90)
         self.assertAlmostEqual(self.nav.heading(), 90)
         self.nav.left(45)
         self.assertAlmostEqual(self.nav.heading(), 135)
         self.nav.right(1.6)
         self.assertAlmostEqual(self.nav.heading(), 133.4)
-        self.assertRaises(TypeError, self.nav.right, 'sdkfjdsf')
+        self.assertRaises(TypeError, self.nav.right, "sdkfjdsf")
         self.nav.reset()
 
         rotations = [10, 20, 170, 300]
@@ -372,7 +362,7 @@ class TestTNavigator(VectorComparisonMixin, unittest.TestCase):
         self.assertEqual(self.nav.heading(), result)
         self.nav.reset()
 
-        result = (360-sum(rotations)) % 360
+        result = (360 - sum(rotations)) % 360
         for num in rotations:
             self.nav.right(num)
         self.assertEqual(self.nav.heading(), result)
@@ -396,7 +386,7 @@ class TestTNavigator(VectorComparisonMixin, unittest.TestCase):
         self.nav.setheading(-1000.34)
         self.assertAlmostEqual(self.nav.heading(), (-1000.34) % 360)
         self.nav.setheading(300000)
-        self.assertAlmostEqual(self.nav.heading(), 300000%360)
+        self.assertAlmostEqual(self.nav.heading(), 300000 % 360)
 
     def test_positions(self):
         self.nav.forward(100)
@@ -413,12 +403,12 @@ class TestTNavigator(VectorComparisonMixin, unittest.TestCase):
         self.nav.left(30)
         self.nav.forward(-100000)
         self.nav.home()
-        self.assertVectorsAlmostEqual(self.nav.pos(), (0,0))
+        self.assertVectorsAlmostEqual(self.nav.pos(), (0, 0))
         self.assertAlmostEqual(self.nav.heading(), 0)
 
     def test_distance_method(self):
         self.assertAlmostEqual(self.nav.distance(30, 40), 50)
-        vec = Vec2D(0.22, .001)
+        vec = Vec2D(0.22, 0.001)
         self.assertAlmostEqual(self.nav.distance(vec), 0.22000227271553355)
         another_turtle = turtle.TNavigator()
         another_turtle.left(90)
@@ -427,9 +417,7 @@ class TestTNavigator(VectorComparisonMixin, unittest.TestCase):
 
 
 class TestTPen(unittest.TestCase):
-
     def test_pendown_and_penup(self):
-
         tpen = turtle.TPen()
 
         self.assertTrue(tpen.isdown())
@@ -439,7 +427,6 @@ class TestTPen(unittest.TestCase):
         self.assertTrue(tpen.isdown())
 
     def test_showturtle_hideturtle_and_isvisible(self):
-
         tpen = turtle.TPen()
 
         self.assertTrue(tpen.isvisible())
@@ -449,7 +436,6 @@ class TestTPen(unittest.TestCase):
         self.assertTrue(tpen.isvisible())
 
     def test_teleport(self):
-
         tpen = turtle.TPen()
 
         for fill_gap_value in [True, False]:
@@ -466,12 +452,11 @@ class TestModuleLevel(unittest.TestCase):
         import inspect
 
         known_signatures = {
-            'teleport':
-                '(x=None, y=None, *, fill_gap: bool = False) -> None',
-            'undo': '()',
-            'goto': '(x, y=None)',
-            'bgcolor': '(*args)',
-            'pen': '(pen=None, **pendict)',
+            "teleport": "(x=None, y=None, *, fill_gap: bool = False) -> None",
+            "undo": "()",
+            "goto": "(x, y=None)",
+            "bgcolor": "(*args)",
+            "pen": "(pen=None, **pendict)",
         }
 
         for name in known_signatures:
@@ -481,5 +466,5 @@ class TestModuleLevel(unittest.TestCase):
                 self.assertEqual(str(sig), known_signatures[name])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

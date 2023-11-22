@@ -1,11 +1,23 @@
 import _ctypes_test
 import ctypes
 import unittest
-from ctypes import (CDLL,
-                    c_byte, c_ubyte, c_char,
-                    c_short, c_ushort, c_int, c_uint,
-                    c_long, c_ulong, c_longlong, c_ulonglong,
-                    c_float, c_double, c_longdouble)
+from ctypes import (
+    CDLL,
+    c_byte,
+    c_ubyte,
+    c_char,
+    c_short,
+    c_ushort,
+    c_int,
+    c_uint,
+    c_long,
+    c_ulong,
+    c_longlong,
+    c_ulonglong,
+    c_float,
+    c_double,
+    c_longdouble,
+)
 
 
 class CFunctions(unittest.TestCase):
@@ -13,6 +25,7 @@ class CFunctions(unittest.TestCase):
 
     def S(self):
         return c_longlong.in_dll(self._dll, "last_tf_arg_s").value
+
     def U(self):
         return c_ulonglong.in_dll(self._dll, "last_tf_arg_u").value
 
@@ -109,12 +122,12 @@ class CFunctions(unittest.TestCase):
     def test_ulong_plus(self):
         self._dll.tf_bL.restype = c_ulong
         self._dll.tf_bL.argtypes = (c_char, c_ulong)
-        self.assertEqual(self._dll.tf_bL(b' ', 4294967295), 1431655765)
+        self.assertEqual(self._dll.tf_bL(b" ", 4294967295), 1431655765)
         self.assertEqual(self.U(), 4294967295)
 
     def test_longlong(self):
         self._dll.tf_q.restype = c_longlong
-        self._dll.tf_q.argtypes = (c_longlong, )
+        self._dll.tf_q.argtypes = (c_longlong,)
         self.assertEqual(self._dll.tf_q(-9223372036854775806), -3074457345618258602)
         self.assertEqual(self.S(), -9223372036854775806)
 
@@ -126,7 +139,7 @@ class CFunctions(unittest.TestCase):
 
     def test_ulonglong(self):
         self._dll.tf_Q.restype = c_ulonglong
-        self._dll.tf_Q.argtypes = (c_ulonglong, )
+        self._dll.tf_Q.argtypes = (c_ulonglong,)
         self.assertEqual(self._dll.tf_Q(18446744073709551615), 6148914691236517205)
         self.assertEqual(self.U(), 18446744073709551615)
 
@@ -139,42 +152,43 @@ class CFunctions(unittest.TestCase):
     def test_float(self):
         self._dll.tf_f.restype = c_float
         self._dll.tf_f.argtypes = (c_float,)
-        self.assertEqual(self._dll.tf_f(-42.), -14.)
+        self.assertEqual(self._dll.tf_f(-42.0), -14.0)
         self.assertEqual(self.S(), -42)
 
     def test_float_plus(self):
         self._dll.tf_bf.restype = c_float
         self._dll.tf_bf.argtypes = (c_byte, c_float)
-        self.assertEqual(self._dll.tf_bf(0, -42.), -14.)
+        self.assertEqual(self._dll.tf_bf(0, -42.0), -14.0)
         self.assertEqual(self.S(), -42)
 
     def test_double(self):
         self._dll.tf_d.restype = c_double
         self._dll.tf_d.argtypes = (c_double,)
-        self.assertEqual(self._dll.tf_d(42.), 14.)
+        self.assertEqual(self._dll.tf_d(42.0), 14.0)
         self.assertEqual(self.S(), 42)
 
     def test_double_plus(self):
         self._dll.tf_bd.restype = c_double
         self._dll.tf_bd.argtypes = (c_byte, c_double)
-        self.assertEqual(self._dll.tf_bd(0, 42.), 14.)
+        self.assertEqual(self._dll.tf_bd(0, 42.0), 14.0)
         self.assertEqual(self.S(), 42)
 
     def test_longdouble(self):
         self._dll.tf_D.restype = c_longdouble
         self._dll.tf_D.argtypes = (c_longdouble,)
-        self.assertEqual(self._dll.tf_D(42.), 14.)
+        self.assertEqual(self._dll.tf_D(42.0), 14.0)
         self.assertEqual(self.S(), 42)
 
     def test_longdouble_plus(self):
         self._dll.tf_bD.restype = c_longdouble
         self._dll.tf_bD.argtypes = (c_byte, c_longdouble)
-        self.assertEqual(self._dll.tf_bD(0, 42.), 14.)
+        self.assertEqual(self._dll.tf_bD(0, 42.0), 14.0)
         self.assertEqual(self.S(), 42)
 
     def test_callwithresult(self):
         def process_result(result):
             return result * 2
+
         self._dll.tf_i.restype = process_result
         self._dll.tf_i.argtypes = (c_int,)
         self.assertEqual(self._dll.tf_i(42), 28)
@@ -193,10 +207,11 @@ class CFunctions(unittest.TestCase):
 
 # The following repeats the above tests with stdcall functions (where
 # they are available)
-if hasattr(ctypes, 'WinDLL'):
+if hasattr(ctypes, "WinDLL"):
+
     class stdcall_dll(ctypes.WinDLL):
         def __getattr__(self, name):
-            if name[:2] == '__' and name[-2:] == '__':
+            if name[:2] == "__" and name[-2:] == "__":
                 raise AttributeError(name)
             func = self._FuncPtr(("s_" + name, self))
             setattr(self, name, func)
@@ -206,5 +221,5 @@ if hasattr(ctypes, 'WinDLL'):
         _dll = stdcall_dll(_ctypes_test.__file__)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

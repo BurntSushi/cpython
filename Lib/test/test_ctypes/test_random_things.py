@@ -12,7 +12,7 @@ def callback_func(arg):
     raise ValueError(arg)
 
 
-@unittest.skipUnless(sys.platform == "win32", 'Windows-specific test')
+@unittest.skipUnless(sys.platform == "win32", "Windows-specific test")
 class call_function_TestCase(unittest.TestCase):
     # _ctypes.call_function is deprecated and private, but used by
     # Gary Bishp's readline module.  If we have it, we must test it as well.
@@ -26,8 +26,9 @@ class call_function_TestCase(unittest.TestCase):
         hdll = kernel32.LoadLibraryA(b"kernel32")
         funcaddr = kernel32.GetProcAddress(hdll, b"GetModuleHandleA")
 
-        self.assertEqual(_ctypes.call_function(funcaddr, (None,)),
-                         kernel32.GetModuleHandleA(None))
+        self.assertEqual(
+            _ctypes.call_function(funcaddr, (None,)), kernel32.GetModuleHandleA(None)
+        )
 
 
 class CallbackTracbackTestCase(unittest.TestCase):
@@ -50,14 +51,16 @@ class CallbackTracbackTestCase(unittest.TestCase):
             self.assertIsInstance(cm.unraisable.exc_value, exc_type)
             if exc_msg is not None:
                 self.assertEqual(str(cm.unraisable.exc_value), exc_msg)
-            self.assertEqual(cm.unraisable.err_msg,
-                             f"Exception ignored on calling ctypes "
-                             f"callback function {callback_func!r}")
+            self.assertEqual(
+                cm.unraisable.err_msg,
+                f"Exception ignored on calling ctypes "
+                f"callback function {callback_func!r}",
+            )
             self.assertIsNone(cm.unraisable.object)
 
     def test_ValueError(self):
         cb = CFUNCTYPE(c_int, c_int)(callback_func)
-        with self.expect_unraisable(ValueError, '42'):
+        with self.expect_unraisable(ValueError, "42"):
             cb(42)
 
     def test_IntegerDivisionError(self):
@@ -77,5 +80,5 @@ class CallbackTracbackTestCase(unittest.TestCase):
             cb(b"spam")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

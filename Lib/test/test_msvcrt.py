@@ -56,53 +56,61 @@ class TestFileOperations(unittest.TestCase):
             msvcrt.get_osfhandle(f.fileno())
 
 
-c = '\u5b57'  # unicode CJK char (meaning 'character') for 'wide-char' tests
-c_encoded = b'\x57\x5b' # utf-16-le (which windows internally used) encoded char for this CJK char
+c = "\u5b57"  # unicode CJK char (meaning 'character') for 'wide-char' tests
+c_encoded = b"\x57\x5b"  # utf-16-le (which windows internally used) encoded char for this CJK char
 
 
 class TestConsoleIO(unittest.TestCase):
     # CREATE_NEW_CONSOLE creates a "popup" window.
-    @requires_resource('gui')
+    @requires_resource("gui")
     def run_in_separated_process(self, code):
         # Run test in a seprated process to avoid stdin conflicts.
         # See: gh-110147
-        cmd = [sys.executable, '-c', code]
-        subprocess.run(cmd, check=True, capture_output=True,
-                       creationflags=subprocess.CREATE_NEW_CONSOLE)
+        cmd = [sys.executable, "-c", code]
+        subprocess.run(
+            cmd,
+            check=True,
+            capture_output=True,
+            creationflags=subprocess.CREATE_NEW_CONSOLE,
+        )
 
     def test_kbhit(self):
-        code = dedent('''
+        code = dedent(
+            """
             import msvcrt
             assert msvcrt.kbhit() == 0
-        ''')
+        """
+        )
         self.run_in_separated_process(code)
 
     def test_getch(self):
-        msvcrt.ungetch(b'c')
-        self.assertEqual(msvcrt.getch(), b'c')
+        msvcrt.ungetch(b"c")
+        self.assertEqual(msvcrt.getch(), b"c")
 
     def check_getwch(self, funcname):
-        code = dedent(f'''
+        code = dedent(
+            f"""
             import msvcrt
             from _testconsole import write_input
             with open("CONIN$", "rb", buffering=0) as stdin:
                 write_input(stdin, {ascii(c_encoded)})
                 assert msvcrt.{funcname}() == "{c}"
-        ''')
+        """
+        )
         self.run_in_separated_process(code)
 
     def test_getwch(self):
-        self.check_getwch('getwch')
+        self.check_getwch("getwch")
 
     def test_getche(self):
-        msvcrt.ungetch(b'c')
-        self.assertEqual(msvcrt.getche(), b'c')
+        msvcrt.ungetch(b"c")
+        self.assertEqual(msvcrt.getche(), b"c")
 
     def test_getwche(self):
-        self.check_getwch('getwche')
+        self.check_getwch("getwche")
 
     def test_putch(self):
-        msvcrt.putch(b'c')
+        msvcrt.putch(b"c")
 
     def test_putwch(self):
         msvcrt.putwch(c)

@@ -7,7 +7,6 @@ from idlelib.tree import TreeItem
 
 
 class PathBrowser(ModuleBrowser):
-
     def __init__(self, master, *, _htest=False, _utest=False):
         """
         _htest - bool, change box location when running htest
@@ -27,7 +26,6 @@ class PathBrowser(ModuleBrowser):
 
 
 class PathBrowserTreeItem(TreeItem):
-
     def GetText(self):
         return "sys.path"
 
@@ -40,7 +38,6 @@ class PathBrowserTreeItem(TreeItem):
 
 
 class DirBrowserTreeItem(TreeItem):
-
     def __init__(self, dir, packages=[]):
         self.dir = dir
         self.packages = packages
@@ -73,7 +70,7 @@ class DirBrowserTreeItem(TreeItem):
         return sublist
 
     def ispackagedir(self, file):
-        " Return true for directories that are packages."
+        "Return true for directories that are packages."
         if not os.path.isdir(file):
             return False
         init = os.path.join(file, "__init__.py")
@@ -103,9 +100,12 @@ def _path_browser(parent):  # htest #
     PathBrowser(parent, _htest=True)
     parent.mainloop()
 
+
 if __name__ == "__main__":
     from unittest import main
-    main('idlelib.idle_test.test_pathbrowser', verbosity=2, exit=False)
+
+    main("idlelib.idle_test.test_pathbrowser", verbosity=2, exit=False)
 
     from idlelib.idle_test.htest import run
+
     run(_path_browser)

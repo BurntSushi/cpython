@@ -29,9 +29,7 @@ def get_error_types(eg):
 
 
 class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
-
     async def test_taskgroup_01(self):
-
         async def foo1():
             await asyncio.sleep(0.1)
             return 42
@@ -48,7 +46,6 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(t2.result(), 11)
 
     async def test_taskgroup_02(self):
-
         async def foo1():
             await asyncio.sleep(0.1)
             return 42
@@ -66,7 +63,6 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(t2.result(), 11)
 
     async def test_taskgroup_03(self):
-
         async def foo1():
             await asyncio.sleep(1)
             return 42
@@ -88,7 +84,6 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(t2.result(), 11)
 
     async def test_taskgroup_04(self):
-
         NUM = 0
         t2_cancel = False
         t2 = None
@@ -172,7 +167,6 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(runner_cancel)
 
     async def test_cancellation(self):
-
         NUM = 0
 
         async def foo():
@@ -199,7 +193,6 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(NUM, 5)
 
     async def test_taskgroup_07(self):
-
         NUM = 0
 
         async def foo():
@@ -233,7 +226,6 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(NUM, 15)
 
     async def test_taskgroup_08(self):
-
         async def foo():
             try:
                 await asyncio.sleep(10)
@@ -257,7 +249,6 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(get_error_types(cm.exception), {ZeroDivisionError})
 
     async def test_taskgroup_09(self):
-
         t1 = t2 = None
 
         async def foo1():
@@ -281,13 +272,12 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
         except ExceptionGroup as t:
             self.assertEqual(get_error_types(t), {ZeroDivisionError})
         else:
-            self.fail('ExceptionGroup was not raised')
+            self.fail("ExceptionGroup was not raised")
 
         self.assertTrue(t1.cancelled())
         self.assertTrue(t2.cancelled())
 
     async def test_taskgroup_10(self):
-
         t1 = t2 = None
 
         async def foo1():
@@ -310,13 +300,12 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
         except ExceptionGroup as t:
             self.assertEqual(get_error_types(t), {ZeroDivisionError})
         else:
-            self.fail('ExceptionGroup was not raised')
+            self.fail("ExceptionGroup was not raised")
 
         self.assertTrue(t1.cancelled())
         self.assertTrue(t2.cancelled())
 
     async def test_taskgroup_11(self):
-
         async def foo():
             try:
                 await asyncio.sleep(10)
@@ -340,10 +329,11 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
             await r
 
         self.assertEqual(get_error_types(cm.exception), {ExceptionGroup})
-        self.assertEqual(get_error_types(cm.exception.exceptions[0]), {ZeroDivisionError})
+        self.assertEqual(
+            get_error_types(cm.exception.exceptions[0]), {ZeroDivisionError}
+        )
 
     async def test_taskgroup_12(self):
-
         async def foo():
             try:
                 await asyncio.sleep(10)
@@ -369,10 +359,11 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
             await r
 
         self.assertEqual(get_error_types(cm.exception), {ExceptionGroup})
-        self.assertEqual(get_error_types(cm.exception.exceptions[0]), {ZeroDivisionError})
+        self.assertEqual(
+            get_error_types(cm.exception.exceptions[0]), {ZeroDivisionError}
+        )
 
     async def test_taskgroup_13(self):
-
         async def crash_after(t):
             await asyncio.sleep(t)
             raise ValueError(t)
@@ -391,7 +382,6 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(get_error_types(cm.exception), {ValueError})
 
     async def test_taskgroup_14(self):
-
         async def crash_after(t):
             await asyncio.sleep(t)
             raise ValueError(t)
@@ -411,7 +401,6 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(get_error_types(cm.exception.exceptions[0]), {ValueError})
 
     async def test_taskgroup_15(self):
-
         async def crash_soon():
             await asyncio.sleep(0.3)
             1 / 0
@@ -435,7 +424,6 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(get_error_types(cm.exception), {ZeroDivisionError})
 
     async def test_taskgroup_16(self):
-
         async def crash_soon():
             await asyncio.sleep(0.3)
             1 / 0
@@ -507,9 +495,9 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
         try:
             await r
         except ExceptionGroup as t:
-            self.assertEqual(get_error_types(t),{MyExc})
+            self.assertEqual(get_error_types(t), {MyExc})
         else:
-            self.fail('ExceptionGroup was not raised')
+            self.fail("ExceptionGroup was not raised")
 
         self.assertEqual(NUM, 10)
 
@@ -535,7 +523,7 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
         except ExceptionGroup as t:
             self.assertEqual(get_error_types(t), {MyExc, ZeroDivisionError})
         else:
-            self.fail('TasgGroupError was not raised')
+            self.fail("TasgGroupError was not raised")
 
     async def test_taskgroup_20(self):
         async def crash_soon():
@@ -575,9 +563,7 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(BaseExceptionGroup) as cm:
             await runner()
 
-        self.assertEqual(
-            get_error_types(cm.exception), {MyBaseExc, ZeroDivisionError}
-        )
+        self.assertEqual(get_error_types(cm.exception), {MyBaseExc, ZeroDivisionError})
 
     async def _test_taskgroup_21(self):
         # This test doesn't work as asyncio, currently, doesn't
@@ -606,7 +592,6 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
             await runner()
 
     async def test_taskgroup_21a(self):
-
         async def crash_soon():
             await asyncio.sleep(0.1)
             raise MyBaseExc
@@ -628,7 +613,6 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(get_error_types(cm.exception), {MyBaseExc, TypeError})
 
     async def test_taskgroup_22(self):
-
         async def foo1():
             await asyncio.sleep(1)
             return 42
@@ -650,7 +634,6 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
             await r
 
     async def test_taskgroup_23(self):
-
         async def do_job(delay):
             await asyncio.sleep(delay)
 
@@ -664,7 +647,6 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(len(g._tasks), 0)
 
     async def test_taskgroup_24(self):
-
         async def root(g):
             await asyncio.sleep(0.1)
             g.create_task(coro1(0.1))
@@ -708,12 +690,13 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
     async def test_taskgroup_task_name(self):
         async def coro():
             await asyncio.sleep(0)
+
         async with taskgroups.TaskGroup() as g:
             t = g.create_task(coro(), name="yolo")
             self.assertEqual(t.get_name(), "yolo")
 
     async def test_taskgroup_task_context(self):
-        cvar = contextvars.ContextVar('cvar')
+        cvar = contextvars.ContextVar("cvar")
 
         async def coro(val):
             await asyncio.sleep(0)
@@ -733,6 +716,7 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
         async def coro1():
             await asyncio.sleep(0.001)
             1 / 0
+
         async def coro2(g):
             try:
                 await asyncio.sleep(1)
@@ -777,7 +761,7 @@ class TestTaskGroup(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(len(err.exceptions), 2)
 
             else:
-                self.fail('CustomException not raised')
+                self.fail("CustomException not raised")
 
         await asyncio.create_task(main())
 

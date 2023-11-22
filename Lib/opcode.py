@@ -1,26 +1,46 @@
-
 """
 opcode module - potentially shared between dis and other modules which
 operate on bytecodes (e.g. peephole optimizers).
 """
 
 
-__all__ = ["cmp_op", "stack_effect", "hascompare", "opname", "opmap",
-           "HAVE_ARGUMENT", "EXTENDED_ARG", "hasarg", "hasconst", "hasname",
-           "hasjump", "hasjrel", "hasjabs", "hasfree", "haslocal", "hasexc"]
+__all__ = [
+    "cmp_op",
+    "stack_effect",
+    "hascompare",
+    "opname",
+    "opmap",
+    "HAVE_ARGUMENT",
+    "EXTENDED_ARG",
+    "hasarg",
+    "hasconst",
+    "hasname",
+    "hasjump",
+    "hasjrel",
+    "hasjabs",
+    "hasfree",
+    "haslocal",
+    "hasexc",
+]
 
 import _opcode
 from _opcode import stack_effect
 
-from _opcode_metadata import (_specializations, _specialized_opmap, opmap,
-                              HAVE_ARGUMENT, MIN_INSTRUMENTED_OPCODE)
-EXTENDED_ARG = opmap['EXTENDED_ARG']
+from _opcode_metadata import (
+    _specializations,
+    _specialized_opmap,
+    opmap,
+    HAVE_ARGUMENT,
+    MIN_INSTRUMENTED_OPCODE,
+)
 
-opname = ['<%r>' % (op,) for op in range(max(opmap.values()) + 1)]
+EXTENDED_ARG = opmap["EXTENDED_ARG"]
+
+opname = ["<%r>" % (op,) for op in range(max(opmap.values()) + 1)]
 for op, i in opmap.items():
     opname[i] = op
 
-cmp_op = ('<', '<=', '==', '!=', '>', '>=')
+cmp_op = ("<", "<=", "==", "!=", ">", ">=")
 
 # These lists are documented as part of the dis module's API
 hasarg = [op for op in opmap.values() if _opcode.has_arg(op)]
@@ -108,5 +128,5 @@ _cache_format = {
 }
 
 _inline_cache_entries = {
-    name : sum(value.values()) for (name, value) in _cache_format.items()
+    name: sum(value.values()) for (name, value) in _cache_format.items()
 }

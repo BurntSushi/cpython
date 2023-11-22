@@ -11,7 +11,7 @@ except ImportError:  # pragma: no cover
     from typing_extensions import Protocol, runtime_checkable  # type: ignore
 
 
-FilesSpec = Dict[str, Union[str, bytes, 'FilesSpec']]  # type: ignore
+FilesSpec = Dict[str, Union[str, bytes, "FilesSpec"]]  # type: ignore
 
 
 @runtime_checkable
@@ -75,12 +75,12 @@ def _(content: bytes, path):
 
 @create.register
 def _(content: str, path):
-    path.write_text(content, encoding='utf-8')
+    path.write_text(content, encoding="utf-8")
 
 
 @create.register
 def _(content: str, path):
-    path.write_text(content, encoding='utf-8')
+    path.write_text(content, encoding="utf-8")
 
 
 class Recording:

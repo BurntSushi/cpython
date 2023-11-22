@@ -13,15 +13,18 @@ from os.path import dirname
 # Additional .discover/.addTest pairs with separate inserts work.
 # Example: pairs with 'c' and 'g' test c* files and grep.
 
+
 def load_tests(loader, standard_tests, pattern):
     this_dir = dirname(__file__)
     top_dir = dirname(dirname(this_dir))
-    module_tests = loader.discover(start_dir=this_dir,
-                                    pattern='test_*.py',  # Insert here.
-                                    top_level_dir=top_dir)
+    module_tests = loader.discover(
+        start_dir=this_dir,
+        pattern="test_*.py",  # Insert here.
+        top_level_dir=top_dir,
+    )
     standard_tests.addTests(module_tests)
-##    module_tests = loader.discover(start_dir=this_dir,
-##                                    pattern='test_*.py',  # Insert here.
-##                                    top_level_dir=top_dir)
-##    standard_tests.addTests(module_tests)
+    ##    module_tests = loader.discover(start_dir=this_dir,
+    ##                                    pattern='test_*.py',  # Insert here.
+    ##                                    top_level_dir=top_dir)
+    ##    standard_tests.addTests(module_tests)
     return standard_tests

@@ -1,11 +1,21 @@
 import sys
 import unittest
 from test import support
-from ctypes import (POINTER, sizeof, cast,
-                    create_string_buffer, string_at,
-                    create_unicode_buffer, wstring_at,
-                    memmove, memset,
-                    c_char_p, c_byte, c_ubyte, c_wchar)
+from ctypes import (
+    POINTER,
+    sizeof,
+    cast,
+    create_string_buffer,
+    string_at,
+    create_unicode_buffer,
+    wstring_at,
+    memmove,
+    memset,
+    c_char_p,
+    c_byte,
+    c_ubyte,
+    c_wchar,
+)
 
 
 class MemFunctionsTest(unittest.TestCase):
@@ -14,10 +24,14 @@ class MemFunctionsTest(unittest.TestCase):
         # convention (which acquires the GIL and checks the Python
         # error flag).  Provoke an error and catch it; see also issue
         # gh-47804.
-        self.assertRaises((OverflowError, MemoryError, SystemError),
-                          lambda: wstring_at(u"foo", sys.maxsize - 1))
-        self.assertRaises((OverflowError, MemoryError, SystemError),
-                          lambda: string_at("foo", sys.maxsize - 1))
+        self.assertRaises(
+            (OverflowError, MemoryError, SystemError),
+            lambda: wstring_at("foo", sys.maxsize - 1),
+        )
+        self.assertRaises(
+            (OverflowError, MemoryError, SystemError),
+            lambda: string_at("foo", sys.maxsize - 1),
+        )
 
     def test_memmove(self):
         # large buffers apparently increase the chance that the memory
@@ -34,7 +48,7 @@ class MemFunctionsTest(unittest.TestCase):
 
     def test_memset(self):
         a = create_string_buffer(1000000)
-        result = memset(a, ord('x'), 16)
+        result = memset(a, ord("x"), 16)
         self.assertEqual(a.value, b"xxxxxxxxxxxxxxxx")
 
         self.assertEqual(string_at(result), b"xxxxxxxxxxxxxxxx")
@@ -44,16 +58,13 @@ class MemFunctionsTest(unittest.TestCase):
     def test_cast(self):
         a = (c_ubyte * 32)(*map(ord, "abcdef"))
         self.assertEqual(cast(a, c_char_p).value, b"abcdef")
-        self.assertEqual(cast(a, POINTER(c_byte))[:7],
-                             [97, 98, 99, 100, 101, 102, 0])
-        self.assertEqual(cast(a, POINTER(c_byte))[:7:],
-                             [97, 98, 99, 100, 101, 102, 0])
-        self.assertEqual(cast(a, POINTER(c_byte))[6:-1:-1],
-                             [0, 102, 101, 100, 99, 98, 97])
-        self.assertEqual(cast(a, POINTER(c_byte))[:7:2],
-                             [97, 99, 101, 0])
-        self.assertEqual(cast(a, POINTER(c_byte))[:7:7],
-                             [97])
+        self.assertEqual(cast(a, POINTER(c_byte))[:7], [97, 98, 99, 100, 101, 102, 0])
+        self.assertEqual(cast(a, POINTER(c_byte))[:7:], [97, 98, 99, 100, 101, 102, 0])
+        self.assertEqual(
+            cast(a, POINTER(c_byte))[6:-1:-1], [0, 102, 101, 100, 99, 98, 97]
+        )
+        self.assertEqual(cast(a, POINTER(c_byte))[:7:2], [97, 99, 101, 0])
+        self.assertEqual(cast(a, POINTER(c_byte))[:7:7], [97])
 
     @support.refcount_test
     def test_string_at(self):

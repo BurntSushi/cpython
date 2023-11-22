@@ -20,10 +20,27 @@
 
 import _ctypes_test
 import unittest
-from ctypes import (CDLL, CFUNCTYPE, POINTER, ArgumentError,
-                    pointer, byref, sizeof, addressof, create_string_buffer,
-                    c_void_p, c_char_p, c_wchar_p, c_char, c_wchar,
-                    c_short, c_int, c_long, c_longlong, c_double)
+from ctypes import (
+    CDLL,
+    CFUNCTYPE,
+    POINTER,
+    ArgumentError,
+    pointer,
+    byref,
+    sizeof,
+    addressof,
+    create_string_buffer,
+    c_void_p,
+    c_char_p,
+    c_wchar_p,
+    c_char,
+    c_wchar,
+    c_short,
+    c_int,
+    c_long,
+    c_longlong,
+    c_double,
+)
 
 
 testdll = CDLL(_ctypes_test.__file__)
@@ -37,7 +54,8 @@ def positive_address(a):
         return a
     # View the bits in `a` as unsigned instead.
     import struct
-    num_bits = struct.calcsize("P") * 8 # num bits in native machine address
+
+    num_bits = struct.calcsize("P") * 8  # num bits in native machine address
     a += 1 << num_bits
     assert a >= 0
     return a
@@ -58,8 +76,7 @@ class CharPointersTestCase(unittest.TestCase):
         # function returns c_void_p result,
         # and has a required parameter named 'input'
         prototype = CFUNCTYPE(c_void_p, c_void_p)
-        func = prototype(("_testfunc_p_p", testdll),
-                         ((1, "input"),))
+        func = prototype(("_testfunc_p_p", testdll), ((1, "input"),))
 
         try:
             func()
@@ -71,7 +88,6 @@ class CharPointersTestCase(unittest.TestCase):
         self.assertEqual(func(None), None)
         self.assertEqual(func(input=None), None)
 
-
     def test_int_pointer_arg(self):
         func = testdll._testfunc_p_p
         if sizeof(c_longlong) == sizeof(c_void_p):
@@ -82,23 +98,24 @@ class CharPointersTestCase(unittest.TestCase):
 
         ci = c_int(0)
 
-        func.argtypes = POINTER(c_int),
-        self.assertEqual(positive_address(addressof(ci)),
-                             positive_address(func(byref(ci))))
+        func.argtypes = (POINTER(c_int),)
+        self.assertEqual(
+            positive_address(addressof(ci)), positive_address(func(byref(ci)))
+        )
 
-        func.argtypes = c_char_p,
+        func.argtypes = (c_char_p,)
         self.assertRaises(ArgumentError, func, byref(ci))
 
-        func.argtypes = POINTER(c_short),
+        func.argtypes = (POINTER(c_short),)
         self.assertRaises(ArgumentError, func, byref(ci))
 
-        func.argtypes = POINTER(c_double),
+        func.argtypes = (POINTER(c_double),)
         self.assertRaises(ArgumentError, func, byref(ci))
 
     def test_POINTER_c_char_arg(self):
         func = testdll._testfunc_p_p
         func.restype = c_char_p
-        func.argtypes = POINTER(c_char),
+        func.argtypes = (POINTER(c_char),)
 
         self.assertEqual(None, func(None))
         self.assertEqual(b"123", func(b"123"))
@@ -113,7 +130,7 @@ class CharPointersTestCase(unittest.TestCase):
     def test_c_char_p_arg(self):
         func = testdll._testfunc_p_p
         func.restype = c_char_p
-        func.argtypes = c_char_p,
+        func.argtypes = (c_char_p,)
 
         self.assertEqual(None, func(None))
         self.assertEqual(b"123", func(b"123"))
@@ -128,7 +145,7 @@ class CharPointersTestCase(unittest.TestCase):
     def test_c_void_p_arg(self):
         func = testdll._testfunc_p_p
         func.restype = c_char_p
-        func.argtypes = c_void_p,
+        func.argtypes = (c_void_p,)
 
         self.assertEqual(None, func(None))
         self.assertEqual(b"123", func(b"123"))
@@ -147,7 +164,7 @@ class CharPointersTestCase(unittest.TestCase):
     def test_c_void_p_arg_with_c_wchar_p(self):
         func = testdll._testfunc_p_p
         func.restype = c_wchar_p
-        func.argtypes = c_void_p,
+        func.argtypes = (c_void_p,)
 
         self.assertEqual(None, func(c_wchar_p(None)))
         self.assertEqual("123", func(c_wchar_p("123")))
@@ -159,7 +176,7 @@ class CharPointersTestCase(unittest.TestCase):
         class X:
             _as_parameter_ = None
 
-        func.argtypes = c_void_p,
+        func.argtypes = (c_void_p,)
         self.assertEqual(None, func(X()))
 
         func.argtypes = None
@@ -172,11 +189,10 @@ class WCharPointersTestCase(unittest.TestCase):
         func.restype = c_int
         func.argtypes = None
 
-
     def test_POINTER_c_wchar_arg(self):
         func = testdll._testfunc_p_p
         func.restype = c_wchar_p
-        func.argtypes = POINTER(c_wchar),
+        func.argtypes = (POINTER(c_wchar),)
 
         self.assertEqual(None, func(None))
         self.assertEqual("123", func("123"))
@@ -191,7 +207,7 @@ class WCharPointersTestCase(unittest.TestCase):
     def test_c_wchar_p_arg(self):
         func = testdll._testfunc_p_p
         func.restype = c_wchar_p
-        func.argtypes = c_wchar_p,
+        func.argtypes = (c_wchar_p,)
 
         c_wchar_p.from_param("123")
 
@@ -211,15 +227,17 @@ class ArrayTest(unittest.TestCase):
     def test(self):
         func = testdll._testfunc_ai8
         func.restype = POINTER(c_int)
-        func.argtypes = c_int * 8,
+        func.argtypes = (c_int * 8,)
 
         func((c_int * 8)(1, 2, 3, 4, 5, 6, 7, 8))
 
         # This did crash before:
 
-        def func(): pass
+        def func():
+            pass
+
         CFUNCTYPE(None, c_int * 3)(func)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

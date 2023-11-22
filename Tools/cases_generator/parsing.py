@@ -362,7 +362,9 @@ class Parser(PLexer):
                     if self.expect(lx.COMMA):
                         if not (size := self.expect(lx.IDENTIFIER)):
                             if not (size := self.expect(lx.NUMBER)):
-                                raise self.make_syntax_error("Expected identifier or number")
+                                raise self.make_syntax_error(
+                                    "Expected identifier or number"
+                                )
                     if self.expect(lx.RPAREN):
                         if self.expect(lx.EQUALS):
                             if not self.expect(lx.LBRACE):

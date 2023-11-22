@@ -33,7 +33,7 @@ class Loader(metaclass=abc.ABCMeta):
         functionality for this method.
 
         """
-        if not hasattr(self, 'exec_module'):
+        if not hasattr(self, "exec_module"):
             raise ImportError
         # Warning implemented in _load_module_shim().
         return _bootstrap._load_module_shim(self, fullname)

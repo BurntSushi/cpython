@@ -14,7 +14,7 @@ class BytesTest(unittest.TestCase):
             x.value = "y"
         c_char.from_param(b"x")
         self.assertRaises(TypeError, c_char.from_param, "x")
-        self.assertIn('xbd', repr(c_char.from_param(b"\xbd")))
+        self.assertIn("xbd", repr(c_char.from_param(b"\xbd")))
         (c_char * 3)(b"a", b"b", b"c")
         self.assertRaises(TypeError, c_char * 3, "a", "b", "c")
 
@@ -55,7 +55,7 @@ class BytesTest(unittest.TestCase):
         self.assertEqual(x.a, "abc")
         self.assertEqual(type(x.a), str)
 
-    @unittest.skipUnless(sys.platform == "win32", 'Windows-specific test')
+    @unittest.skipUnless(sys.platform == "win32", "Windows-specific test")
     def test_BSTR(self):
         class BSTR(_SimpleCData):
             _type_ = "X"
@@ -63,5 +63,5 @@ class BytesTest(unittest.TestCase):
         BSTR("abc")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

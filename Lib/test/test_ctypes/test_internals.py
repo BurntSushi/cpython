@@ -85,7 +85,7 @@ class ObjectsTestCase(unittest.TestCase):
         class X(Structure):
             _fields_ = [("data", POINTER(c_int))]
 
-        A = c_int*4
+        A = c_int * 4
         a = A(11, 22, 33, 44)
         self.assertEqual(a._objects, None)
 
@@ -93,5 +93,5 @@ class ObjectsTestCase(unittest.TestCase):
         x.data = a
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

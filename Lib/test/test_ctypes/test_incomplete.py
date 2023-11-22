@@ -12,12 +12,12 @@ class TestSetPointerType(unittest.TestCase):
 
     def test_incomplete_example(self):
         lpcell = POINTER("cell")
+
         class cell(Structure):
-            _fields_ = [("name", c_char_p),
-                        ("next", lpcell)]
+            _fields_ = [("name", c_char_p), ("next", lpcell)]
 
         with warnings.catch_warnings():
-            warnings.simplefilter('ignore', DeprecationWarning)
+            warnings.simplefilter("ignore", DeprecationWarning)
             ctypes.SetPointerType(lpcell, cell)
 
         c1 = cell()
@@ -38,13 +38,13 @@ class TestSetPointerType(unittest.TestCase):
 
     def test_deprecation(self):
         lpcell = POINTER("cell")
+
         class cell(Structure):
-            _fields_ = [("name", c_char_p),
-                        ("next", lpcell)]
+            _fields_ = [("name", c_char_p), ("next", lpcell)]
 
         with self.assertWarns(DeprecationWarning):
             ctypes.SetPointerType(lpcell, cell)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

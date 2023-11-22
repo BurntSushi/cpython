@@ -7,16 +7,17 @@ from typing import NoReturn
 TokenAndCondition = tuple[str, str]
 TokenStack = list[TokenAndCondition]
 
+
 def negate(condition: str) -> str:
     """
     Returns a CPP conditional that is the opposite of the conditional passed in.
     """
-    if condition.startswith('!'):
+    if condition.startswith("!"):
         return condition[1:]
     return "!" + condition
 
 
-is_a_simple_defined = re.compile(r'^defined\s*\(\s*[A-Za-z0-9_]+\s*\)$').match
+is_a_simple_defined = re.compile(r"^defined\s*\(\s*[A-Za-z0-9_]+\s*\)$").match
 
 
 @dc.dataclass(repr=False)
@@ -32,6 +33,7 @@ class Monitor:
 
     Anyway this implementation seems to work well enough for the CPython sources.
     """
+
     filename: str | None = None
     _: dc.KW_ONLY
     verbose: bool = False
@@ -46,7 +48,7 @@ class Monitor:
         parts = (
             str(id(self)),
             f"line={self.line_number}",
-            f"condition={self.condition()!r}"
+            f"condition={self.condition()!r}",
         )
         return f"<clinic.Monitor {' '.join(parts)}>"
 
@@ -63,9 +65,9 @@ class Monitor:
         if self.filename:
             filename = " " + self.filename
         else:
-            filename = ''
+            filename = ""
         print("Error at" + filename, "line", self.line_number, ":")
-        print("   ", ' '.join(str(x) for x in a))
+        print("   ", " ".join(str(x) for x in a))
         sys.exit(-1)
 
     def writeline(self, line: str) -> None:
@@ -84,7 +86,7 @@ class Monitor:
         if not line:
             return
 
-        if line.endswith('\\'):
+        if line.endswith("\\"):
             self.continuation = line[:-1].rstrip() + " "
             return
 
@@ -101,26 +103,26 @@ class Monitor:
         #     ...
         #     */   /* also tricky! */
         if self.in_comment:
-            if '*/' in line:
+            if "*/" in line:
                 # snip out the comment and continue
                 #
                 # GCC allows
                 #    /* comment
                 #    */ #include <stdio.h>
                 # maybe other compilers too?
-                _, _, line = line.partition('*/')
+                _, _, line = line.partition("*/")
                 self.in_comment = False
 
         while True:
-            if '/*' in line:
+            if "/*" in line:
                 if self.in_comment:
                     self.fail("Nested block comment!")
 
-                before, _, remainder = line.partition('/*')
-                comment, comment_ends, after = remainder.partition('*/')
+                before, _, remainder = line.partition("/*")
+                comment, comment_ends, after = remainder.partition("*/")
                 if comment_ends:
                     # snip out the comment
-                    line = before.rstrip() + ' ' + after.lstrip()
+                    line = before.rstrip() + " " + after.lstrip()
                     continue
                 # comment continues to eol
                 self.in_comment = True
@@ -129,11 +131,11 @@ class Monitor:
 
         # we actually have some // comments
         # (but block comments take precedence)
-        before, line_comment, comment = line.partition('//')
+        before, line_comment, comment = line.partition("//")
         if line_comment:
             line = before.rstrip()
 
-        if not line.startswith('#'):
+        if not line.startswith("#"):
             return
 
         line = line[1:].lstrip()
@@ -141,35 +143,39 @@ class Monitor:
 
         fields = line.split()
         token = fields[0].lower()
-        condition = ' '.join(fields[1:]).strip()
+        condition = " ".join(fields[1:]).strip()
 
-        if token in {'if', 'ifdef', 'ifndef', 'elif'}:
+        if token in {"if", "ifdef", "ifndef", "elif"}:
             if not condition:
                 self.fail("Invalid format for #" + token + " line: no argument!")
-            if token in {'if', 'elif'}:
+            if token in {"if", "elif"}:
                 if not is_a_simple_defined(condition):
                     condition = "(" + condition + ")"
-                if token == 'elif':
+                if token == "elif":
                     previous_token, previous_condition = pop_stack()
                     self.stack.append((previous_token, negate(previous_condition)))
             else:
                 fields = condition.split()
                 if len(fields) != 1:
-                    self.fail("Invalid format for #" + token + " line: should be exactly one argument!")
+                    self.fail(
+                        "Invalid format for #"
+                        + token
+                        + " line: should be exactly one argument!"
+                    )
                 symbol = fields[0]
-                condition = 'defined(' + symbol + ')'
-                if token == 'ifndef':
-                    condition = '!' + condition
-                token = 'if'
+                condition = "defined(" + symbol + ")"
+                if token == "ifndef":
+                    condition = "!" + condition
+                token = "if"
 
             self.stack.append((token, condition))
 
-        elif token == 'else':
+        elif token == "else":
             previous_token, previous_condition = pop_stack()
             self.stack.append((previous_token, negate(previous_condition)))
 
-        elif token == 'endif':
-            while pop_stack()[0] != 'if':
+        elif token == "endif":
+            while pop_stack()[0] != "if":
                 pass
 
         else:
@@ -190,5 +196,5 @@ def _main(filenames: list[str] | None = None) -> None:
                 cpp.writeline(line)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     _main()

@@ -8,27 +8,26 @@ from test.support import captured_stdout, captured_stderr, captured_stdin
 
 
 class CommandLineInterface(unittest.TestCase):
-
     def _do_test(self, *args, expect_success=True):
         with (
             captured_stdout() as out,
             captured_stderr() as err,
-            self.assertRaises(SystemExit) as cm
+            self.assertRaises(SystemExit) as cm,
         ):
             cli(args)
         return out.getvalue(), err.getvalue(), cm.exception.code
 
     def expect_success(self, *args):
         out, err, code = self._do_test(*args)
-        self.assertEqual(code, 0,
-                         "\n".join([f"Unexpected failure: {args=}", out, err]))
+        self.assertEqual(code, 0, "\n".join([f"Unexpected failure: {args=}", out, err]))
         self.assertEqual(err, "")
         return out
 
     def expect_failure(self, *args):
         out, err, code = self._do_test(*args, expect_success=False)
-        self.assertNotEqual(code, 0,
-                            "\n".join([f"Unexpected failure: {args=}", out, err]))
+        self.assertNotEqual(
+            code, 0, "\n".join([f"Unexpected failure: {args=}", out, err])
+        )
         self.assertEqual(out, "")
         return err
 
@@ -71,7 +70,7 @@ class InteractiveSession(unittest.TestCase):
             captured_stdin() as stdin,
             captured_stdout() as stdout,
             captured_stderr() as stderr,
-            self.assertRaises(SystemExit) as cm
+            self.assertRaises(SystemExit) as cm,
         ):
             for cmd in commands:
                 stdin.write(cmd + "\n")
@@ -80,8 +79,9 @@ class InteractiveSession(unittest.TestCase):
 
         out = stdout.getvalue()
         err = stderr.getvalue()
-        self.assertEqual(cm.exception.code, 0,
-                         f"Unexpected failure: {args=}\n{out}\n{err}")
+        self.assertEqual(
+            cm.exception.code, 0, f"Unexpected failure: {args=}\n{out}\n{err}"
+        )
         return out, err
 
     def test_interact(self):

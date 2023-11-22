@@ -7,18 +7,29 @@ import _xxinterpchannels as _channels
 # aliases:
 from _xxsubinterpreters import is_shareable
 from _xxinterpchannels import (
-    ChannelError, ChannelNotFoundError, ChannelClosedError,
-    ChannelEmptyError, ChannelNotEmptyError,
+    ChannelError,
+    ChannelNotFoundError,
+    ChannelClosedError,
+    ChannelEmptyError,
+    ChannelNotEmptyError,
 )
 
 
 __all__ = [
-    'Interpreter', 'get_current', 'get_main', 'create', 'list_all',
-    'SendChannel', 'RecvChannel',
-    'create_channel', 'list_all_channels', 'is_shareable',
-    'ChannelError', 'ChannelNotFoundError',
-    'ChannelEmptyError',
-    ]
+    "Interpreter",
+    "get_current",
+    "get_main",
+    "create",
+    "list_all",
+    "SendChannel",
+    "RecvChannel",
+    "create_channel",
+    "list_all_channels",
+    "is_shareable",
+    "ChannelError",
+    "ChannelNotFoundError",
+    "ChannelEmptyError",
+]
 
 
 def create(*, isolated=True):
@@ -49,13 +60,13 @@ class Interpreter:
 
     def __init__(self, id, *, isolated=None):
         if not isinstance(id, (int, _interpreters.InterpreterID)):
-            raise TypeError(f'id must be an int, got {id!r}')
+            raise TypeError(f"id must be an int, got {id!r}")
         self._id = id
         self._isolated = isolated
 
     def __repr__(self):
         data = dict(id=int(self._id), isolated=self._isolated)
-        kwargs = (f'{k}={v!r}' for k, v in data.items())
+        kwargs = (f"{k}={v!r}" for k, v in data.items())
         return f'{type(self).__name__}({", ".join(kwargs)})'
 
     def __hash__(self):
@@ -125,8 +136,7 @@ def create_channel():
 
 def list_all_channels():
     """Return a list of (recv, send) for all open channels."""
-    return [(RecvChannel(cid), SendChannel(cid))
-            for cid in _channels.list_all()]
+    return [(RecvChannel(cid), SendChannel(cid)) for cid in _channels.list_all()]
 
 
 class _ChannelEnd:
@@ -135,16 +145,16 @@ class _ChannelEnd:
     _end = None
 
     def __init__(self, cid):
-        if self._end == 'send':
+        if self._end == "send":
             cid = _channels._channel_id(cid, send=True, force=True)
-        elif self._end == 'recv':
+        elif self._end == "recv":
             cid = _channels._channel_id(cid, recv=True, force=True)
         else:
             raise NotImplementedError(self._end)
         self._id = cid
 
     def __repr__(self):
-        return f'{type(self).__name__}(id={int(self._id)})'
+        return f"{type(self).__name__}(id={int(self._id)})"
 
     def __hash__(self):
         return hash(self._id)
@@ -176,12 +186,15 @@ _NOT_SET = object()
 class RecvChannel(_ChannelEnd):
     """The receiving end of a cross-interpreter channel."""
 
-    _end = 'recv'
+    _end = "recv"
 
-    def recv(self, timeout=None, *,
-             _sentinel=object(),
-             _delay=10 / 1000,  # 10 milliseconds
-             ):
+    def recv(
+        self,
+        timeout=None,
+        *,
+        _sentinel=object(),
+        _delay=10 / 1000,  # 10 milliseconds
+    ):
         """Return the next object from the channel.
 
         This blocks until an object has been sent, if none have been
@@ -190,7 +203,7 @@ class RecvChannel(_ChannelEnd):
         if timeout is not None:
             timeout = int(timeout)
             if timeout < 0:
-                raise ValueError(f'timeout value must be non-negative')
+                raise ValueError(f"timeout value must be non-negative")
             end = time.time() + timeout
         obj = _channels.recv(self._id, _sentinel)
         while obj is _sentinel:
@@ -219,7 +232,7 @@ class RecvChannel(_ChannelEnd):
 class SendChannel(_ChannelEnd):
     """The sending end of a cross-interpreter channel."""
 
-    _end = 'send'
+    _end = "send"
 
     @property
     def is_closed(self):

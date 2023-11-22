@@ -3,11 +3,13 @@ import unittest
 from test.support import import_helper
 
 # Skip this test if the _testcapi or _testinternalcapi modules aren't available.
-_testcapi = import_helper.import_module('_testcapi')
-_testinternalcapi = import_helper.import_module('_testinternalcapi')
+_testcapi = import_helper.import_module("_testcapi")
+_testinternalcapi = import_helper.import_module("_testinternalcapi")
+
 
 class set_subclass(set):
     pass
+
 
 class frozenset_subclass(frozenset):
     pass
@@ -90,9 +92,9 @@ class TestSetCAPI(BaseSetTests, unittest.TestCase):
         self.assertEqual(set_new(), set())
         self.assertEqual(set_new((1, 1, 2)), {1, 2})
         self.assertEqual(set_new([1, 1, 2]), {1, 2})
-        with self.assertRaisesRegex(TypeError, 'object is not iterable'):
+        with self.assertRaisesRegex(TypeError, "object is not iterable"):
             set_new(object())
-        with self.assertRaisesRegex(TypeError, 'object is not iterable'):
+        with self.assertRaisesRegex(TypeError, "object is not iterable"):
             set_new(1)
         with self.assertRaisesRegex(TypeError, "unhashable type: 'dict'"):
             set_new((1, {}))
@@ -103,9 +105,9 @@ class TestSetCAPI(BaseSetTests, unittest.TestCase):
         self.assertEqual(frozenset_new(), frozenset())
         self.assertEqual(frozenset_new((1, 1, 2)), frozenset({1, 2}))
         self.assertEqual(frozenset_new([1, 1, 2]), frozenset({1, 2}))
-        with self.assertRaisesRegex(TypeError, 'object is not iterable'):
+        with self.assertRaisesRegex(TypeError, "object is not iterable"):
             frozenset_new(object())
-        with self.assertRaisesRegex(TypeError, 'object is not iterable'):
+        with self.assertRaisesRegex(TypeError, "object is not iterable"):
             frozenset_new(1)
         with self.assertRaisesRegex(TypeError, "unhashable type: 'dict'"):
             frozenset_new((1, {}))
@@ -139,7 +141,7 @@ class TestSetCAPI(BaseSetTests, unittest.TestCase):
             with self.subTest(cls=cls):
                 instance = cls((1, 2))
                 self.assertTrue(contains(instance, 1))
-                self.assertFalse(contains(instance, 'missing'))
+                self.assertFalse(contains(instance, "missing"))
                 with self.assertRaisesRegex(TypeError, "unhashable type: 'list'"):
                     contains(instance, [])
         # CRASHES: contains(instance, NULL)
@@ -222,23 +224,29 @@ class TestInternalCAPI(BaseSetTests, unittest.TestCase):
     def test_set_update(self):
         update = _testinternalcapi.set_update
         for cls in (set, set_subclass):
-            for it in ('ab', ('a', 'b'), ['a', 'b'],
-                       set('ab'), set_subclass('ab'),
-                       frozenset('ab'), frozenset_subclass('ab')):
+            for it in (
+                "ab",
+                ("a", "b"),
+                ["a", "b"],
+                set("ab"),
+                set_subclass("ab"),
+                frozenset("ab"),
+                frozenset_subclass("ab"),
+            ):
                 with self.subTest(cls=cls, it=it):
                     instance = cls()
                     self.assertEqual(update(instance, it), 0)
-                    self.assertEqual(instance, {'a', 'b'})
+                    self.assertEqual(instance, {"a", "b"})
                     instance = cls(it)
                     self.assertEqual(update(instance, it), 0)
-                    self.assertEqual(instance, {'a', 'b'})
-            with self.assertRaisesRegex(TypeError, 'object is not iterable'):
+                    self.assertEqual(instance, {"a", "b"})
+            with self.assertRaisesRegex(TypeError, "object is not iterable"):
                 update(cls(), 1)
             with self.assertRaisesRegex(TypeError, "unhashable type: 'dict'"):
                 update(cls(), [{}])
         with self.assertRaises(SystemError):
-            update(object(), 'ab')
-        self.assertImmutable(update, 'ab')
+            update(object(), "ab")
+        self.assertImmutable(update, "ab")
         # CRASHES: update(NULL, object())
         # CRASHES: update(instance, NULL)
         # CRASHES: update(NULL, NULL)
@@ -247,7 +255,7 @@ class TestInternalCAPI(BaseSetTests, unittest.TestCase):
         set_next = _testinternalcapi.set_next_entry
         for cls in (set, set_subclass, frozenset, frozenset_subclass):
             with self.subTest(cls=cls):
-                instance = cls('abc')
+                instance = cls("abc")
                 pos = 0
                 items = []
                 while True:

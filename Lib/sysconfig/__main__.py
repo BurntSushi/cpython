@@ -36,19 +36,20 @@ def _parse_makefile(filename, vars=None, keep_unresolved=True):
     done = {}
     notdone = {}
 
-    with open(filename, encoding=sys.getfilesystemencoding(),
-              errors="surrogateescape") as f:
+    with open(
+        filename, encoding=sys.getfilesystemencoding(), errors="surrogateescape"
+    ) as f:
         lines = f.readlines()
 
     for line in lines:
-        if line.startswith('#') or line.strip() == '':
+        if line.startswith("#") or line.strip() == "":
             continue
         m = re.match(_variable_rx, line)
         if m:
             n, v = m.group(1, 2)
             v = v.strip()
             # `$$' is a literal `$' in make
-            tmpv = v.replace('$$', '')
+            tmpv = v.replace("$$", "")
 
             if "$" in tmpv:
                 notdone[n] = v
@@ -60,7 +61,7 @@ def _parse_makefile(filename, vars=None, keep_unresolved=True):
                     v = int(v)
                 except ValueError:
                     # insert literal `$'
-                    done[n] = v.replace('$$', '$')
+                    done[n] = v.replace("$$", "$")
                 else:
                     done[n] = v
 
@@ -71,7 +72,7 @@ def _parse_makefile(filename, vars=None, keep_unresolved=True):
     # be made available without that prefix through sysconfig.
     # Special care is needed to ensure that variable expansion works, even
     # if the expansion uses the name without a prefix.
-    renamed_variables = ('CFLAGS', 'LDFLAGS', 'CPPFLAGS')
+    renamed_variables = ("CFLAGS", "LDFLAGS", "CPPFLAGS")
 
     while len(variables) > 0:
         for name in tuple(variables):
@@ -95,22 +96,21 @@ def _parse_makefile(filename, vars=None, keep_unresolved=True):
                     item = os.environ[n]
 
                 elif n in renamed_variables:
-                    if (name.startswith('PY_') and
-                        name[3:] in renamed_variables):
+                    if name.startswith("PY_") and name[3:] in renamed_variables:
                         item = ""
 
-                    elif 'PY_' + n in notdone:
+                    elif "PY_" + n in notdone:
                         found = False
 
                     else:
-                        item = str(done['PY_' + n])
+                        item = str(done["PY_" + n])
 
                 else:
                     done[n] = item = ""
 
                 if found:
-                    after = value[m.end():]
-                    value = value[:m.start()] + item + after
+                    after = value[m.end() :]
+                    value = value[: m.start()] + item + after
                     if "$" in after:
                         notdone[name] = value
                     else:
@@ -124,9 +124,7 @@ def _parse_makefile(filename, vars=None, keep_unresolved=True):
                             done[name] = value
                         variables.remove(name)
 
-                        if name.startswith('PY_') \
-                        and name[3:] in renamed_variables:
-
+                        if name.startswith("PY_") and name[3:] in renamed_variables:
                             name = name[3:]
                             if name not in done:
                                 done[name] = value
@@ -151,10 +149,10 @@ def _parse_makefile(filename, vars=None, keep_unresolved=True):
 
 
 def _print_config_dict(d, stream):
-    print ("{", file=stream)
+    print("{", file=stream)
     for k, v in sorted(d.items()):
         print(f"    {k!r}: {v!r},", file=stream)
-    print ("}", file=stream)
+    print("}", file=stream)
 
 
 def _generate_posix_vars():
@@ -183,7 +181,7 @@ def _generate_posix_vars():
     # -- these paths are relative to the Python source, but when installed
     # the scripts are in another directory.
     if _PYTHON_BUILD:
-        vars['BLDSHARED'] = vars['LDSHARED']
+        vars["BLDSHARED"] = vars["LDSHARED"]
 
     # There's a chicken-and-egg situation on OS X with regards to the
     # _sysconfigdata module after the changes introduced by #15298:
@@ -197,51 +195,53 @@ def _generate_posix_vars():
     # This is more than sufficient for ensuring the subsequent call to
     # get_platform() succeeds.
     name = _get_sysconfigdata_name()
-    if 'darwin' in sys.platform:
+    if "darwin" in sys.platform:
         import types
+
         module = types.ModuleType(name)
         module.build_time_vars = vars
         sys.modules[name] = module
 
-    pybuilddir = f'build/lib.{get_platform()}-{get_python_version()}'
+    pybuilddir = f"build/lib.{get_platform()}-{get_python_version()}"
     if hasattr(sys, "gettotalrefcount"):
-        pybuilddir += '-pydebug'
+        pybuilddir += "-pydebug"
     os.makedirs(pybuilddir, exist_ok=True)
-    destfile = os.path.join(pybuilddir, name + '.py')
+    destfile = os.path.join(pybuilddir, name + ".py")
 
-    with open(destfile, 'w', encoding='utf8') as f:
-        f.write('# system configuration generated and used by'
-                ' the sysconfig module\n')
-        f.write('build_time_vars = ')
+    with open(destfile, "w", encoding="utf8") as f:
+        f.write(
+            "# system configuration generated and used by" " the sysconfig module\n"
+        )
+        f.write("build_time_vars = ")
         _print_config_dict(vars, stream=f)
 
     # Create file used for sys.path fixup -- see Modules/getpath.c
-    with open('pybuilddir.txt', 'w', encoding='utf8') as f:
+    with open("pybuilddir.txt", "w", encoding="utf8") as f:
         f.write(pybuilddir)
 
 
 def _print_dict(title, data):
     for index, (key, value) in enumerate(sorted(data.items())):
         if index == 0:
-            print(f'{title}: ')
+            print(f"{title}: ")
         print(f'\t{key} = "{value}"')
 
 
 def _main():
     """Display all information sysconfig detains."""
-    if '--generate-posix-vars' in sys.argv:
+    if "--generate-posix-vars" in sys.argv:
         _generate_posix_vars()
         return
     print(f'Platform: "{get_platform()}"')
     print(f'Python version: "{get_python_version()}"')
     print(f'Current installation scheme: "{get_default_scheme()}"')
     print()
-    _print_dict('Paths', get_paths())
+    _print_dict("Paths", get_paths())
     print()
-    _print_dict('Variables', get_config_vars())
+    _print_dict("Variables", get_config_vars())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         _main()
     except BrokenPipeError:

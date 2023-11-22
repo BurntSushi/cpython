@@ -10,33 +10,39 @@ import codecs
 
 ### Codec APIs
 
-class Codec(codecs.Codec):
 
+class Codec(codecs.Codec):
     # Note: Binding these as C functions will result in the class not
     # converting them to methods. This is intended.
     encode = codecs.raw_unicode_escape_encode
     decode = codecs.raw_unicode_escape_decode
 
+
 class IncrementalEncoder(codecs.IncrementalEncoder):
     def encode(self, input, final=False):
         return codecs.raw_unicode_escape_encode(input, self.errors)[0]
+
 
 class IncrementalDecoder(codecs.BufferedIncrementalDecoder):
     def _buffer_decode(self, input, errors, final):
         return codecs.raw_unicode_escape_decode(input, errors, final)
 
-class StreamWriter(Codec,codecs.StreamWriter):
+
+class StreamWriter(Codec, codecs.StreamWriter):
     pass
 
-class StreamReader(Codec,codecs.StreamReader):
-    def decode(self, input, errors='strict'):
+
+class StreamReader(Codec, codecs.StreamReader):
+    def decode(self, input, errors="strict"):
         return codecs.raw_unicode_escape_decode(input, errors, False)
+
 
 ### encodings module API
 
+
 def getregentry():
     return codecs.CodecInfo(
-        name='raw-unicode-escape',
+        name="raw-unicode-escape",
         encode=Codec.encode,
         decode=Codec.decode,
         incrementalencoder=IncrementalEncoder,

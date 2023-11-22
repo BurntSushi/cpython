@@ -1,15 +1,44 @@
 import unittest
-from ctypes import (c_byte, c_short, c_int, c_long, c_longlong,
-                    c_ubyte, c_ushort, c_uint, c_ulong, c_ulonglong,
-                    c_float, c_double, c_longdouble, c_bool, c_char)
+from ctypes import (
+    c_byte,
+    c_short,
+    c_int,
+    c_long,
+    c_longlong,
+    c_ubyte,
+    c_ushort,
+    c_uint,
+    c_ulong,
+    c_ulonglong,
+    c_float,
+    c_double,
+    c_longdouble,
+    c_bool,
+    c_char,
+)
 
 
 subclasses = []
-for base in [c_byte, c_short, c_int, c_long, c_longlong,
-        c_ubyte, c_ushort, c_uint, c_ulong, c_ulonglong,
-        c_float, c_double, c_longdouble, c_bool]:
+for base in [
+    c_byte,
+    c_short,
+    c_int,
+    c_long,
+    c_longlong,
+    c_ubyte,
+    c_ushort,
+    c_uint,
+    c_ulong,
+    c_ulonglong,
+    c_float,
+    c_double,
+    c_longdouble,
+    c_bool,
+]:
+
     class X(base):
         pass
+
     subclasses.append(X)
 
 
@@ -26,8 +55,8 @@ class ReprTest(unittest.TestCase):
             self.assertEqual("<X object at", repr(typ(42))[:12])
 
     def test_char(self):
-        self.assertEqual("c_char(b'x')", repr(c_char(b'x')))
-        self.assertEqual("<X object at", repr(X(b'x'))[:12])
+        self.assertEqual("c_char(b'x')", repr(c_char(b"x")))
+        self.assertEqual("<X object at", repr(X(b"x"))[:12])
 
 
 if __name__ == "__main__":

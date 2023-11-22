@@ -34,16 +34,19 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
+
 class MyCursor(sqlite.Cursor):
     def __init__(self, *args, **kwargs):
         sqlite.Cursor.__init__(self, *args, **kwargs)
         self.row_factory = dict_factory
+
 
 class ConnectionFactoryTests(unittest.TestCase):
     def test_connection_factories(self):
         class DefectFactory(sqlite.Connection):
             def __init__(self, *args, **kwargs):
                 return None
+
         class OkFactory(sqlite.Connection):
             def __init__(self, *args, **kwargs):
                 sqlite.Connection.__init__(self, *args, **kwargs)
@@ -86,7 +89,6 @@ class ConnectionFactoryTests(unittest.TestCase):
 
 
 class CursorFactoryTests(MemoryDatabaseMixin, unittest.TestCase):
-
     def test_is_instance(self):
         cur = self.con.cursor()
         self.assertIsInstance(cur, sqlite.Cursor)
@@ -105,7 +107,6 @@ class CursorFactoryTests(MemoryDatabaseMixin, unittest.TestCase):
 
 
 class RowFactoryTestsBackwardsCompat(MemoryDatabaseMixin, unittest.TestCase):
-
     def test_is_produced_by_factory(self):
         cur = self.con.cursor(factory=MyCursor)
         cur.execute("select 4+5 as foo")
@@ -115,7 +116,6 @@ class RowFactoryTestsBackwardsCompat(MemoryDatabaseMixin, unittest.TestCase):
 
 
 class RowFactoryTests(MemoryDatabaseMixin, unittest.TestCase):
-
     def setUp(self):
         super().setUp()
         self.con.row_factory = sqlite.Row
@@ -141,11 +141,11 @@ class RowFactoryTests(MemoryDatabaseMixin, unittest.TestCase):
         self.assertEqual(row[-2], 1, "by index: wrong result for column -2")
 
         with self.assertRaises(IndexError):
-            row['c']
+            row["c"]
         with self.assertRaises(IndexError):
-            row['a_\x11']
+            row["a_\x11"]
         with self.assertRaises(IndexError):
-            row['a\x7f1']
+            row["a\x7f1"]
         with self.assertRaises(IndexError):
             row[2]
         with self.assertRaises(IndexError):
@@ -159,9 +159,9 @@ class RowFactoryTests(MemoryDatabaseMixin, unittest.TestCase):
         row = self.con.execute("select 1 as \xff").fetchone()
         self.assertEqual(row["\xff"], 1)
         with self.assertRaises(IndexError):
-            row['\u0178']
+            row["\u0178"]
         with self.assertRaises(IndexError):
-            row['\xdf']
+            row["\xdf"]
 
     def test_sqlite_row_slice(self):
         # A sqlite.Row can be sliced like a list.
@@ -196,7 +196,7 @@ class RowFactoryTests(MemoryDatabaseMixin, unittest.TestCase):
         # Checks if the row object can be converted to a tuple.
         row = self.con.execute("select 1 as a, 2 as b").fetchone()
         t = tuple(row)
-        self.assertEqual(t, (row['a'], row['b']))
+        self.assertEqual(t, (row["a"], row["b"]))
 
     def test_sqlite_row_as_dict(self):
         # Checks if the row object can be correctly converted to a dictionary.
@@ -249,7 +249,7 @@ class RowFactoryTests(MemoryDatabaseMixin, unittest.TestCase):
     def test_sqlite_row_keys(self):
         # Checks if the row object can return a list of columns as strings.
         row = self.con.execute("select 1 as a, 2 as b").fetchone()
-        self.assertEqual(row.keys(), ['a', 'b'])
+        self.assertEqual(row.keys(), ["a", "b"])
 
     def test_fake_cursor_class(self):
         # Issue #24257: Incorrect use of PyObject_IsInstance() caused
@@ -257,12 +257,12 @@ class RowFactoryTests(MemoryDatabaseMixin, unittest.TestCase):
         # Issue #27861: Also applies for cursor factory.
         class FakeCursor(str):
             __class__ = sqlite.Cursor
+
         self.assertRaises(TypeError, self.con.cursor, FakeCursor)
         self.assertRaises(TypeError, sqlite.Row, FakeCursor(), ())
 
 
 class TextFactoryTests(MemoryDatabaseMixin, unittest.TestCase):
-
     def test_unicode(self):
         austria = "Österreich"
         row = self.con.execute("select ?", (austria,)).fetchone()
@@ -273,7 +273,9 @@ class TextFactoryTests(MemoryDatabaseMixin, unittest.TestCase):
         austria = "Österreich"
         row = self.con.execute("select ?", (austria,)).fetchone()
         self.assertEqual(type(row[0]), bytes, "type of row[0] must be bytes")
-        self.assertEqual(row[0], austria.encode("utf-8"), "column must equal original data in UTF-8")
+        self.assertEqual(
+            row[0], austria.encode("utf-8"), "column must equal original data in UTF-8"
+        )
 
     def test_custom(self):
         self.con.text_factory = lambda x: str(x, "utf-8", "ignore")
@@ -284,7 +286,6 @@ class TextFactoryTests(MemoryDatabaseMixin, unittest.TestCase):
 
 
 class TextFactoryTestsWithEmbeddedZeroBytes(unittest.TestCase):
-
     def setUp(self):
         self.con = sqlite.connect(":memory:")
         self.con.execute("create table test (value text)")

@@ -2,8 +2,17 @@ import _ctypes
 import sys
 import unittest
 from test import support
-from ctypes import (pythonapi, POINTER, create_string_buffer, sizeof,
-                    py_object, c_char_p, c_char, c_long, c_size_t)
+from ctypes import (
+    pythonapi,
+    POINTER,
+    create_string_buffer,
+    sizeof,
+    py_object,
+    c_char_p,
+    c_char,
+    c_long,
+    c_size_t,
+)
 
 
 class PythonAPITestCase(unittest.TestCase):
@@ -65,7 +74,9 @@ class PythonAPITestCase(unittest.TestCase):
         PyOS_snprintf(buf, sizeof(buf), b"Hello from %s", b"ctypes")
         self.assertEqual(buf.value, b"Hello from ctypes")
 
-        PyOS_snprintf(buf, sizeof(buf), b"Hello from %s (%d, %d, %d)", b"ctypes", 1, 2, 3)
+        PyOS_snprintf(
+            buf, sizeof(buf), b"Hello from %s (%d, %d, %d)", b"ctypes", 1, 2, 3
+        )
         self.assertEqual(buf.value, b"Hello from ctypes (1, 2, 3)")
 
         # not enough arguments

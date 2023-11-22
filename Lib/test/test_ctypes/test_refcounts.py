@@ -38,6 +38,7 @@ class RefcountTestCase(unittest.TestCase):
     def test_refcount(self):
         def func(*args):
             pass
+
         # this is the standard refcount for func
         self.assertEqual(sys.getrefcount(func), 2)
 
@@ -55,6 +56,7 @@ class RefcountTestCase(unittest.TestCase):
 
         class X(ctypes.Structure):
             _fields_ = [("a", OtherCallback)]
+
         x = X()
         x.a = OtherCallback(func)
 
@@ -85,8 +87,10 @@ class RefcountTestCase(unittest.TestCase):
 class AnotherLeak(unittest.TestCase):
     def test_callback(self):
         proto = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_int, ctypes.c_int)
+
         def func(a, b):
             return a * b * 2
+
         f = proto(func)
 
         a = sys.getrefcount(ctypes.c_int)
@@ -100,6 +104,7 @@ class AnotherLeak(unittest.TestCase):
 
         for FUNCTYPE in (ctypes.CFUNCTYPE, ctypes.PYFUNCTYPE):
             with self.subTest(FUNCTYPE=FUNCTYPE):
+
                 @FUNCTYPE(ctypes.py_object)
                 def func():
                     return None
@@ -109,5 +114,5 @@ class AnotherLeak(unittest.TestCase):
                     func()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

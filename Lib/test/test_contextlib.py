@@ -15,7 +15,6 @@ import weakref
 
 
 class TestAbstractContextManager(unittest.TestCase):
-
     def test_enter(self):
         class DefaultEnter(AbstractContextManager):
             def __exit__(self, *args):
@@ -45,6 +44,7 @@ class TestAbstractContextManager(unittest.TestCase):
         class ManagerFromScratch:
             def __enter__(self):
                 return self
+
             def __exit__(self, exc_type, exc_value, traceback):
                 return None
 
@@ -68,14 +68,15 @@ class TestAbstractContextManager(unittest.TestCase):
 
 
 class ContextManagerTestCase(unittest.TestCase):
-
     def test_contextmanager_plain(self):
         state = []
+
         @contextmanager
         def woohoo():
             state.append(1)
             yield 42
             state.append(999)
+
         with woohoo() as x:
             self.assertEqual(state, [1])
             self.assertEqual(x, 42)
@@ -84,6 +85,7 @@ class ContextManagerTestCase(unittest.TestCase):
 
     def test_contextmanager_finally(self):
         state = []
+
         @contextmanager
         def woohoo():
             state.append(1)
@@ -91,6 +93,7 @@ class ContextManagerTestCase(unittest.TestCase):
                 yield 42
             finally:
                 state.append(999)
+
         with self.assertRaises(ZeroDivisionError):
             with woohoo() as x:
                 self.assertEqual(state, [1])
@@ -106,13 +109,13 @@ class ContextManagerTestCase(unittest.TestCase):
 
         try:
             with f():
-                1/0
+                1 / 0
         except ZeroDivisionError as e:
             frames = traceback.extract_tb(e.__traceback__)
 
         self.assertEqual(len(frames), 1)
-        self.assertEqual(frames[0].name, 'test_contextmanager_traceback')
-        self.assertEqual(frames[0].line, '1/0')
+        self.assertEqual(frames[0].name, "test_contextmanager_traceback")
+        self.assertEqual(frames[0].line, "1/0")
 
         # Repeat with RuntimeError (which goes through a different code path)
         class RuntimeErrorSubclass(RuntimeError):
@@ -125,15 +128,15 @@ class ContextManagerTestCase(unittest.TestCase):
             frames = traceback.extract_tb(e.__traceback__)
 
         self.assertEqual(len(frames), 1)
-        self.assertEqual(frames[0].name, 'test_contextmanager_traceback')
-        self.assertEqual(frames[0].line, 'raise RuntimeErrorSubclass(42)')
+        self.assertEqual(frames[0].name, "test_contextmanager_traceback")
+        self.assertEqual(frames[0].line, "raise RuntimeErrorSubclass(42)")
 
         class StopIterationSubclass(StopIteration):
             pass
 
         for stop_exc in (
-            StopIteration('spam'),
-            StopIterationSubclass('spam'),
+            StopIteration("spam"),
+            StopIterationSubclass("spam"),
         ):
             with self.subTest(type=type(stop_exc)):
                 try:
@@ -143,16 +146,17 @@ class ContextManagerTestCase(unittest.TestCase):
                     self.assertIs(e, stop_exc)
                     frames = traceback.extract_tb(e.__traceback__)
                 else:
-                    self.fail(f'{stop_exc} was suppressed')
+                    self.fail(f"{stop_exc} was suppressed")
 
                 self.assertEqual(len(frames), 1)
-                self.assertEqual(frames[0].name, 'test_contextmanager_traceback')
-                self.assertEqual(frames[0].line, 'raise stop_exc')
+                self.assertEqual(frames[0].name, "test_contextmanager_traceback")
+                self.assertEqual(frames[0].line, "raise stop_exc")
 
     def test_contextmanager_no_reraise(self):
         @contextmanager
         def whee():
             yield
+
         ctx = whee()
         ctx.__enter__()
         # Calling __exit__ should not result in an exception
@@ -165,6 +169,7 @@ class ContextManagerTestCase(unittest.TestCase):
                 yield
             except:
                 yield
+
         ctx = whoo()
         ctx.__enter__()
         with self.assertRaises(RuntimeError):
@@ -178,6 +183,7 @@ class ContextManagerTestCase(unittest.TestCase):
         def whoo():
             if False:
                 yield
+
         ctx = whoo()
         with self.assertRaises(RuntimeError):
             ctx.__enter__()
@@ -187,6 +193,7 @@ class ContextManagerTestCase(unittest.TestCase):
         def whoo():
             yield
             yield
+
         ctx = whoo()
         ctx.__enter__()
         with self.assertRaises(RuntimeError):
@@ -210,6 +217,7 @@ class ContextManagerTestCase(unittest.TestCase):
 
     def test_contextmanager_except(self):
         state = []
+
         @contextmanager
         def woohoo():
             state.append(1)
@@ -218,6 +226,7 @@ class ContextManagerTestCase(unittest.TestCase):
             except ZeroDivisionError as e:
                 state.append(e.args[0])
                 self.assertEqual(state, [1, 42, 999])
+
         with woohoo() as x:
             self.assertEqual(state, [1])
             self.assertEqual(x, 42)
@@ -233,7 +242,7 @@ class ContextManagerTestCase(unittest.TestCase):
         class StopIterationSubclass(StopIteration):
             pass
 
-        for stop_exc in (StopIteration('spam'), StopIterationSubclass('spam')):
+        for stop_exc in (StopIteration("spam"), StopIterationSubclass("spam")):
             with self.subTest(type=type(stop_exc)):
                 try:
                     with woohoo():
@@ -241,7 +250,7 @@ class ContextManagerTestCase(unittest.TestCase):
                 except Exception as ex:
                     self.assertIs(ex, stop_exc)
                 else:
-                    self.fail(f'{stop_exc} was suppressed')
+                    self.fail(f"{stop_exc} was suppressed")
 
     def test_contextmanager_except_pep479(self):
         code = """\
@@ -253,16 +262,16 @@ def woohoo():
 """
         locals = {}
         exec(code, locals, locals)
-        woohoo = locals['woohoo']
+        woohoo = locals["woohoo"]
 
-        stop_exc = StopIteration('spam')
+        stop_exc = StopIteration("spam")
         try:
             with woohoo():
                 raise stop_exc
         except Exception as ex:
             self.assertIs(ex, stop_exc)
         else:
-            self.fail('StopIteration was suppressed')
+            self.fail("StopIteration was suppressed")
 
     def test_contextmanager_do_not_unchain_non_stopiteration_exceptions(self):
         @contextmanager
@@ -270,21 +279,22 @@ def woohoo():
             try:
                 yield
             except Exception as exc:
-                raise RuntimeError('issue29692:Chained') from exc
+                raise RuntimeError("issue29692:Chained") from exc
+
         try:
             with test_issue29692():
                 raise ZeroDivisionError
         except Exception as ex:
             self.assertIs(type(ex), RuntimeError)
-            self.assertEqual(ex.args[0], 'issue29692:Chained')
+            self.assertEqual(ex.args[0], "issue29692:Chained")
             self.assertIsInstance(ex.__cause__, ZeroDivisionError)
 
         try:
             with test_issue29692():
-                raise StopIteration('issue29692:Unchained')
+                raise StopIteration("issue29692:Unchained")
         except Exception as ex:
             self.assertIs(type(ex), StopIteration)
-            self.assertEqual(ex.args[0], 'issue29692:Unchained')
+            self.assertEqual(ex.args[0], "issue29692:Unchained")
             self.assertIsNone(ex.__cause__)
 
     def test_contextmanager_wrap_runtimeerror(self):
@@ -293,7 +303,7 @@ def woohoo():
             try:
                 yield
             except Exception as exc:
-                raise RuntimeError(f'caught {exc}') from exc
+                raise RuntimeError(f"caught {exc}") from exc
 
         with self.assertRaises(RuntimeError):
             with woohoo():
@@ -309,21 +319,24 @@ def woohoo():
     def _create_contextmanager_attribs(self):
         def attribs(**kw):
             def decorate(func):
-                for k,v in kw.items():
-                    setattr(func,k,v)
+                for k, v in kw.items():
+                    setattr(func, k, v)
                 return func
+
             return decorate
+
         @contextmanager
-        @attribs(foo='bar')
+        @attribs(foo="bar")
         def baz(spam):
             """Whee!"""
             yield
+
         return baz
 
     def test_contextmanager_attribs(self):
         baz = self._create_contextmanager_attribs()
-        self.assertEqual(baz.__name__,'baz')
-        self.assertEqual(baz.foo, 'bar')
+        self.assertEqual(baz.__name__, "baz")
+        self.assertEqual(baz.foo, "bar")
 
     @support.requires_docstrings
     def test_contextmanager_doc_attrib(self):
@@ -340,6 +353,7 @@ def woohoo():
         @contextmanager
         def woohoo(self, func, args, kwds):
             yield (self, func, args, kwds)
+
         with woohoo(self=11, func=22, args=33, kwds=44) as target:
             self.assertEqual(target, (11, 22, 33, 44))
 
@@ -375,6 +389,7 @@ def woohoo():
     def test_recursive(self):
         depth = 0
         ncols = 0
+
         @contextmanager
         def woohoo():
             nonlocal ncols
@@ -397,7 +412,6 @@ def woohoo():
 
 
 class ClosingTestCase(unittest.TestCase):
-
     @support.requires_docstrings
     def test_instance_docs(self):
         # Issue 19330: ensure context manager instances have good docstrings
@@ -407,9 +421,11 @@ class ClosingTestCase(unittest.TestCase):
 
     def test_closing(self):
         state = []
+
         class C:
             def close(self):
                 state.append(1)
+
         x = C()
         self.assertEqual(state, [])
         with closing(x) as y:
@@ -418,9 +434,11 @@ class ClosingTestCase(unittest.TestCase):
 
     def test_closing_error(self):
         state = []
+
         class C:
             def close(self):
                 state.append(1)
+
         x = C()
         self.assertEqual(state, [])
         with self.assertRaises(ZeroDivisionError):
@@ -434,13 +452,13 @@ class NullcontextTestCase(unittest.TestCase):
     def test_nullcontext(self):
         class C:
             pass
+
         c = C()
         with nullcontext(c) as c_in:
             self.assertIs(c_in, c)
 
 
 class FileContextTestCase(unittest.TestCase):
-
     def testWithOpen(self):
         tfn = tempfile.mktemp()
         try:
@@ -459,8 +477,8 @@ class FileContextTestCase(unittest.TestCase):
         finally:
             os_helper.unlink(tfn)
 
-class LockContextTestCase(unittest.TestCase):
 
+class LockContextTestCase(unittest.TestCase):
     def boilerPlate(self, lock, locked):
         self.assertFalse(locked())
         with lock:
@@ -482,33 +500,40 @@ class LockContextTestCase(unittest.TestCase):
 
     def testWithCondition(self):
         lock = threading.Condition()
+
         def locked():
             return lock._is_owned()
+
         self.boilerPlate(lock, locked)
 
     def testWithSemaphore(self):
         lock = threading.Semaphore()
+
         def locked():
             if lock.acquire(False):
                 lock.release()
                 return False
             else:
                 return True
+
         self.boilerPlate(lock, locked)
 
     def testWithBoundedSemaphore(self):
         lock = threading.BoundedSemaphore()
+
         def locked():
             if lock.acquire(False):
                 lock.release()
                 return False
             else:
                 return True
+
         self.boilerPlate(lock, locked)
 
 
 class mycontext(ContextDecorator):
     """Example decoration-compatible context manager for testing"""
+
     started = False
     exc = None
     catch = False
@@ -523,7 +548,6 @@ class mycontext(ContextDecorator):
 
 
 class TestContextDecorator(unittest.TestCase):
-
     @support.requires_docstrings
     def test_instance_docs(self):
         # Issue 19330: ensure context manager instances have good docstrings
@@ -539,23 +563,21 @@ class TestContextDecorator(unittest.TestCase):
 
         self.assertEqual(context.exc, (None, None, None))
 
-
     def test_contextdecorator_with_exception(self):
         context = mycontext()
 
-        with self.assertRaisesRegex(NameError, 'foo'):
+        with self.assertRaisesRegex(NameError, "foo"):
             with context:
-                raise NameError('foo')
+                raise NameError("foo")
         self.assertIsNotNone(context.exc)
         self.assertIs(context.exc[0], NameError)
 
         context = mycontext()
         context.catch = True
         with context:
-            raise NameError('foo')
+            raise NameError("foo")
         self.assertIsNotNone(context.exc)
         self.assertIs(context.exc[0], NameError)
-
 
     def test_decorator(self):
         context = mycontext()
@@ -564,9 +586,9 @@ class TestContextDecorator(unittest.TestCase):
         def test():
             self.assertIsNone(context.exc)
             self.assertTrue(context.started)
+
         test()
         self.assertEqual(context.exc, (None, None, None))
-
 
     def test_decorator_with_exception(self):
         context = mycontext()
@@ -575,19 +597,17 @@ class TestContextDecorator(unittest.TestCase):
         def test():
             self.assertIsNone(context.exc)
             self.assertTrue(context.started)
-            raise NameError('foo')
+            raise NameError("foo")
 
-        with self.assertRaisesRegex(NameError, 'foo'):
+        with self.assertRaisesRegex(NameError, "foo"):
             test()
         self.assertIsNotNone(context.exc)
         self.assertIs(context.exc[0], NameError)
-
 
     def test_decorating_method(self):
         context = mycontext()
 
         class Test(object):
-
             @context
             def method(self, a, b, c=None):
                 self.a = a
@@ -602,40 +622,39 @@ class TestContextDecorator(unittest.TestCase):
         self.assertEqual(test.c, None)
 
         test = Test()
-        test.method('a', 'b', 'c')
-        self.assertEqual(test.a, 'a')
-        self.assertEqual(test.b, 'b')
-        self.assertEqual(test.c, 'c')
+        test.method("a", "b", "c")
+        self.assertEqual(test.a, "a")
+        self.assertEqual(test.b, "b")
+        self.assertEqual(test.c, "c")
 
         test = Test()
         test.method(a=1, b=2)
         self.assertEqual(test.a, 1)
         self.assertEqual(test.b, 2)
 
-
     def test_typo_enter(self):
         class mycontext(ContextDecorator):
             def __unter__(self):
                 pass
+
             def __exit__(self, *exc):
                 pass
 
-        with self.assertRaisesRegex(TypeError, 'the context manager'):
+        with self.assertRaisesRegex(TypeError, "the context manager"):
             with mycontext():
                 pass
-
 
     def test_typo_exit(self):
         class mycontext(ContextDecorator):
             def __enter__(self):
                 pass
+
             def __uxit__(self, *exc):
                 pass
 
-        with self.assertRaisesRegex(TypeError, 'the context manager.*__exit__'):
+        with self.assertRaisesRegex(TypeError, "the context manager.*__exit__"):
             with mycontext():
                 pass
-
 
     def test_contextdecorator_as_mixin(self):
         class somecontext(object):
@@ -653,13 +672,14 @@ class TestContextDecorator(unittest.TestCase):
             pass
 
         context = mycontext()
+
         @context
         def test():
             self.assertIsNone(context.exc)
             self.assertTrue(context.started)
+
         test()
         self.assertEqual(context.exc, (None, None, None))
-
 
     def test_contextmanager_as_decorator(self):
         @contextmanager
@@ -669,17 +689,19 @@ class TestContextDecorator(unittest.TestCase):
             state.append(999)
 
         state = []
+
         @woohoo(1)
         def test(x):
             self.assertEqual(state, [1])
             state.append(x)
-        test('something')
-        self.assertEqual(state, [1, 'something', 999])
+
+        test("something")
+        self.assertEqual(state, [1, "something", 999])
 
         # Issue #11647: Ensure the decorated function is 'reusable'
         state = []
-        test('something else')
-        self.assertEqual(state, [1, 'something else', 999])
+        test("something else")
+        self.assertEqual(state, [1, "something else", 999])
 
 
 class TestBaseExitStack:
@@ -700,16 +722,18 @@ class TestBaseExitStack:
         expected = [
             ((), {}),
             ((1,), {}),
-            ((1,2), {}),
+            ((1, 2), {}),
             ((), dict(example=1)),
             ((1,), dict(example=1)),
-            ((1,2), dict(example=1)),
-            ((1,2), dict(self=3, callback=4)),
+            ((1, 2), dict(example=1)),
+            ((1, 2), dict(self=3, callback=4)),
         ]
         result = []
+
         def _exit(*args, **kwds):
             """Test metadata propagation"""
             result.append((args, kwds))
+
         with self.exit_stack() as stack:
             for args, kwds in reversed(expected):
                 if args and kwds:
@@ -739,21 +763,28 @@ class TestBaseExitStack:
 
     def test_push(self):
         exc_raised = ZeroDivisionError
+
         def _expect_exc(exc_type, exc, exc_tb):
             self.assertIs(exc_type, exc_raised)
+
         def _suppress_exc(*exc_details):
             return True
+
         def _expect_ok(exc_type, exc, exc_tb):
             self.assertIsNone(exc_type)
             self.assertIsNone(exc)
             self.assertIsNone(exc_tb)
+
         class ExitCM(object):
             def __init__(self, check_exc):
                 self.check_exc = check_exc
+
             def __enter__(self):
                 self.fail("Should not be called!")
+
             def __exit__(self, *exc_details):
                 self.check_exc(*exc_details)
+
         with self.exit_stack() as stack:
             stack.push(_expect_ok)
             self.assertIs(stack._exit_callbacks[-1][1], _expect_ok)
@@ -769,21 +800,24 @@ class TestBaseExitStack:
             self.assertIs(stack._exit_callbacks[-1][1], _expect_exc)
             stack.push(_expect_exc)
             self.assertIs(stack._exit_callbacks[-1][1], _expect_exc)
-            1/0
+            1 / 0
 
     def test_enter_context(self):
         class TestCM(object):
             def __enter__(self):
                 result.append(1)
+
             def __exit__(self, *exc_details):
                 result.append(3)
 
         result = []
         cm = TestCM()
         with self.exit_stack() as stack:
+
             @stack.callback  # Registered first => cleaned up last
             def _exit():
                 result.append(4)
+
             self.assertIsNotNone(_exit)
             stack.enter_context(cm)
             self.assertIs(stack._exit_callbacks[-1][1].__self__, cm)
@@ -793,28 +827,32 @@ class TestBaseExitStack:
     def test_enter_context_errors(self):
         class LacksEnterAndExit:
             pass
+
         class LacksEnter:
             def __exit__(self, *exc_info):
                 pass
+
         class LacksExit:
             def __enter__(self):
                 pass
 
         with self.exit_stack() as stack:
-            with self.assertRaisesRegex(TypeError, 'the context manager'):
+            with self.assertRaisesRegex(TypeError, "the context manager"):
                 stack.enter_context(LacksEnterAndExit())
-            with self.assertRaisesRegex(TypeError, 'the context manager'):
+            with self.assertRaisesRegex(TypeError, "the context manager"):
                 stack.enter_context(LacksEnter())
-            with self.assertRaisesRegex(TypeError, 'the context manager'):
+            with self.assertRaisesRegex(TypeError, "the context manager"):
                 stack.enter_context(LacksExit())
             self.assertFalse(stack._exit_callbacks)
 
     def test_close(self):
         result = []
         with self.exit_stack() as stack:
+
             @stack.callback
             def _exit():
                 result.append(1)
+
             self.assertIsNotNone(_exit)
             stack.close()
             result.append(2)
@@ -823,9 +861,11 @@ class TestBaseExitStack:
     def test_pop_all(self):
         result = []
         with self.exit_stack() as stack:
+
             @stack.callback
             def _exit():
                 result.append(3)
+
             self.assertIsNotNone(_exit)
             new_stack = stack.pop_all()
             result.append(1)
@@ -837,12 +877,12 @@ class TestBaseExitStack:
         with self.assertRaises(ZeroDivisionError):
             with self.exit_stack() as stack:
                 stack.push(lambda *exc: False)
-                1/0
+                1 / 0
 
     def test_exit_suppress(self):
         with self.exit_stack() as stack:
             stack.push(lambda *exc: True)
-            1/0
+            1 / 0
 
     def test_exit_exception_traceback(self):
         # This test captures the current behavior of ExitStack so that we know
@@ -856,25 +896,26 @@ class TestBaseExitStack:
         try:
             with self.exit_stack() as stack:
                 stack.callback(raise_exc, ValueError)
-                1/0
+                1 / 0
         except ValueError as e:
             exc = e
 
         self.assertIsInstance(exc, ValueError)
         ve_frames = traceback.extract_tb(exc.__traceback__)
-        expected = \
-            [('test_exit_exception_traceback', 'with self.exit_stack() as stack:')] + \
-            self.callback_error_internal_frames + \
-            [('_exit_wrapper', 'callback(*args, **kwds)'),
-             ('raise_exc', 'raise exc')]
+        expected = (
+            [("test_exit_exception_traceback", "with self.exit_stack() as stack:")]
+            + self.callback_error_internal_frames
+            + [("_exit_wrapper", "callback(*args, **kwds)"), ("raise_exc", "raise exc")]
+        )
 
-        self.assertEqual(
-            [(f.name, f.line) for f in ve_frames], expected)
+        self.assertEqual([(f.name, f.line) for f in ve_frames], expected)
 
         self.assertIsInstance(exc.__context__, ZeroDivisionError)
         zde_frames = traceback.extract_tb(exc.__context__.__traceback__)
-        self.assertEqual([(f.name, f.line) for f in zde_frames],
-                         [('test_exit_exception_traceback', '1/0')])
+        self.assertEqual(
+            [(f.name, f.line) for f in zde_frames],
+            [("test_exit_exception_traceback", "1/0")],
+        )
 
     def test_exit_exception_chaining_reference(self):
         # Sanity check to make sure that ExitStack chaining matches
@@ -882,8 +923,10 @@ class TestBaseExitStack:
         class RaiseExc:
             def __init__(self, exc):
                 self.exc = exc
+
             def __enter__(self):
                 return self
+
             def __exit__(self, *exc_details):
                 raise self.exc
 
@@ -891,8 +934,10 @@ class TestBaseExitStack:
             def __init__(self, outer, inner):
                 self.outer = outer
                 self.inner = inner
+
             def __enter__(self):
                 return self
+
             def __exit__(self, *exc_details):
                 try:
                     raise self.inner
@@ -902,6 +947,7 @@ class TestBaseExitStack:
         class SuppressExc:
             def __enter__(self):
                 return self
+
             def __exit__(self, *exc_details):
                 type(self).saved_details = exc_details
                 return True
@@ -930,6 +976,7 @@ class TestBaseExitStack:
             raise exc
 
         saved_details = None
+
         def suppress_exc(*exc_details):
             nonlocal saved_details
             saved_details = exc_details
@@ -1044,8 +1091,7 @@ class TestBaseExitStack:
             self.assertIs(exc.__context__, exc3)
             self.assertIs(exc.__context__.__context__, exc2)
             self.assertIs(exc.__context__.__context__.__context__, exc1)
-            self.assertIsNone(
-                       exc.__context__.__context__.__context__.__context__)
+            self.assertIsNone(exc.__context__.__context__.__context__.__context__)
 
     def test_exit_exception_with_existing_context(self):
         # Addresses a lack of test coverage discovered after checking in a
@@ -1055,6 +1101,7 @@ class TestBaseExitStack:
                 raise inner_exc
             finally:
                 raise outer_exc
+
         exc1 = Exception(1)
         exc2 = Exception(2)
         exc3 = Exception(3)
@@ -1070,25 +1117,26 @@ class TestBaseExitStack:
             self.assertIs(exc.__context__, exc4)
             self.assertIs(exc.__context__.__context__, exc3)
             self.assertIs(exc.__context__.__context__.__context__, exc2)
-            self.assertIs(
-                 exc.__context__.__context__.__context__.__context__, exc1)
+            self.assertIs(exc.__context__.__context__.__context__.__context__, exc1)
             self.assertIsNone(
-                exc.__context__.__context__.__context__.__context__.__context__)
+                exc.__context__.__context__.__context__.__context__.__context__
+            )
 
     def test_body_exception_suppress(self):
         def suppress_exc(*exc_details):
             return True
+
         try:
             with self.exit_stack() as stack:
                 stack.push(suppress_exc)
-                1/0
+                1 / 0
         except IndexError as exc:
             self.fail("Expected no exception, got IndexError")
 
     def test_exit_exception_chaining_suppress(self):
         with self.exit_stack() as stack:
             stack.push(lambda *exc: True)
-            stack.push(lambda *exc: 1/0)
+            stack.push(lambda *exc: 1 / 0)
             stack.push(lambda *exc: {}[1])
 
     def test_excessive_nesting(self):
@@ -1098,20 +1146,25 @@ class TestBaseExitStack:
                 stack.callback(int)
 
     def test_instance_bypass(self):
-        class Example(object): pass
+        class Example(object):
+            pass
+
         cm = Example()
         cm.__enter__ = object()
         cm.__exit__ = object()
         stack = self.exit_stack()
-        with self.assertRaisesRegex(TypeError, 'the context manager'):
+        with self.assertRaisesRegex(TypeError, "the context manager"):
             stack.enter_context(cm)
         stack.push(cm)
         self.assertIs(stack._exit_callbacks[-1][1], cm)
 
     def test_dont_reraise_RuntimeError(self):
         # https://bugs.python.org/issue27122
-        class UniqueException(Exception): pass
-        class UniqueRuntimeError(RuntimeError): pass
+        class UniqueException(Exception):
+            pass
+
+        class UniqueRuntimeError(RuntimeError):
+            pass
 
         @contextmanager
         def second():
@@ -1146,13 +1199,12 @@ class TestBaseExitStack:
 class TestExitStack(TestBaseExitStack, unittest.TestCase):
     exit_stack = ExitStack
     callback_error_internal_frames = [
-        ('__exit__', 'raise exc'),
-        ('__exit__', 'if cb(*exc_details):'),
+        ("__exit__", "raise exc"),
+        ("__exit__", "if cb(*exc_details):"),
     ]
 
 
 class TestRedirectStream:
-
     redirect_stream = None
     orig_stream = None
 
@@ -1209,19 +1261,16 @@ class TestRedirectStream:
 
 
 class TestRedirectStdout(TestRedirectStream, unittest.TestCase):
-
     redirect_stream = redirect_stdout
     orig_stream = "stdout"
 
 
 class TestRedirectStderr(TestRedirectStream, unittest.TestCase):
-
     redirect_stream = redirect_stderr
     orig_stream = "stderr"
 
 
 class TestSuppress(ExceptionIsLikeMixin, unittest.TestCase):
-
     @support.requires_docstrings
     def test_instance_docs(self):
         # Issue 19330: ensure context manager instances have good docstrings
@@ -1243,21 +1292,21 @@ class TestSuppress(ExceptionIsLikeMixin, unittest.TestCase):
 
     def test_exception_hierarchy(self):
         with suppress(LookupError):
-            'Hello'[50]
+            "Hello"[50]
 
     def test_other_exception(self):
         with self.assertRaises(ZeroDivisionError):
             with suppress(TypeError):
-                1/0
+                1 / 0
 
     def test_no_args(self):
         with self.assertRaises(ZeroDivisionError):
             with suppress():
-                1/0
+                1 / 0
 
     def test_multiple_exception_args(self):
         with suppress(ZeroDivisionError, TypeError):
-            1/0
+            1 / 0
         with suppress(ZeroDivisionError, TypeError):
             len(5)
 
@@ -1268,10 +1317,10 @@ class TestSuppress(ExceptionIsLikeMixin, unittest.TestCase):
         with ignore_exceptions:
             len(5)
         with ignore_exceptions:
-            with ignore_exceptions: # Check nested usage
+            with ignore_exceptions:  # Check nested usage
                 len(5)
             outer_continued = True
-            1/0
+            1 / 0
         self.assertTrue(outer_continued)
 
     def test_exception_groups(self):
@@ -1306,14 +1355,16 @@ class TestSuppress(ExceptionIsLikeMixin, unittest.TestCase):
             with suppress(KeyError):
                 raise BaseExceptionGroup("message", [GeneratorExit("g"), KeyError("k")])
         self.assertExceptionIsLike(
-            eg1.exception, BaseExceptionGroup("message", [GeneratorExit("g")]),
+            eg1.exception,
+            BaseExceptionGroup("message", [GeneratorExit("g")]),
         )
         # If we suppress all the leaf BaseExceptions, we get a non-base ExceptionGroup
         with self.assertRaises(ExceptionGroup) as eg1:
             with suppress(GeneratorExit):
                 raise BaseExceptionGroup("message", [GeneratorExit("g"), KeyError("k")])
         self.assertExceptionIsLike(
-            eg1.exception, ExceptionGroup("message", [KeyError("k")]),
+            eg1.exception,
+            ExceptionGroup("message", [KeyError("k")]),
         )
 
 
@@ -1326,7 +1377,7 @@ class TestChdir(unittest.TestCase):
 
     def test_simple(self):
         old_cwd = os.getcwd()
-        target = self.make_relative_path('data')
+        target = self.make_relative_path("data")
         self.assertNotEqual(old_cwd, target)
 
         with chdir(target):
@@ -1335,8 +1386,8 @@ class TestChdir(unittest.TestCase):
 
     def test_reentrant(self):
         old_cwd = os.getcwd()
-        target1 = self.make_relative_path('data')
-        target2 = self.make_relative_path('archivetestdata')
+        target1 = self.make_relative_path("data")
+        target2 = self.make_relative_path("archivetestdata")
         self.assertNotIn(old_cwd, (target1, target2))
         chdir1, chdir2 = chdir(target1), chdir(target2)
 
@@ -1352,7 +1403,7 @@ class TestChdir(unittest.TestCase):
 
     def test_exception(self):
         old_cwd = os.getcwd()
-        target = self.make_relative_path('data')
+        target = self.make_relative_path("data")
         self.assertNotEqual(old_cwd, target)
 
         try:

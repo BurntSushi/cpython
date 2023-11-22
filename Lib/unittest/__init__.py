@@ -44,19 +44,46 @@ AND THERE IS NO OBLIGATION WHATSOEVER TO PROVIDE MAINTENANCE,
 SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 """
 
-__all__ = ['TestResult', 'TestCase', 'IsolatedAsyncioTestCase', 'TestSuite',
-           'TextTestRunner', 'TestLoader', 'FunctionTestCase', 'main',
-           'defaultTestLoader', 'SkipTest', 'skip', 'skipIf', 'skipUnless',
-           'expectedFailure', 'TextTestResult', 'installHandler',
-           'registerResult', 'removeResult', 'removeHandler',
-           'addModuleCleanup', 'doModuleCleanups', 'enterModuleContext']
+__all__ = [
+    "TestResult",
+    "TestCase",
+    "IsolatedAsyncioTestCase",
+    "TestSuite",
+    "TextTestRunner",
+    "TestLoader",
+    "FunctionTestCase",
+    "main",
+    "defaultTestLoader",
+    "SkipTest",
+    "skip",
+    "skipIf",
+    "skipUnless",
+    "expectedFailure",
+    "TextTestResult",
+    "installHandler",
+    "registerResult",
+    "removeResult",
+    "removeHandler",
+    "addModuleCleanup",
+    "doModuleCleanups",
+    "enterModuleContext",
+]
 
 __unittest = True
 
 from .result import TestResult
-from .case import (addModuleCleanup, TestCase, FunctionTestCase, SkipTest, skip,
-                   skipIf, skipUnless, expectedFailure, doModuleCleanups,
-                   enterModuleContext)
+from .case import (
+    addModuleCleanup,
+    TestCase,
+    FunctionTestCase,
+    SkipTest,
+    skip,
+    skipIf,
+    skipUnless,
+    expectedFailure,
+    doModuleCleanups,
+    enterModuleContext,
+)
 from .suite import BaseTestSuite, TestSuite
 from .loader import TestLoader, defaultTestLoader
 from .main import TestProgram, main
@@ -69,12 +96,15 @@ from .signals import installHandler, registerResult, removeResult, removeHandler
 # It imports asyncio, which is relatively heavy, but most tests
 # do not need it.
 
+
 def __dir__():
-    return globals().keys() | {'IsolatedAsyncioTestCase'}
+    return globals().keys() | {"IsolatedAsyncioTestCase"}
+
 
 def __getattr__(name):
-    if name == 'IsolatedAsyncioTestCase':
+    if name == "IsolatedAsyncioTestCase":
         global IsolatedAsyncioTestCase
         from .async_case import IsolatedAsyncioTestCase
+
         return IsolatedAsyncioTestCase
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

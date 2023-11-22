@@ -37,20 +37,43 @@ import sys
 
 GenericAlias = type(list[int])
 EllipsisType = type(...)
-def _f(): pass
+
+
+def _f():
+    pass
+
+
 FunctionType = type(_f)
 del _f
 
-__all__ = ["Awaitable", "Coroutine",
-           "AsyncIterable", "AsyncIterator", "AsyncGenerator",
-           "Hashable", "Iterable", "Iterator", "Generator", "Reversible",
-           "Sized", "Container", "Callable", "Collection",
-           "Set", "MutableSet",
-           "Mapping", "MutableMapping",
-           "MappingView", "KeysView", "ItemsView", "ValuesView",
-           "Sequence", "MutableSequence",
-           "ByteString", "Buffer",
-           ]
+__all__ = [
+    "Awaitable",
+    "Coroutine",
+    "AsyncIterable",
+    "AsyncIterator",
+    "AsyncGenerator",
+    "Hashable",
+    "Iterable",
+    "Iterator",
+    "Generator",
+    "Reversible",
+    "Sized",
+    "Container",
+    "Callable",
+    "Collection",
+    "Set",
+    "MutableSet",
+    "Mapping",
+    "MutableMapping",
+    "MappingView",
+    "KeysView",
+    "ItemsView",
+    "ValuesView",
+    "Sequence",
+    "MutableSequence",
+    "ByteString",
+    "Buffer",
+]
 
 # This module has been renamed from collections.abc to _collections_abc to
 # speed up interpreter startup. Some of the types such as MutableMapping are
@@ -65,9 +88,9 @@ __name__ = "collections.abc"
 # Note:  in other implementations, these types might not be distinct
 # and they may have their own implementation specific types that
 # are not included on this list.
-bytes_iterator = type(iter(b''))
+bytes_iterator = type(iter(b""))
 bytearray_iterator = type(iter(bytearray()))
-#callable_iterator = ???
+# callable_iterator = ???
 dict_keyiterator = type(iter({}.keys()))
 dict_valueiterator = type(iter({}.values()))
 dict_itemiterator = type(iter({}.items()))
@@ -86,20 +109,31 @@ dict_items = type({}.items())
 ## misc ##
 mappingproxy = type(type.__dict__)
 generator = type((lambda: (yield))())
+
+
 ## coroutine ##
-async def _coro(): pass
+async def _coro():
+    pass
+
+
 _coro = _coro()
 coroutine = type(_coro)
 _coro.close()  # Prevent ResourceWarning
 del _coro
+
+
 ## asynchronous generator ##
-async def _ag(): yield
+async def _ag():
+    yield
+
+
 _ag = _ag()
 async_generator = type(_ag)
 del _ag
 
 
 ### ONE-TRICK PONIES ###
+
 
 def _check_methods(C, *methods):
     mro = C.__mro__
@@ -113,8 +147,8 @@ def _check_methods(C, *methods):
             return NotImplemented
     return True
 
-class Hashable(metaclass=ABCMeta):
 
+class Hashable(metaclass=ABCMeta):
     __slots__ = ()
 
     @abstractmethod
@@ -129,7 +163,6 @@ class Hashable(metaclass=ABCMeta):
 
 
 class Awaitable(metaclass=ABCMeta):
-
     __slots__ = ()
 
     @abstractmethod
@@ -146,7 +179,6 @@ class Awaitable(metaclass=ABCMeta):
 
 
 class Coroutine(Awaitable):
-
     __slots__ = ()
 
     @abstractmethod
@@ -170,8 +202,7 @@ class Coroutine(Awaitable):
         raise val
 
     def close(self):
-        """Raise GeneratorExit inside coroutine.
-        """
+        """Raise GeneratorExit inside coroutine."""
         try:
             self.throw(GeneratorExit)
         except (GeneratorExit, StopIteration):
@@ -182,7 +213,7 @@ class Coroutine(Awaitable):
     @classmethod
     def __subclasshook__(cls, C):
         if cls is Coroutine:
-            return _check_methods(C, '__await__', 'send', 'throw', 'close')
+            return _check_methods(C, "__await__", "send", "throw", "close")
         return NotImplemented
 
 
@@ -190,7 +221,6 @@ Coroutine.register(coroutine)
 
 
 class AsyncIterable(metaclass=ABCMeta):
-
     __slots__ = ()
 
     @abstractmethod
@@ -207,7 +237,6 @@ class AsyncIterable(metaclass=ABCMeta):
 
 
 class AsyncIterator(AsyncIterable):
-
     __slots__ = ()
 
     @abstractmethod
@@ -226,7 +255,6 @@ class AsyncIterator(AsyncIterable):
 
 
 class AsyncGenerator(AsyncIterator):
-
     __slots__ = ()
 
     async def __anext__(self):
@@ -256,8 +284,7 @@ class AsyncGenerator(AsyncIterator):
         raise val
 
     async def aclose(self):
-        """Raise GeneratorExit inside coroutine.
-        """
+        """Raise GeneratorExit inside coroutine."""
         try:
             await self.athrow(GeneratorExit)
         except (GeneratorExit, StopAsyncIteration):
@@ -268,8 +295,9 @@ class AsyncGenerator(AsyncIterator):
     @classmethod
     def __subclasshook__(cls, C):
         if cls is AsyncGenerator:
-            return _check_methods(C, '__aiter__', '__anext__',
-                                  'asend', 'athrow', 'aclose')
+            return _check_methods(
+                C, "__aiter__", "__anext__", "asend", "athrow", "aclose"
+            )
         return NotImplemented
 
 
@@ -277,7 +305,6 @@ AsyncGenerator.register(async_generator)
 
 
 class Iterable(metaclass=ABCMeta):
-
     __slots__ = ()
 
     @abstractmethod
@@ -295,12 +322,11 @@ class Iterable(metaclass=ABCMeta):
 
 
 class Iterator(Iterable):
-
     __slots__ = ()
 
     @abstractmethod
     def __next__(self):
-        'Return the next item from the iterator. When exhausted, raise StopIteration'
+        "Return the next item from the iterator. When exhausted, raise StopIteration"
         raise StopIteration
 
     def __iter__(self):
@@ -309,13 +335,13 @@ class Iterator(Iterable):
     @classmethod
     def __subclasshook__(cls, C):
         if cls is Iterator:
-            return _check_methods(C, '__iter__', '__next__')
+            return _check_methods(C, "__iter__", "__next__")
         return NotImplemented
 
 
 Iterator.register(bytes_iterator)
 Iterator.register(bytearray_iterator)
-#Iterator.register(callable_iterator)
+# Iterator.register(callable_iterator)
 Iterator.register(dict_keyiterator)
 Iterator.register(dict_valueiterator)
 Iterator.register(dict_itemiterator)
@@ -330,7 +356,6 @@ Iterator.register(zip_iterator)
 
 
 class Reversible(Iterable):
-
     __slots__ = ()
 
     @abstractmethod
@@ -346,7 +371,6 @@ class Reversible(Iterable):
 
 
 class Generator(Iterator):
-
     __slots__ = ()
 
     def __next__(self):
@@ -376,8 +400,7 @@ class Generator(Iterator):
         raise val
 
     def close(self):
-        """Raise GeneratorExit inside generator.
-        """
+        """Raise GeneratorExit inside generator."""
         try:
             self.throw(GeneratorExit)
         except (GeneratorExit, StopIteration):
@@ -388,8 +411,7 @@ class Generator(Iterator):
     @classmethod
     def __subclasshook__(cls, C):
         if cls is Generator:
-            return _check_methods(C, '__iter__', '__next__',
-                                  'send', 'throw', 'close')
+            return _check_methods(C, "__iter__", "__next__", "send", "throw", "close")
         return NotImplemented
 
 
@@ -397,7 +419,6 @@ Generator.register(generator)
 
 
 class Sized(metaclass=ABCMeta):
-
     __slots__ = ()
 
     @abstractmethod
@@ -412,7 +433,6 @@ class Sized(metaclass=ABCMeta):
 
 
 class Container(metaclass=ABCMeta):
-
     __slots__ = ()
 
     @abstractmethod
@@ -429,18 +449,16 @@ class Container(metaclass=ABCMeta):
 
 
 class Collection(Sized, Iterable, Container):
-
     __slots__ = ()
 
     @classmethod
     def __subclasshook__(cls, C):
         if cls is Collection:
-            return _check_methods(C,  "__len__", "__iter__", "__contains__")
+            return _check_methods(C, "__len__", "__iter__", "__contains__")
         return NotImplemented
 
 
 class Buffer(metaclass=ABCMeta):
-
     __slots__ = ()
 
     @abstractmethod
@@ -455,7 +473,7 @@ class Buffer(metaclass=ABCMeta):
 
 
 class _CallableGenericAlias(GenericAlias):
-    """ Represent `Callable[argtypes, resulttype]`.
+    """Represent `Callable[argtypes, resulttype]`.
 
     This sets ``__args__`` to a tuple containing the flattened ``argtypes``
     followed by ``resulttype``.
@@ -468,22 +486,25 @@ class _CallableGenericAlias(GenericAlias):
 
     def __new__(cls, origin, args):
         if not (isinstance(args, tuple) and len(args) == 2):
-            raise TypeError(
-                "Callable must be used as Callable[[arg, ...], result].")
+            raise TypeError("Callable must be used as Callable[[arg, ...], result].")
         t_args, t_result = args
         if isinstance(t_args, (tuple, list)):
             args = (*t_args, t_result)
         elif not _is_param_expr(t_args):
-            raise TypeError(f"Expected a list of types, an ellipsis, "
-                            f"ParamSpec, or Concatenate. Got {t_args}")
+            raise TypeError(
+                f"Expected a list of types, an ellipsis, "
+                f"ParamSpec, or Concatenate. Got {t_args}"
+            )
         return super().__new__(cls, origin, args)
 
     def __repr__(self):
         if len(self.__args__) == 2 and _is_param_expr(self.__args__[0]):
             return super().__repr__()
-        return (f'collections.abc.Callable'
-                f'[[{", ".join([_type_repr(a) for a in self.__args__[:-1]])}], '
-                f'{_type_repr(self.__args__[-1])}]')
+        return (
+            f'collections.abc.Callable'
+            f'[[{", ".join([_type_repr(a) for a in self.__args__[:-1]])}], '
+            f'{_type_repr(self.__args__[-1])}]'
+        )
 
     def __reduce__(self):
         args = self.__args__
@@ -508,6 +529,7 @@ class _CallableGenericAlias(GenericAlias):
             new_args = (t_args, t_result)
         return _CallableGenericAlias(Callable, tuple(new_args))
 
+
 def _is_param_expr(obj):
     """Checks if obj matches either a list of types, ``...``, ``ParamSpec`` or
     ``_ConcatenateGenericAlias`` from typing.py
@@ -517,8 +539,9 @@ def _is_param_expr(obj):
     if isinstance(obj, list):
         return True
     obj = type(obj)
-    names = ('ParamSpec', '_ConcatenateGenericAlias')
-    return obj.__module__ == 'typing' and any(obj.__name__ == name for name in names)
+    names = ("ParamSpec", "_ConcatenateGenericAlias")
+    return obj.__module__ == "typing" and any(obj.__name__ == name for name in names)
+
 
 def _type_repr(obj):
     """Return the repr() of an object, special-casing types (internal helper).
@@ -528,18 +551,17 @@ def _type_repr(obj):
     (Keep this roughly in sync with the typing version.)
     """
     if isinstance(obj, type):
-        if obj.__module__ == 'builtins':
+        if obj.__module__ == "builtins":
             return obj.__qualname__
-        return f'{obj.__module__}.{obj.__qualname__}'
+        return f"{obj.__module__}.{obj.__qualname__}"
     if obj is Ellipsis:
-        return '...'
+        return "..."
     if isinstance(obj, FunctionType):
         return obj.__name__
     return repr(obj)
 
 
 class Callable(metaclass=ABCMeta):
-
     __slots__ = ()
 
     @abstractmethod
@@ -608,11 +630,11 @@ class Set(Collection):
 
     @classmethod
     def _from_iterable(cls, it):
-        '''Construct an instance of the class from any iterable input.
+        """Construct an instance of the class from any iterable input.
 
         Must override this method if the class constructor signature
         does not accept an iterable for an input.
-        '''
+        """
         return cls(it)
 
     def __and__(self, other):
@@ -623,7 +645,7 @@ class Set(Collection):
     __rand__ = __and__
 
     def isdisjoint(self, other):
-        'Return True if two sets have a null intersection.'
+        "Return True if two sets have a null intersection."
         for value in other:
             if value in self:
                 return False
@@ -642,16 +664,14 @@ class Set(Collection):
             if not isinstance(other, Iterable):
                 return NotImplemented
             other = self._from_iterable(other)
-        return self._from_iterable(value for value in self
-                                   if value not in other)
+        return self._from_iterable(value for value in self if value not in other)
 
     def __rsub__(self, other):
         if not isinstance(other, Set):
             if not isinstance(other, Iterable):
                 return NotImplemented
             other = self._from_iterable(other)
-        return self._from_iterable(value for value in other
-                                   if value not in self)
+        return self._from_iterable(value for value in other if value not in self)
 
     def __xor__(self, other):
         if not isinstance(other, Set):
@@ -684,7 +704,7 @@ class Set(Collection):
         h &= MASK
         for x in self:
             hx = hash(x)
-            h ^= (hx ^ (hx << 16) ^ 89869747)  * 3644798167
+            h ^= (hx ^ (hx << 16) ^ 89869747) * 3644798167
             h &= MASK
         h ^= (h >> 11) ^ (h >> 25)
         h = h * 69069 + 907133923
@@ -753,7 +773,7 @@ class MutableSet(Set):
         return self
 
     def __iand__(self, it):
-        for value in (self - it):
+        for value in self - it:
             self.discard(value)
         return self
 
@@ -784,6 +804,7 @@ MutableSet.register(set)
 
 ### MAPPINGS ###
 
+
 class Mapping(Collection):
     """A Mapping is a generic container for associating key/value
     pairs.
@@ -795,14 +816,14 @@ class Mapping(Collection):
     __slots__ = ()
 
     # Tell ABCMeta.__new__ that this class should have TPFLAGS_MAPPING set.
-    __abc_tpflags__ = 1 << 6 # Py_TPFLAGS_MAPPING
+    __abc_tpflags__ = 1 << 6  # Py_TPFLAGS_MAPPING
 
     @abstractmethod
     def __getitem__(self, key):
         raise KeyError
 
     def get(self, key, default=None):
-        'D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None.'
+        "D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None."
         try:
             return self[key]
         except KeyError:
@@ -835,12 +856,12 @@ class Mapping(Collection):
 
     __reversed__ = None
 
+
 Mapping.register(mappingproxy)
 
 
 class MappingView(Sized):
-
-    __slots__ = '_mapping',
+    __slots__ = ("_mapping",)
 
     def __init__(self, mapping):
         self._mapping = mapping
@@ -849,13 +870,12 @@ class MappingView(Sized):
         return len(self._mapping)
 
     def __repr__(self):
-        return '{0.__class__.__name__}({0._mapping!r})'.format(self)
+        return "{0.__class__.__name__}({0._mapping!r})".format(self)
 
     __class_getitem__ = classmethod(GenericAlias)
 
 
 class KeysView(MappingView, Set):
-
     __slots__ = ()
 
     @classmethod
@@ -873,7 +893,6 @@ KeysView.register(dict_keys)
 
 
 class ItemsView(MappingView, Set):
-
     __slots__ = ()
 
     @classmethod
@@ -898,7 +917,6 @@ ItemsView.register(dict_items)
 
 
 class ValuesView(MappingView, Collection):
-
     __slots__ = ()
 
     def __contains__(self, value):
@@ -938,9 +956,9 @@ class MutableMapping(Mapping):
     __marker = object()
 
     def pop(self, key, default=__marker):
-        '''D.pop(k[,d]) -> v, remove specified key and return the corresponding value.
-          If key is not found, d is returned if given, otherwise KeyError is raised.
-        '''
+        """D.pop(k[,d]) -> v, remove specified key and return the corresponding value.
+        If key is not found, d is returned if given, otherwise KeyError is raised.
+        """
         try:
             value = self[key]
         except KeyError:
@@ -952,9 +970,9 @@ class MutableMapping(Mapping):
             return value
 
     def popitem(self):
-        '''D.popitem() -> (k, v), remove and return some (key, value) pair
-           as a 2-tuple; but raise KeyError if D is empty.
-        '''
+        """D.popitem() -> (k, v), remove and return some (key, value) pair
+        as a 2-tuple; but raise KeyError if D is empty.
+        """
         try:
             key = next(iter(self))
         except StopIteration:
@@ -964,7 +982,7 @@ class MutableMapping(Mapping):
         return key, value
 
     def clear(self):
-        'D.clear() -> None.  Remove all items from D.'
+        "D.clear() -> None.  Remove all items from D."
         try:
             while True:
                 self.popitem()
@@ -972,11 +990,11 @@ class MutableMapping(Mapping):
             pass
 
     def update(self, other=(), /, **kwds):
-        ''' D.update([E, ]**F) -> None.  Update D from mapping/iterable E and F.
-            If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
-            If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
-            In either case, this is followed by: for k, v in F.items(): D[k] = v
-        '''
+        """D.update([E, ]**F) -> None.  Update D from mapping/iterable E and F.
+        If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
+        If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
+        In either case, this is followed by: for k, v in F.items(): D[k] = v
+        """
         if isinstance(other, Mapping):
             for key in other:
                 self[key] = other[key]
@@ -990,7 +1008,7 @@ class MutableMapping(Mapping):
             self[key] = value
 
     def setdefault(self, key, default=None):
-        'D.setdefault(k[,d]) -> D.get(k,d), also set D[k]=d if k not in D'
+        "D.setdefault(k[,d]) -> D.get(k,d), also set D[k]=d if k not in D"
         try:
             return self[key]
         except KeyError:
@@ -1003,6 +1021,7 @@ MutableMapping.register(dict)
 
 ### SEQUENCES ###
 
+
 class Sequence(Reversible, Collection):
     """All the operations on a read-only sequence.
 
@@ -1013,7 +1032,7 @@ class Sequence(Reversible, Collection):
     __slots__ = ()
 
     # Tell ABCMeta.__new__ that this class should have TPFLAGS_SEQUENCE set.
-    __abc_tpflags__ = 1 << 5 # Py_TPFLAGS_SEQUENCE
+    __abc_tpflags__ = 1 << 5  # Py_TPFLAGS_SEQUENCE
 
     @abstractmethod
     def __getitem__(self, index):
@@ -1040,12 +1059,12 @@ class Sequence(Reversible, Collection):
             yield self[i]
 
     def index(self, value, start=0, stop=None):
-        '''S.index(value, [start, [stop]]) -> integer -- return first index of value.
-           Raises ValueError if the value is not present.
+        """S.index(value, [start, [stop]]) -> integer -- return first index of value.
+        Raises ValueError if the value is not present.
 
-           Supporting start and stop arguments is optional, but
-           recommended.
-        '''
+        Supporting start and stop arguments is optional, but
+        recommended.
+        """
         if start is not None and start < 0:
             start = max(len(self) + start, 0)
         if stop is not None and stop < 0:
@@ -1063,13 +1082,15 @@ class Sequence(Reversible, Collection):
         raise ValueError
 
     def count(self, value):
-        'S.count(value) -> integer -- return number of occurrences of value'
+        "S.count(value) -> integer -- return number of occurrences of value"
         return sum(1 for v in self if v is value or v == value)
+
 
 Sequence.register(tuple)
 Sequence.register(str)
 Sequence.register(range)
 Sequence.register(memoryview)
+
 
 class _DeprecateByteStringMeta(ABCMeta):
     def __new__(cls, name, bases, namespace, **kwargs):
@@ -1091,6 +1112,7 @@ class _DeprecateByteStringMeta(ABCMeta):
         )
         return super().__instancecheck__(instance)
 
+
 class ByteString(Sequence, metaclass=_DeprecateByteStringMeta):
     """This unifies bytes and bytearray.
 
@@ -1098,6 +1120,7 @@ class ByteString(Sequence, metaclass=_DeprecateByteStringMeta):
     """
 
     __slots__ = ()
+
 
 ByteString.register(bytes)
 ByteString.register(bytearray)
@@ -1122,15 +1145,15 @@ class MutableSequence(Sequence):
 
     @abstractmethod
     def insert(self, index, value):
-        'S.insert(index, value) -- insert value before index'
+        "S.insert(index, value) -- insert value before index"
         raise IndexError
 
     def append(self, value):
-        'S.append(value) -- append value to the end of the sequence'
+        "S.append(value) -- append value to the end of the sequence"
         self.insert(len(self), value)
 
     def clear(self):
-        'S.clear() -> None -- remove all items from S'
+        "S.clear() -> None -- remove all items from S"
         try:
             while True:
                 self.pop()
@@ -1138,30 +1161,30 @@ class MutableSequence(Sequence):
             pass
 
     def reverse(self):
-        'S.reverse() -- reverse *IN PLACE*'
+        "S.reverse() -- reverse *IN PLACE*"
         n = len(self)
-        for i in range(n//2):
-            self[i], self[n-i-1] = self[n-i-1], self[i]
+        for i in range(n // 2):
+            self[i], self[n - i - 1] = self[n - i - 1], self[i]
 
     def extend(self, values):
-        'S.extend(iterable) -- extend sequence by appending elements from the iterable'
+        "S.extend(iterable) -- extend sequence by appending elements from the iterable"
         if values is self:
             values = list(values)
         for v in values:
             self.append(v)
 
     def pop(self, index=-1):
-        '''S.pop([index]) -> item -- remove and return item at index (default last).
-           Raise IndexError if list is empty or index is out of range.
-        '''
+        """S.pop([index]) -> item -- remove and return item at index (default last).
+        Raise IndexError if list is empty or index is out of range.
+        """
         v = self[index]
         del self[index]
         return v
 
     def remove(self, value):
-        '''S.remove(value) -- remove first occurrence of value.
-           Raise ValueError if the value is not present.
-        '''
+        """S.remove(value) -- remove first occurrence of value.
+        Raise ValueError if the value is not present.
+        """
         del self[self.index(value)]
 
     def __iadd__(self, values):

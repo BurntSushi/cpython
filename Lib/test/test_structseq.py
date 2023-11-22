@@ -7,7 +7,6 @@ import unittest
 
 
 class StructSeqTest(unittest.TestCase):
-
     def test_tuple(self):
         t = time.gmtime()
         self.assertIsInstance(t, tuple)
@@ -25,18 +24,20 @@ class StructSeqTest(unittest.TestCase):
         for j in range(-len(t), len(t)):
             self.assertEqual(t[:j], astuple[:j])
 
-        self.assertRaises(IndexError, t.__getitem__, -len(t)-1)
+        self.assertRaises(IndexError, t.__getitem__, -len(t) - 1)
         self.assertRaises(IndexError, t.__getitem__, len(t))
-        for i in range(-len(t), len(t)-1):
+        for i in range(-len(t), len(t) - 1):
             self.assertEqual(t[i], astuple[i])
 
     def test_repr(self):
         t = time.gmtime()
         self.assertTrue(repr(t))
         t = time.gmtime(0)
-        self.assertEqual(repr(t),
+        self.assertEqual(
+            repr(t),
             "time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=0, "
-            "tm_min=0, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)")
+            "tm_min=0, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)",
+        )
         # os.stat() gives a complicated struct sequence.
         st = os.stat(__file__)
         rep = repr(st)
@@ -49,14 +50,14 @@ class StructSeqTest(unittest.TestCase):
         t1 = time.gmtime()
         t2 = t1 + tuple(t1)
         for i in range(len(t1)):
-            self.assertEqual(t2[i], t2[i+len(t1)])
+            self.assertEqual(t2[i], t2[i + len(t1)])
 
     def test_repeat(self):
         t1 = time.gmtime()
         t2 = 3 * t1
         for i in range(len(t1)):
-            self.assertEqual(t2[i], t2[i+len(t1)])
-            self.assertEqual(t2[i], t2[i+2*len(t1)])
+            self.assertEqual(t2[i], t2[i + len(t1)])
+            self.assertEqual(t2[i], t2[i + 2 * len(t1)])
 
     def test_contains(self):
         t1 = time.gmtime()
@@ -124,7 +125,7 @@ class StructSeqTest(unittest.TestCase):
         assert os.stat_result.n_unnamed_fields > 0
         n_visible_fields = os.stat_result.n_sequence_fields
 
-        r = os.stat_result(range(n_visible_fields), {'st_atime': -1.0})
+        r = os.stat_result(range(n_visible_fields), {"st_atime": -1.0})
         self.assertEqual(r.st_atime, -1.0)
         self.assertEqual(r, tuple(range(n_visible_fields)))
 
@@ -132,9 +133,10 @@ class StructSeqTest(unittest.TestCase):
         self.assertEqual(r.st_atime, -1.0)
         self.assertEqual(r, tuple(range(n_visible_fields)))
 
-        with self.assertRaisesRegex(TypeError,
-                                    re.escape("got duplicate or unexpected field name(s)")):
-            os.stat_result((*range(n_visible_fields), -1.0), {'st_atime': -1.0})
+        with self.assertRaisesRegex(
+            TypeError, re.escape("got duplicate or unexpected field name(s)")
+        ):
+            os.stat_result((*range(n_visible_fields), -1.0), {"st_atime": -1.0})
 
     def test_constructor_with_unknown_fields(self):
         t = time.struct_time
@@ -163,6 +165,7 @@ class StructSeqTest(unittest.TestCase):
         class C:
             def __getitem__(self, i):
                 raise Exc
+
             def __len__(self):
                 return 9
 
@@ -181,8 +184,10 @@ class StructSeqTest(unittest.TestCase):
     def test_pickling_with_unnamed_fields(self):
         assert os.stat_result.n_unnamed_fields > 0
 
-        r = os.stat_result(range(os.stat_result.n_sequence_fields),
-                           {'st_atime': 1.0, 'st_atime_ns': 2.0})
+        r = os.stat_result(
+            range(os.stat_result.n_sequence_fields),
+            {"st_atime": 1.0, "st_atime_ns": 2.0},
+        )
         for proto in range(pickle.HIGHEST_PROTOCOL + 1):
             p = pickle.dumps(r, proto)
             r2 = pickle.loads(p)
@@ -216,8 +221,10 @@ class StructSeqTest(unittest.TestCase):
         assert os.stat_result.n_unnamed_fields > 0
 
         n_sequence_fields = os.stat_result.n_sequence_fields
-        r = os.stat_result([[i] for i in range(n_sequence_fields)],
-                           {'st_atime': [1.0], 'st_atime_ns': [2.0]})
+        r = os.stat_result(
+            [[i] for i in range(n_sequence_fields)],
+            {"st_atime": [1.0], "st_atime_ns": [2.0]},
+        )
 
         r2 = copy.copy(r)
         self.assertEqual(r2.__class__, r.__class__)
@@ -250,17 +257,32 @@ class StructSeqTest(unittest.TestCase):
             for stop in indices:
                 # Skip step 0 (invalid)
                 for step in indices[1:]:
-                    self.assertEqual(list(t[start:stop:step]),
-                                     L[start:stop:step])
+                    self.assertEqual(list(t[start:stop:step]), L[start:stop:step])
 
     def test_match_args(self):
-        expected_args = ('tm_year', 'tm_mon', 'tm_mday', 'tm_hour', 'tm_min',
-                         'tm_sec', 'tm_wday', 'tm_yday', 'tm_isdst')
+        expected_args = (
+            "tm_year",
+            "tm_mon",
+            "tm_mday",
+            "tm_hour",
+            "tm_min",
+            "tm_sec",
+            "tm_wday",
+            "tm_yday",
+            "tm_isdst",
+        )
         self.assertEqual(time.struct_time.__match_args__, expected_args)
 
     def test_match_args_with_unnamed_fields(self):
-        expected_args = ('st_mode', 'st_ino', 'st_dev', 'st_nlink', 'st_uid',
-                         'st_gid', 'st_size')
+        expected_args = (
+            "st_mode",
+            "st_ino",
+            "st_dev",
+            "st_nlink",
+            "st_uid",
+            "st_gid",
+            "st_size",
+        )
         self.assertEqual(os.stat_result.n_unnamed_fields, 3)
         self.assertEqual(os.stat_result.__match_args__, expected_args)
 
@@ -278,9 +300,9 @@ class StructSeqTest(unittest.TestCase):
         self.assertEqual(copy.replace(t, user=1.5, system=2.5), (1.5, 2.5, *t[2:]))
 
         # unknown fields
-        with self.assertRaisesRegex(TypeError, 'unexpected field name'):
+        with self.assertRaisesRegex(TypeError, "unexpected field name"):
             copy.replace(t, error=-1)
-        with self.assertRaisesRegex(TypeError, 'unexpected field name'):
+        with self.assertRaisesRegex(TypeError, "unexpected field name"):
             copy.replace(t, user=1, error=-1)
 
     def test_copy_replace_with_invisible_fields(self):
@@ -305,34 +327,34 @@ class StructSeqTest(unittest.TestCase):
         self.assertEqual(t5.tm_mon, 2)
 
         # named invisible fields
-        self.assertTrue(hasattr(t, 'tm_zone'), f"{t} has no attribute 'tm_zone'")
-        with self.assertRaisesRegex(AttributeError, 'readonly attribute'):
-            t.tm_zone = 'some other zone'
+        self.assertTrue(hasattr(t, "tm_zone"), f"{t} has no attribute 'tm_zone'")
+        with self.assertRaisesRegex(AttributeError, "readonly attribute"):
+            t.tm_zone = "some other zone"
         self.assertEqual(t2.tm_zone, t.tm_zone)
         self.assertEqual(t3.tm_zone, t.tm_zone)
         self.assertEqual(t4.tm_zone, t.tm_zone)
-        t6 = copy.replace(t, tm_zone='some other zone')
+        t6 = copy.replace(t, tm_zone="some other zone")
         self.assertEqual(t, t6)
-        self.assertEqual(t6.tm_zone, 'some other zone')
-        t7 = copy.replace(t, tm_year=2000, tm_zone='some other zone')
+        self.assertEqual(t6.tm_zone, "some other zone")
+        t7 = copy.replace(t, tm_year=2000, tm_zone="some other zone")
         self.assertEqual(t7, (2000, 1, 1, 0, 0, 0, 3, 1, 0))
         self.assertEqual(t7.tm_year, 2000)
-        self.assertEqual(t7.tm_zone, 'some other zone')
+        self.assertEqual(t7.tm_zone, "some other zone")
 
         # unknown fields
-        with self.assertRaisesRegex(TypeError, 'unexpected field name'):
+        with self.assertRaisesRegex(TypeError, "unexpected field name"):
             copy.replace(t, error=2)
-        with self.assertRaisesRegex(TypeError, 'unexpected field name'):
+        with self.assertRaisesRegex(TypeError, "unexpected field name"):
             copy.replace(t, tm_year=2000, error=2)
-        with self.assertRaisesRegex(TypeError, 'unexpected field name'):
-            copy.replace(t, tm_zone='some other zone', error=2)
+        with self.assertRaisesRegex(TypeError, "unexpected field name"):
+            copy.replace(t, tm_zone="some other zone", error=2)
 
     def test_copy_replace_with_unnamed_fields(self):
         assert os.stat_result.n_unnamed_fields > 0
 
         r = os.stat_result(range(os.stat_result.n_sequence_fields))
 
-        error_message = re.escape('__replace__() is not supported')
+        error_message = re.escape("__replace__() is not supported")
         with self.assertRaisesRegex(TypeError, error_message):
             copy.replace(r)
         with self.assertRaisesRegex(TypeError, error_message):

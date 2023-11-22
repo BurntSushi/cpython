@@ -4,16 +4,12 @@ from ctypes import c_int, Union, Structure, sizeof
 
 
 class AnonTest(unittest.TestCase):
-
     def test_anon(self):
         class ANON(Union):
-            _fields_ = [("a", c_int),
-                        ("b", c_int)]
+            _fields_ = [("a", c_int), ("b", c_int)]
 
         class Y(Structure):
-            _fields_ = [("x", c_int),
-                        ("_", ANON),
-                        ("y", c_int)]
+            _fields_ = [("x", c_int), ("_", ANON), ("y", c_int)]
             _anonymous_ = ["_"]
 
         self.assertEqual(Y.a.offset, sizeof(c_int))
@@ -24,18 +20,21 @@ class AnonTest(unittest.TestCase):
 
     def test_anon_nonseq(self):
         # TypeError: _anonymous_ must be a sequence
-        self.assertRaises(TypeError,
-                              lambda: type(Structure)("Name",
-                                                      (Structure,),
-                                                      {"_fields_": [], "_anonymous_": 42}))
+        self.assertRaises(
+            TypeError,
+            lambda: type(Structure)(
+                "Name", (Structure,), {"_fields_": [], "_anonymous_": 42}
+            ),
+        )
 
     def test_anon_nonmember(self):
         # AttributeError: type object 'Name' has no attribute 'x'
-        self.assertRaises(AttributeError,
-                              lambda: type(Structure)("Name",
-                                                      (Structure,),
-                                                      {"_fields_": [],
-                                                       "_anonymous_": ["x"]}))
+        self.assertRaises(
+            AttributeError,
+            lambda: type(Structure)(
+                "Name", (Structure,), {"_fields_": [], "_anonymous_": ["x"]}
+            ),
+        )
 
     @test.support.cpython_only
     def test_issue31490(self):
@@ -44,6 +43,7 @@ class AnonTest(unittest.TestCase):
 
         # AttributeError: 'x' is specified in _anonymous_ but not in _fields_
         with self.assertRaises(AttributeError):
+
             class Name(Structure):
                 _fields_ = []
                 _anonymous_ = ["x"]
@@ -54,14 +54,11 @@ class AnonTest(unittest.TestCase):
             _fields_ = [("a", c_int)]
 
         class ANON_U(Union):
-            _fields_ = [("_", ANON_S),
-                        ("b", c_int)]
+            _fields_ = [("_", ANON_S), ("b", c_int)]
             _anonymous_ = ["_"]
 
         class Y(Structure):
-            _fields_ = [("x", c_int),
-                        ("_", ANON_U),
-                        ("y", c_int)]
+            _fields_ = [("x", c_int), ("_", ANON_U), ("y", c_int)]
             _anonymous_ = ["_"]
 
         self.assertEqual(Y.x.offset, 0)

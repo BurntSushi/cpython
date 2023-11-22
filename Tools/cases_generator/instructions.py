@@ -82,7 +82,9 @@ class Instruction:
             effect for effect in inst.inputs if isinstance(effect, parsing.CacheEffect)
         ]
         self.cache_offset = sum(c.size for c in self.cache_effects)
-        self.needs_this_instr = variable_used(self.inst, "this_instr") or any(c.name != UNUSED for c in self.cache_effects)
+        self.needs_this_instr = variable_used(self.inst, "this_instr") or any(
+            c.name != UNUSED for c in self.cache_effects
+        )
         self.input_effects = [
             effect for effect in inst.inputs if isinstance(effect, StackEffect)
         ]

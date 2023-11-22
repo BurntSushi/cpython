@@ -39,7 +39,6 @@ class Timer:
 
 
 class TestCase(unittest.TestCase):
-
     def test_enter(self):
         l = []
         fun = lambda x: l.append(x)
@@ -195,6 +194,7 @@ class TestCase(unittest.TestCase):
 
     def test_args_kwargs(self):
         seq = []
+
         def fun(*a, **b):
             seq.append((a, b))
 
@@ -202,15 +202,12 @@ class TestCase(unittest.TestCase):
         scheduler = sched.scheduler(time.time, time.sleep)
         scheduler.enterabs(now, 1, fun)
         scheduler.enterabs(now, 1, fun, argument=(1, 2))
-        scheduler.enterabs(now, 1, fun, argument=('a', 'b'))
+        scheduler.enterabs(now, 1, fun, argument=("a", "b"))
         scheduler.enterabs(now, 1, fun, argument=(1, 2), kwargs={"foo": 3})
         scheduler.run()
-        self.assertCountEqual(seq, [
-            ((), {}),
-            ((1, 2), {}),
-            (('a', 'b'), {}),
-            ((1, 2), {'foo': 3})
-        ])
+        self.assertCountEqual(
+            seq, [((), {}), ((1, 2), {}), (("a", "b"), {}), ((1, 2), {"foo": 3})]
+        )
 
     def test_run_non_blocking(self):
         l = []

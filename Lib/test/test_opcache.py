@@ -8,7 +8,7 @@ from test.support import threading_helper, check_impl_detail
 
 # Skip this module on other interpreters, it is cpython specific:
 if check_impl_detail(cpython=False):
-    raise unittest.SkipTest('implementation detail specific to cpython')
+    raise unittest.SkipTest("implementation detail specific to cpython")
 
 import _testinternalcapi
 
@@ -28,6 +28,7 @@ def disabling_optimizer(func):
 class TestLoadSuperAttrCache(unittest.TestCase):
     def test_descriptor_not_double_executed_on_spec_fail(self):
         calls = []
+
         class Descriptor:
             def __get__(self, instance, owner):
                 calls.append((instance, owner))
@@ -56,6 +57,7 @@ class TestLoadAttrCache(unittest.TestCase):
         class C:
             def __init__(self):
                 self.x = 1
+
             x = Descriptor()
 
         def f(o):
@@ -921,9 +923,7 @@ class TestRacesDoNotCrash(unittest.TestCase):
                 item.__globals__[None] = None
 
         opname = "LOAD_GLOBAL_MODULE"
-        self.assert_races_do_not_crash(
-            opname, get_items, read, write, check_items=True
-        )
+        self.assert_races_do_not_crash(opname, get_items, read, write, check_items=True)
 
     def test_store_attr_instance_value(self):
         def get_items():
@@ -1018,50 +1018,39 @@ class TestRacesDoNotCrash(unittest.TestCase):
         opname = "UNPACK_SEQUENCE_LIST"
         self.assert_races_do_not_crash(opname, get_items, read, write)
 
+
 class C:
     pass
 
-class TestInstanceDict(unittest.TestCase):
 
+class TestInstanceDict(unittest.TestCase):
     def setUp(self):
         c = C()
-        c.a, c.b, c.c = 0,0,0
+        c.a, c.b, c.c = 0, 0, 0
 
     def test_values_on_instance(self):
         c = C()
         c.a = 1
         C().b = 2
         c.c = 3
-        self.assertEqual(
-            _testinternalcapi.get_object_dict_values(c),
-            (1, '<NULL>', 3)
-        )
+        self.assertEqual(_testinternalcapi.get_object_dict_values(c), (1, "<NULL>", 3))
 
     def test_dict_materialization(self):
         c = C()
         c.a = 1
         c.b = 2
         c.__dict__
-        self.assertIs(
-            _testinternalcapi.get_object_dict_values(c),
-            None
-        )
+        self.assertIs(_testinternalcapi.get_object_dict_values(c), None)
 
     def test_dict_dematerialization(self):
         c = C()
         c.a = 1
         c.b = 2
         c.__dict__
-        self.assertIs(
-            _testinternalcapi.get_object_dict_values(c),
-            None
-        )
+        self.assertIs(_testinternalcapi.get_object_dict_values(c), None)
         for _ in range(100):
             c.a
-        self.assertEqual(
-            _testinternalcapi.get_object_dict_values(c),
-            (1, 2, '<NULL>')
-        )
+        self.assertEqual(_testinternalcapi.get_object_dict_values(c), (1, 2, "<NULL>"))
 
     def test_dict_dematerialization_multiple_refs(self):
         c = C()
@@ -1070,10 +1059,7 @@ class TestInstanceDict(unittest.TestCase):
         d = c.__dict__
         for _ in range(100):
             c.a
-        self.assertIs(
-            _testinternalcapi.get_object_dict_values(c),
-            None
-        )
+        self.assertIs(_testinternalcapi.get_object_dict_values(c), None)
         self.assertIs(c.__dict__, d)
 
     def test_dict_dematerialization_copy(self):
@@ -1084,23 +1070,14 @@ class TestInstanceDict(unittest.TestCase):
         for _ in range(100):
             c.a
             c2.a
-        self.assertEqual(
-            _testinternalcapi.get_object_dict_values(c),
-            (1, 2, '<NULL>')
-        )
-        self.assertEqual(
-            _testinternalcapi.get_object_dict_values(c2),
-            (1, 2, '<NULL>')
-        )
+        self.assertEqual(_testinternalcapi.get_object_dict_values(c), (1, 2, "<NULL>"))
+        self.assertEqual(_testinternalcapi.get_object_dict_values(c2), (1, 2, "<NULL>"))
         c3 = copy.deepcopy(c)
         for _ in range(100):
             c.a
             c3.a
-        self.assertEqual(
-            _testinternalcapi.get_object_dict_values(c),
-            (1, 2, '<NULL>')
-        )
-        #NOTE -- c3.__dict__ does not de-materialize
+        self.assertEqual(_testinternalcapi.get_object_dict_values(c), (1, 2, "<NULL>"))
+        # NOTE -- c3.__dict__ does not de-materialize
 
     def test_dict_dematerialization_pickle(self):
         c = C()
@@ -1110,31 +1087,21 @@ class TestInstanceDict(unittest.TestCase):
         for _ in range(100):
             c.a
             c2.a
-        self.assertEqual(
-            _testinternalcapi.get_object_dict_values(c),
-            (1, 2, '<NULL>')
-        )
-        self.assertEqual(
-            _testinternalcapi.get_object_dict_values(c2),
-            (1, 2, '<NULL>')
-        )
+        self.assertEqual(_testinternalcapi.get_object_dict_values(c), (1, 2, "<NULL>"))
+        self.assertEqual(_testinternalcapi.get_object_dict_values(c2), (1, 2, "<NULL>"))
 
     def test_dict_dematerialization_subclass(self):
-        class D(dict): pass
+        class D(dict):
+            pass
+
         c = C()
         c.a = 1
         c.b = 2
         c.__dict__ = D(c.__dict__)
         for _ in range(100):
             c.a
-        self.assertIs(
-            _testinternalcapi.get_object_dict_values(c),
-            None
-        )
-        self.assertEqual(
-            c.__dict__,
-            {'a':1, 'b':2}
-        )
+        self.assertIs(_testinternalcapi.get_object_dict_values(c), None)
+        self.assertEqual(c.__dict__, {"a": 1, "b": 2})
 
 
 if __name__ == "__main__":

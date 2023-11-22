@@ -2,8 +2,7 @@ import _ctypes_test
 import sys
 import unittest
 from test import support
-from ctypes import (CDLL, Structure, POINTER, create_string_buffer,
-                    c_char, c_char_p)
+from ctypes import CDLL, Structure, POINTER, create_string_buffer, c_char, c_char_p
 
 
 lib = CDLL(_ctypes_test.__file__)
@@ -14,6 +13,7 @@ class StringPtrTestCase(unittest.TestCase):
     def test__POINTER_c_char(self):
         class X(Structure):
             _fields_ = [("str", POINTER(c_char))]
+
         x = X()
 
         # NULL pointer access
@@ -33,6 +33,7 @@ class StringPtrTestCase(unittest.TestCase):
     def test__c_char_p(self):
         class X(Structure):
             _fields_ = [("str", c_char_p)]
+
         x = X()
 
         # c_char_p and Python string is compatible
@@ -43,7 +44,6 @@ class StringPtrTestCase(unittest.TestCase):
         b = create_string_buffer(b"Hello, World")
         self.assertRaises(TypeError, setattr, x, b"str", b)
 
-
     def test_functions(self):
         strchr = lib.my_strchr
         strchr.restype = c_char_p
@@ -52,8 +52,7 @@ class StringPtrTestCase(unittest.TestCase):
         # c_char_p and create_string_buffer are now compatible
         strchr.argtypes = c_char_p, c_char
         self.assertEqual(strchr(b"abcdef", b"c"), b"cdef")
-        self.assertEqual(strchr(create_string_buffer(b"abcdef"), b"c"),
-                         b"cdef")
+        self.assertEqual(strchr(create_string_buffer(b"abcdef"), b"c"), b"cdef")
 
         # POINTER(c_char) and Python string is NOT compatible
         # POINTER(c_char) and create_string_buffer() is compatible
@@ -76,5 +75,5 @@ class StringPtrTestCase(unittest.TestCase):
         # the pointer is hanging and using it would reference freed memory.
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

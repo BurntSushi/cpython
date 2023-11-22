@@ -46,7 +46,7 @@ class Test(unittest.TestCase):
         self.assertEqual(get_errno(), 32)
         set_errno(0)
 
-    @unittest.skipUnless(os.name == "nt", 'Test specific to Windows')
+    @unittest.skipUnless(os.name == "nt", "Test specific to Windows")
     def test_GetLastError(self):
         dll = ctypes.WinDLL("kernel32", use_last_error=True)
         GetModuleHandle = dll.GetModuleHandleA

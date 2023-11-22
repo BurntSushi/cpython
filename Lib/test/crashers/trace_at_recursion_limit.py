@@ -10,17 +10,20 @@ import sys
 def x():
     pass
 
+
 def g(*args):
-    if True: # change to True to crash interpreter
+    if True:  # change to True to crash interpreter
         try:
             x()
         except:
             pass
     return g
 
+
 def f():
     print(sys.getrecursionlimit())
     f()
+
 
 sys.settrace(g)
 

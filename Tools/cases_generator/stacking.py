@@ -375,7 +375,9 @@ def write_macro_instr(mac: MacroInstruction, out: Formatter) -> None:
         if mac.predicted:
             out.emit(f"PREDICTED({mac.name});")
             if needs_this:
-                out.emit(f"_Py_CODEUNIT *this_instr = next_instr - {mac.cache_offset+1};")
+                out.emit(
+                    f"_Py_CODEUNIT *this_instr = next_instr - {mac.cache_offset+1};"
+                )
         out.static_assert_family_size(mac.name, mac.family, mac.cache_offset)
         try:
             next_instr_is_set = write_components(

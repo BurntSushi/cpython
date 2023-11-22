@@ -4,13 +4,33 @@ import math
 import struct
 import sys
 import unittest
-from ctypes import (Structure, Union, LittleEndianUnion, BigEndianUnion,
-                    BigEndianStructure, LittleEndianStructure,
-                    POINTER, sizeof, cast,
-                    c_byte, c_ubyte, c_char, c_wchar, c_void_p,
-                    c_short, c_ushort, c_int, c_uint,
-                    c_long, c_ulong, c_longlong, c_ulonglong,
-                    c_uint32, c_float, c_double)
+from ctypes import (
+    Structure,
+    Union,
+    LittleEndianUnion,
+    BigEndianUnion,
+    BigEndianStructure,
+    LittleEndianStructure,
+    POINTER,
+    sizeof,
+    cast,
+    c_byte,
+    c_ubyte,
+    c_char,
+    c_wchar,
+    c_void_p,
+    c_short,
+    c_ushort,
+    c_int,
+    c_uint,
+    c_long,
+    c_ulong,
+    c_longlong,
+    c_ulonglong,
+    c_uint32,
+    c_float,
+    c_double,
+)
 
 
 def bin(s):
@@ -23,6 +43,7 @@ def bin(s):
 # LITTLE ENDIAN byte order.
 #
 # For Structures and Unions, these types are created on demand.
+
 
 class Test(unittest.TestCase):
     def test_slots(self):
@@ -174,7 +195,6 @@ class Test(unittest.TestCase):
         self.assertIs(c_char.__ctype_be__, c_char)
 
     def test_struct_fields_unsupported_byte_order(self):
-
         fields = [
             ("a", c_ubyte),
             ("b", c_byte),
@@ -192,15 +212,19 @@ class Test(unittest.TestCase):
             ("b1", c_byte, 3),
             ("b2", c_byte, 3),
             ("b3", c_byte, 2),
-            ("a", c_int * 3 * 3 * 3)
+            ("a", c_int * 3 * 3 * 3),
         ]
 
         # these fields do not support different byte order:
         for typ in c_wchar, c_void_p, POINTER(c_int):
             with self.assertRaises(TypeError):
-                class T(BigEndianStructure if sys.byteorder == "little" else LittleEndianStructure):
-                    _fields_ = fields + [("x", typ)]
 
+                class T(
+                    BigEndianStructure
+                    if sys.byteorder == "little"
+                    else LittleEndianStructure
+                ):
+                    _fields_ = fields + [("x", typ)]
 
     def test_struct_struct(self):
         # nested structures with different byteorders
@@ -208,17 +232,17 @@ class Test(unittest.TestCase):
         # create nested structures with given byteorders and set memory to data
 
         for nested, data in (
-            (BigEndianStructure, b'\0\0\0\1\0\0\0\2'),
-            (LittleEndianStructure, b'\1\0\0\0\2\0\0\0'),
+            (BigEndianStructure, b"\0\0\0\1\0\0\0\2"),
+            (LittleEndianStructure, b"\1\0\0\0\2\0\0\0"),
         ):
             for parent in (
                 BigEndianStructure,
                 LittleEndianStructure,
                 Structure,
             ):
+
                 class NestedStructure(nested):
-                    _fields_ = [("x", c_uint32),
-                                ("y", c_uint32)]
+                    _fields_ = [("x", c_uint32), ("y", c_uint32)]
 
                 class TestStructure(parent):
                     _fields_ = [("point", NestedStructure)]
@@ -244,10 +268,7 @@ class Test(unittest.TestCase):
             fmt = "<bxhid"
 
         class S(base):
-            _fields_ = [("b", c_byte),
-                        ("h", c_short),
-                        ("i", c_int),
-                        ("d", c_double)]
+            _fields_ = [("b", c_byte), ("h", c_short), ("i", c_int), ("d", c_double)]
 
         s1 = S(0x12, 0x1234, 0x12345678, 3.14)
         s2 = struct.pack(fmt, 0x12, 0x1234, 0x12345678, 3.14)
@@ -263,14 +284,14 @@ class Test(unittest.TestCase):
 
         class S(base):
             _pack_ = 1
-            _fields_ = [("b", c_byte),
-                        ("h", c_short),
-
-                        ("_1", c_byte),
-                        ("i", c_int),
-
-                        ("_2", c_byte),
-                        ("d", c_double)]
+            _fields_ = [
+                ("b", c_byte),
+                ("h", c_short),
+                ("_1", c_byte),
+                ("i", c_int),
+                ("_2", c_byte),
+                ("d", c_double),
+            ]
 
         s1 = S()
         s1.b = 0x12
@@ -289,15 +310,14 @@ class Test(unittest.TestCase):
 
         class S(Structure):
             _pack_ = 1
-            _fields_ = [("b", c_byte),
-
-                        ("h", c_short),
-
-                        ("_1", c_byte),
-                        ("i", c_int),
-
-                        ("_2", c_byte),
-                        ("d", c_double)]
+            _fields_ = [
+                ("b", c_byte),
+                ("h", c_short),
+                ("_1", c_byte),
+                ("i", c_int),
+                ("_2", c_byte),
+                ("d", c_double),
+            ]
 
         s1 = S()
         s1.b = 0x12
@@ -308,7 +328,6 @@ class Test(unittest.TestCase):
         self.assertEqual(bin(s1), bin(s2))
 
     def test_union_fields_unsupported_byte_order(self):
-
         fields = [
             ("a", c_ubyte),
             ("b", c_byte),
@@ -326,13 +345,16 @@ class Test(unittest.TestCase):
             ("b1", c_byte, 3),
             ("b2", c_byte, 3),
             ("b3", c_byte, 2),
-            ("a", c_int * 3 * 3 * 3)
+            ("a", c_int * 3 * 3 * 3),
         ]
 
         # these fields do not support different byte order:
         for typ in c_wchar, c_void_p, POINTER(c_int):
             with self.assertRaises(TypeError):
-                class T(BigEndianUnion if sys.byteorder == "little" else LittleEndianUnion):
+
+                class T(
+                    BigEndianUnion if sys.byteorder == "little" else LittleEndianUnion
+                ):
                     _fields_ = fields + [("x", typ)]
 
     def test_union_struct(self):
@@ -341,17 +363,17 @@ class Test(unittest.TestCase):
         # create nested structures in unions with given byteorders and set memory to data
 
         for nested, data in (
-            (BigEndianStructure, b'\0\0\0\1\0\0\0\2'),
-            (LittleEndianStructure, b'\1\0\0\0\2\0\0\0'),
+            (BigEndianStructure, b"\0\0\0\1\0\0\0\2"),
+            (LittleEndianStructure, b"\1\0\0\0\2\0\0\0"),
         ):
             for parent in (
                 BigEndianUnion,
                 LittleEndianUnion,
                 Union,
             ):
+
                 class NestedStructure(nested):
-                    _fields_ = [("x", c_uint32),
-                                ("y", c_uint32)]
+                    _fields_ = [("x", c_uint32), ("y", c_uint32)]
 
                 class TestUnion(parent):
                     _fields_ = [("point", NestedStructure)]

@@ -9,7 +9,7 @@ from test import test_tools
 
 
 def skip_if_different_mount_drives():
-    if sys.platform != 'win32':
+    if sys.platform != "win32":
         return
     ROOT = os.path.dirname(os.path.dirname(__file__))
     root_drive = os.path.splitroot(ROOT)[0]
@@ -23,11 +23,13 @@ def skip_if_different_mount_drives():
             f"directory have different mount drives "
             f"({cwd_drive} and {root_drive})"
         )
+
+
 skip_if_different_mount_drives()
 
 
-test_tools.skip_if_missing('cases_generator')
-with test_tools.imports_under_tool('cases_generator'):
+test_tools.skip_if_missing("cases_generator")
+with test_tools.imports_under_tool("cases_generator"):
     import generate_cases
     import analysis
     import formatting
@@ -39,6 +41,7 @@ def handle_stderr():
         return contextlib.nullcontext()
     else:
         return support.captured_stderr()
+
 
 class TestEffects(unittest.TestCase):
     def test_effect_sizes(self):

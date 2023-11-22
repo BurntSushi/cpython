@@ -11,8 +11,9 @@ import sys
 from functools import wraps
 from test.support.import_helper import import_fresh_module
 
-C = import_fresh_module('decimal', fresh=['_decimal'])
-P = import_fresh_module('decimal', blocked=['_decimal'])
+C = import_fresh_module("decimal", fresh=["_decimal"])
+P = import_fresh_module("decimal", blocked=["_decimal"])
+
 
 #
 # NOTE: This is the pi function from the decimal documentation, modified
@@ -26,11 +27,12 @@ def pi_float():
     lasts, t, s, n, na, d, da = 0, 3.0, 3, 1, 0, 0, 24
     while s != lasts:
         lasts = s
-        n, na = n+na, na+8
-        d, da = d+da, da+32
+        n, na = n + na, na + 8
+        d, da = d + da, da + 32
         t = (t * n) / d
         s += t
     return s
+
 
 def pi_cdecimal():
     """cdecimal"""
@@ -38,11 +40,12 @@ def pi_cdecimal():
     lasts, t, s, n, na, d, da = D(0), D(3), D(3), D(1), D(0), D(0), D(24)
     while s != lasts:
         lasts = s
-        n, na = n+na, na+8
-        d, da = d+da, da+32
+        n, na = n + na, na + 8
+        d, da = d + da, da + 32
         t = (t * n) / d
         s += t
     return s
+
 
 def pi_decimal():
     """decimal"""
@@ -50,21 +53,23 @@ def pi_decimal():
     lasts, t, s, n, na, d, da = D(0), D(3), D(3), D(1), D(0), D(0), D(24)
     while s != lasts:
         lasts = s
-        n, na = n+na, na+8
-        d, da = d+da, da+32
+        n, na = n + na, na + 8
+        d, da = d + da, da + 32
         t = (t * n) / d
         s += t
     return s
 
+
 def factorial(n, m):
-    if (n > m):
+    if n > m:
         return factorial(m, n)
     elif m == 0:
         return 1
     elif n == m:
         return n
     else:
-        return factorial(n, (n+m)//2) * factorial((n+m)//2 + 1, m)
+        return factorial(n, (n + m) // 2) * factorial((n + m) // 2 + 1, m)
+
 
 # Fix failed test cases caused by CVE-2020-10735 patch.
 # See gh-95778 for details.
@@ -77,8 +82,11 @@ def increase_int_max_str_digits(maxdigits):
             ans = func(*args, **kwargs)
             sys.set_int_max_str_digits(previous_int_limit)
             return ans
+
         return wrapper
+
     return _increase_int_max_str_digits
+
 
 def test_calc_pi():
     print("\n# ======================================================================")
@@ -100,7 +108,8 @@ def test_calc_pi():
                 x = func()
             print("%s:" % func.__name__.replace("pi_", ""))
             print("result: %s" % str(x))
-            print("time: %fs\n" % (time.time()-start))
+            print("time: %fs\n" % (time.time() - start))
+
 
 @increase_int_max_str_digits(maxdigits=10000000)
 def test_factorial():
@@ -115,7 +124,6 @@ def test_factorial():
         c.Emin = C.MIN_EMIN
 
     for n in [100000, 1000000]:
-
         print("n = %d\n" % n)
 
         if C is not None:
@@ -127,8 +135,8 @@ def test_factorial():
             sx = str(x)
             end_conv = time.time()
             print("cdecimal:")
-            print("calculation time: %fs" % (end_calc-start_calc))
-            print("conversion time: %fs\n" % (end_conv-start_conv))
+            print("calculation time: %fs" % (end_calc - start_calc))
+            print("conversion time: %fs\n" % (end_conv - start_conv))
 
         # Python integers
         start_calc = time.time()
@@ -136,14 +144,15 @@ def test_factorial():
         end_calc = time.time()
         start_conv = time.time()
         sy = str(y)
-        end_conv =  time.time()
+        end_conv = time.time()
 
         print("int:")
-        print("calculation time: %fs" % (end_calc-start_calc))
-        print("conversion time: %fs\n\n" % (end_conv-start_conv))
+        print("calculation time: %fs" % (end_calc - start_calc))
+        print("conversion time: %fs\n\n" % (end_conv - start_conv))
 
         if C is not None:
-            assert(sx == sy)
+            assert sx == sy
+
 
 if __name__ == "__main__":
     test_calc_pi()

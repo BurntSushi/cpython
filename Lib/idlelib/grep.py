@@ -54,9 +54,11 @@ def findfiles(folder, pattern, recursive):
         recursive: True to include subdirectories.
     """
     for dirpath, _, filenames in os.walk(folder, onerror=walk_error):
-        yield from (os.path.join(dirpath, name)
-                    for name in filenames
-                    if fnmatch.fnmatch(name, pattern))
+        yield from (
+            os.path.join(dirpath, name)
+            for name in filenames
+            if fnmatch.fnmatch(name, pattern)
+        )
         if not recursive:
             break
 
@@ -117,8 +119,10 @@ class GrepDialog(SearchDialogBase):
     def create_other_buttons(self):
         "Add check button to recurse down subdirectories."
         btn = Checkbutton(
-                self.make_frame()[0], variable=self.recvar,
-                text="Recurse down subdirectories")
+            self.make_frame()[0],
+            variable=self.recvar,
+            text="Recurse down subdirectories",
+        )
         btn.pack(side="top", fill="both")
 
     def create_command_buttons(self):
@@ -142,6 +146,7 @@ class GrepDialog(SearchDialogBase):
             self.top.bell()
             return
         from idlelib.outwin import OutputWindow  # leave here!
+
         save = sys.stdout
         try:
             sys.stdout = OutputWindow(self.flist)
@@ -172,17 +177,20 @@ class GrepDialog(SearchDialogBase):
         try:
             for fn in filelist:
                 try:
-                    with open(fn, errors='replace') as f:
+                    with open(fn, errors="replace") as f:
                         for lineno, line in enumerate(f, 1):
-                            if line[-1:] == '\n':
+                            if line[-1:] == "\n":
                                 line = line[:-1]
                             if prog.search(line):
                                 sys.stdout.write(f"{fn}: {lineno}: {line}\n")
                                 hits += 1
                 except OSError as msg:
                     print(msg)
-            print(f"Hits found: {hits}\n(Hint: right-click to open locations.)"
-                  if hits else "No hits.")
+            print(
+                f"Hits found: {hits}\n(Hint: right-click to open locations.)"
+                if hits
+                else "No hits."
+            )
         except AttributeError:
             # Tk window has been closed, OutputWindow.text = None,
             # so in OW.write, OW.text.insert fails.
@@ -196,7 +204,7 @@ def _grep_dialog(parent):  # htest #
 
     top = Toplevel(parent)
     top.title("Test GrepDialog")
-    x, y = map(int, parent.geometry().split('+')[1:])
+    x, y = map(int, parent.geometry().split("+")[1:])
     top.geometry(f"+{x}+{y + 175}")
 
     flist = PyShellFileList(top)
@@ -213,9 +221,12 @@ def _grep_dialog(parent):  # htest #
     button = Button(frame, text="Show GrepDialog", command=show_grep_dialog)
     button.pack()
 
+
 if __name__ == "__main__":
     from unittest import main
-    main('idlelib.idle_test.test_grep', verbosity=2, exit=False)
+
+    main("idlelib.idle_test.test_grep", verbosity=2, exit=False)
 
     from idlelib.idle_test.htest import run
+
     run(_grep_dialog)

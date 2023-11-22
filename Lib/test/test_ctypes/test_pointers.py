@@ -3,24 +3,52 @@ import array
 import ctypes
 import sys
 import unittest
-from ctypes import (CDLL, CFUNCTYPE, Structure,
-                    POINTER, pointer, _Pointer, _pointer_type_cache,
-                    byref, sizeof,
-                    c_void_p, c_char_p,
-                    c_byte, c_ubyte, c_short, c_ushort, c_int, c_uint,
-                    c_long, c_ulong, c_longlong, c_ulonglong,
-                    c_float, c_double)
+from ctypes import (
+    CDLL,
+    CFUNCTYPE,
+    Structure,
+    POINTER,
+    pointer,
+    _Pointer,
+    _pointer_type_cache,
+    byref,
+    sizeof,
+    c_void_p,
+    c_char_p,
+    c_byte,
+    c_ubyte,
+    c_short,
+    c_ushort,
+    c_int,
+    c_uint,
+    c_long,
+    c_ulong,
+    c_longlong,
+    c_ulonglong,
+    c_float,
+    c_double,
+)
 
 
-ctype_types = [c_byte, c_ubyte, c_short, c_ushort, c_int, c_uint,
-                 c_long, c_ulong, c_longlong, c_ulonglong, c_double, c_float]
-python_types = [int, int, int, int, int, int,
-                int, int, int, int, float, float]
+ctype_types = [
+    c_byte,
+    c_ubyte,
+    c_short,
+    c_ushort,
+    c_int,
+    c_uint,
+    c_long,
+    c_ulong,
+    c_longlong,
+    c_ulonglong,
+    c_double,
+    c_float,
+]
+python_types = [int, int, int, int, int, int, int, int, int, int, float, float]
 
 
 class PointersTestCase(unittest.TestCase):
     def test_pointer_crash(self):
-
         class A(POINTER(c_ulong)):
             pass
 
@@ -81,6 +109,7 @@ class PointersTestCase(unittest.TestCase):
             for i in range(10):
                 self.result.append(arg[i])
             return 0
+
         callback = PROTOTYPE(func)
 
         dll = CDLL(_ctypes_test.__file__)
@@ -103,15 +132,13 @@ class PointersTestCase(unittest.TestCase):
                 del p[0]
 
     def test_from_address(self):
-        a = array.array('i', [100, 200, 300, 400, 500])
+        a = array.array("i", [100, 200, 300, 400, 500])
         addr = a.buffer_info()[0]
         p = POINTER(POINTER(c_int))
 
     def test_other(self):
         class Table(Structure):
-            _fields_ = [("a", c_int),
-                        ("b", c_int),
-                        ("c", c_int)]
+            _fields_ = [("a", c_int), ("b", c_int), ("c", c_int)]
 
         pt = pointer(Table(1, 2, 3))
 
@@ -137,11 +164,11 @@ class PointersTestCase(unittest.TestCase):
         func = dll._testfunc_c_p_p
         func.restype = c_char_p
         argv = (c_char_p * 2)()
-        argc = c_int( 2 )
-        argv[0] = b'hello'
-        argv[1] = b'world'
-        result = func( byref(argc), argv )
-        self.assertEqual(result, b'world')
+        argc = c_int(2)
+        argv[0] = b"hello"
+        argv[1] = b"world"
+        result = func(byref(argc), argv)
+        self.assertEqual(result, b"world")
 
     def test_bug_1467852(self):
         # http://sourceforge.net/tracker/?func=detail&atid=532154&aid=1467852&group_id=71702
@@ -153,25 +180,25 @@ class PointersTestCase(unittest.TestCase):
         p = pointer(x)
         pp = pointer(p)
         q = pointer(y)
-        pp[0] = q         # <==
+        pp[0] = q  # <==
         self.assertEqual(p[0], 6)
+
     def test_c_void_p(self):
         # http://sourceforge.net/tracker/?func=detail&aid=1518190&group_id=5470&atid=105470
         if sizeof(c_void_p) == 4:
-            self.assertEqual(c_void_p(0xFFFFFFFF).value,
-                                 c_void_p(-1).value)
-            self.assertEqual(c_void_p(0xFFFFFFFFFFFFFFFF).value,
-                                 c_void_p(-1).value)
+            self.assertEqual(c_void_p(0xFFFFFFFF).value, c_void_p(-1).value)
+            self.assertEqual(c_void_p(0xFFFFFFFFFFFFFFFF).value, c_void_p(-1).value)
         elif sizeof(c_void_p) == 8:
-            self.assertEqual(c_void_p(0xFFFFFFFF).value,
-                                 0xFFFFFFFF)
-            self.assertEqual(c_void_p(0xFFFFFFFFFFFFFFFF).value,
-                                 c_void_p(-1).value)
-            self.assertEqual(c_void_p(0xFFFFFFFFFFFFFFFFFFFFFFFF).value,
-                                 c_void_p(-1).value)
+            self.assertEqual(c_void_p(0xFFFFFFFF).value, 0xFFFFFFFF)
+            self.assertEqual(c_void_p(0xFFFFFFFFFFFFFFFF).value, c_void_p(-1).value)
+            self.assertEqual(
+                c_void_p(0xFFFFFFFFFFFFFFFFFFFFFFFF).value, c_void_p(-1).value
+            )
 
-        self.assertRaises(TypeError, c_void_p, 3.14) # make sure floats are NOT accepted
-        self.assertRaises(TypeError, c_void_p, object()) # nor other objects
+        self.assertRaises(
+            TypeError, c_void_p, 3.14
+        )  # make sure floats are NOT accepted
+        self.assertRaises(TypeError, c_void_p, object())  # nor other objects
 
     def test_pointers_bool(self):
         # NULL pointers have a boolean False value, non-NULL pointers True.
@@ -187,14 +214,14 @@ class PointersTestCase(unittest.TestCase):
             self.assertEqual(bool(mth), True)
 
     def test_pointer_type_name(self):
-        LargeNamedType = type('T' * 2 ** 25, (Structure,), {})
+        LargeNamedType = type("T" * 2**25, (Structure,), {})
         self.assertTrue(POINTER(LargeNamedType))
 
         # to not leak references, we must clean _pointer_type_cache
         del _pointer_type_cache[LargeNamedType]
 
     def test_pointer_type_str_name(self):
-        large_string = 'T' * 2 ** 25
+        large_string = "T" * 2**25
         P = POINTER(large_string)
         self.assertTrue(P)
 
@@ -205,5 +232,5 @@ class PointersTestCase(unittest.TestCase):
         self.assertRaises(TypeError, _Pointer.set_type, 42)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -15,7 +15,10 @@ while True:
     sys.stdin.seek(0)
     statm = sys.stdin.read()
     data = int(statm.split()[5])
-    sys.stdout.write(" ... process data size: {data:.1f}G\n"
-                     .format(data=data * page_size / (1024 ** 3)))
+    sys.stdout.write(
+        " ... process data size: {data:.1f}G\n".format(
+            data=data * page_size / (1024**3)
+        )
+    )
     sys.stdout.flush()
     time.sleep(1)
