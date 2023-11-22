@@ -9,7 +9,7 @@ class FreezableDefaultDict(collections.defaultdict):
     as to prevent mutation during iteration.
 
     >>> dd = FreezableDefaultDict(list)
-    >>> dd[0].append('1')
+    >>> dd[0].append("1")
     >>> dd.freeze()
     >>> dd[1]
     []

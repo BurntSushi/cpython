@@ -306,7 +306,7 @@ class _SpoofOut(StringIO):
 def _ellipsis_match(want, got):
     """
     Essentially the only subtle case:
-    >>> _ellipsis_match('aa...aa', 'aaa')
+    >>> _ellipsis_match("aa...aa", "aaa")
     False
     """
     if ELLIPSIS_MARKER not in want:
@@ -1234,9 +1234,9 @@ class DocTestRunner:
 
         >>> tests = DocTestFinder().find(_TestClass)
         >>> runner = DocTestRunner(verbose=False)
-        >>> tests.sort(key = lambda test: test.name)
+        >>> tests.sort(key=lambda test: test.name)
         >>> for test in tests:
-        ...     print(test.name, '->', runner.run(test))
+        ...     print(test.name, "->", runner.run(test))
         _TestClass -> TestResults(failed=0, attempted=2)
         _TestClass.__init__ -> TestResults(failed=0, attempted=2)
         _TestClass.get -> TestResults(failed=0, attempted=2)
@@ -1892,8 +1892,7 @@ class DebugRunner(DocTestRunner):
     It contains the test, the example, and the original exception:
 
       >>> runner = DebugRunner(verbose=False)
-      >>> test = DocTestParser().get_doctest('>>> raise KeyError\n42',
-      ...                                    {}, 'foo', 'foo.py', 0)
+      >>> test = DocTestParser().get_doctest(">>> raise KeyError\n42", {}, "foo", "foo.py", 0)
       >>> try:
       ...     runner.run(test)
       ... except UnexpectedException as f:
@@ -1906,7 +1905,7 @@ class DebugRunner(DocTestRunner):
       '42\n'
 
       >>> exc_info = failure.exc_info
-      >>> raise exc_info[1] # Already has the traceback
+      >>> raise exc_info[1]  # Already has the traceback
       Traceback (most recent call last):
       ...
       KeyError
@@ -1916,16 +1915,22 @@ class DebugRunner(DocTestRunner):
 
     If the output doesn't match, then a DocTestFailure is raised:
 
-      >>> test = DocTestParser().get_doctest('''
+      >>> test = DocTestParser().get_doctest(
+      ...     '''
       ...      >>> x = 1
       ...      >>> x
       ...      2
-      ...      ''', {}, 'foo', 'foo.py', 0)
+      ...      ''',
+      ...     {},
+      ...     "foo",
+      ...     "foo.py",
+      ...     0,
+      ... )
 
       >>> try:
-      ...    runner.run(test)
+      ...     runner.run(test)
       ... except DocTestFailure as f:
-      ...    failure = f
+      ...     failure = f
 
     DocTestFailure objects provide access to the test:
 
@@ -1944,29 +1949,41 @@ class DebugRunner(DocTestRunner):
 
     If a failure or error occurs, the globals are left intact:
 
-      >>> del test.globs['__builtins__']
+      >>> del test.globs["__builtins__"]
       >>> test.globs
       {'x': 1}
 
-      >>> test = DocTestParser().get_doctest('''
+      >>> test = DocTestParser().get_doctest(
+      ...     '''
       ...      >>> x = 2
       ...      >>> raise KeyError
-      ...      ''', {}, 'foo', 'foo.py', 0)
+      ...      ''',
+      ...     {},
+      ...     "foo",
+      ...     "foo.py",
+      ...     0,
+      ... )
 
       >>> runner.run(test)
       Traceback (most recent call last):
       ...
       doctest.UnexpectedException: <DocTest foo from foo.py:0 (2 examples)>
 
-      >>> del test.globs['__builtins__']
+      >>> del test.globs["__builtins__"]
       >>> test.globs
       {'x': 2}
 
     But the globals are cleared if there is no error:
 
-      >>> test = DocTestParser().get_doctest('''
+      >>> test = DocTestParser().get_doctest(
+      ...     '''
       ...      >>> x = 2
-      ...      ''', {}, 'foo', 'foo.py', 0)
+      ...      ''',
+      ...     {},
+      ...     "foo",
+      ...     "foo.py",
+      ...     0,
+      ... )
 
       >>> runner.run(test)
       TestResults(failed=0, attempted=1)
@@ -2286,12 +2303,10 @@ def set_unittest_reportflags(flags):
 
       >>> import doctest
       >>> old = doctest._unittest_reportflags
-      >>> doctest.set_unittest_reportflags(REPORT_NDIFF |
-      ...                          REPORT_ONLY_FIRST_FAILURE) == old
+      >>> doctest.set_unittest_reportflags(REPORT_NDIFF | REPORT_ONLY_FIRST_FAILURE) == old
       True
 
-      >>> doctest._unittest_reportflags == (REPORT_NDIFF |
-      ...                                   REPORT_ONLY_FIRST_FAILURE)
+      >>> doctest._unittest_reportflags == (REPORT_NDIFF | REPORT_ONLY_FIRST_FAILURE)
       True
 
     Only reporting flags can be set:
@@ -2301,8 +2316,7 @@ def set_unittest_reportflags(flags):
       ...
       ValueError: ('Only reporting flags allowed', 8)
 
-      >>> doctest.set_unittest_reportflags(old) == (REPORT_NDIFF |
-      ...                                   REPORT_ONLY_FIRST_FAILURE)
+      >>> doctest.set_unittest_reportflags(old) == (REPORT_NDIFF | REPORT_ONLY_FIRST_FAILURE)
       True
     """
     global _unittest_reportflags
@@ -2391,8 +2405,7 @@ class DocTestCase(unittest.TestCase):
         UnexpectedException errors if there is an unexpected
         exception:
 
-          >>> test = DocTestParser().get_doctest('>>> raise KeyError\n42',
-          ...                {}, 'foo', 'foo.py', 0)
+          >>> test = DocTestParser().get_doctest(">>> raise KeyError\n42", {}, "foo", "foo.py", 0)
           >>> case = DocTestCase(test)
           >>> try:
           ...     case.debug()
@@ -2409,24 +2422,30 @@ class DocTestCase(unittest.TestCase):
           '42\n'
 
           >>> exc_info = failure.exc_info
-          >>> raise exc_info[1] # Already has the traceback
+          >>> raise exc_info[1]  # Already has the traceback
           Traceback (most recent call last):
           ...
           KeyError
 
         If the output doesn't match, then a DocTestFailure is raised:
 
-          >>> test = DocTestParser().get_doctest('''
+          >>> test = DocTestParser().get_doctest(
+          ...     '''
           ...      >>> x = 1
           ...      >>> x
           ...      2
-          ...      ''', {}, 'foo', 'foo.py', 0)
+          ...      ''',
+          ...     {},
+          ...     "foo",
+          ...     "foo.py",
+          ...     0,
+          ... )
           >>> case = DocTestCase(test)
 
           >>> try:
-          ...    case.debug()
+          ...     case.debug()
           ... except DocTestFailure as f:
-          ...    failure = f
+          ...     failure = f
 
         DocTestFailure objects provide access to the test:
 

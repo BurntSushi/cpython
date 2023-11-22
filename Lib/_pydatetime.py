@@ -2588,7 +2588,7 @@ class timezone(tzinfo):
         >>> tz = timezone.utc
         >>> repr(tz)
         'datetime.timezone.utc'
-        >>> tz = timezone(timedelta(hours=-5), 'EST')
+        >>> tz = timezone(timedelta(hours=-5), "EST")
         >>> repr(tz)
         "datetime.timezone(datetime.timedelta(-1, 68400), 'EST')"
         """

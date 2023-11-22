@@ -715,8 +715,8 @@ class NonCallableMock(Base):
         mocks using standard dot notation and unpacking a dictionary in the
         method call:
 
-        >>> attrs = {'method.return_value': 3, 'other.side_effect': KeyError}
-        >>> mock.configure_mock(**attrs)"""
+        >>> attrs = {"method.return_value": 3, "other.side_effect": KeyError}
+        """
         for arg, val in sorted(
             kwargs.items(),
             # we sort on the number of dots so that

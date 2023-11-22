@@ -45,7 +45,7 @@ def token_bytes(nbytes=None):
     If *nbytes* is ``None`` or not supplied, a reasonable
     default is used.
 
-    >>> token_bytes(16)  #doctest:+SKIP
+    >>> token_bytes(16)  # doctest:+SKIP
     b'\\xebr\\x17D*t\\xae\\xd4\\xe3S\\xb6\\xe2\\xebP1\\x8b'
 
     """
@@ -61,7 +61,7 @@ def token_hex(nbytes=None):
     hex digits.  If *nbytes* is ``None`` or not supplied, a reasonable
     default is used.
 
-    >>> token_hex(16)  #doctest:+SKIP
+    >>> token_hex(16)  # doctest:+SKIP
     'f9bf78b9a18ce6d46a0cd2b0b86df9da'
 
     """
@@ -74,7 +74,7 @@ def token_urlsafe(nbytes=None):
     The string has *nbytes* random bytes.  If *nbytes* is ``None``
     or not supplied, a reasonable default is used.
 
-    >>> token_urlsafe(16)  #doctest:+SKIP
+    >>> token_urlsafe(16)  # doctest:+SKIP
     'Drmhze6EPcv0fN_81Bj-nA'
 
     """

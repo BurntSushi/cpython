@@ -720,12 +720,12 @@ else:
 
         Usage example:
         >>> from ftplib import FTP_TLS
-        >>> ftps = FTP_TLS('ftp.python.org')
+        >>> ftps = FTP_TLS("ftp.python.org")
         >>> ftps.login()  # login anonymously previously securing control channel
         '230 Guest login ok, access restrictions apply.'
         >>> ftps.prot_p()  # switch to secure data connection
         '200 Protection level set to P'
-        >>> ftps.retrlines('LIST')  # list directory content securely
+        >>> ftps.retrlines("LIST")  # list directory content securely
         total 9
         drwxr-xr-x   8 root     wheel        1024 Jan  3  1994 .
         drwxr-xr-x   8 root     wheel        1024 Jan  3  1994 ..

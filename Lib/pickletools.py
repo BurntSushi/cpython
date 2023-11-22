@@ -217,7 +217,7 @@ from struct import unpack as _unpack
 def read_uint1(f):
     r"""
     >>> import io
-    >>> read_uint1(io.BytesIO(b'\xff'))
+    >>> read_uint1(io.BytesIO(b"\xff"))
     255
     """
 
@@ -235,9 +235,9 @@ uint1 = ArgumentDescriptor(
 def read_uint2(f):
     r"""
     >>> import io
-    >>> read_uint2(io.BytesIO(b'\xff\x00'))
+    >>> read_uint2(io.BytesIO(b"\xff\x00"))
     255
-    >>> read_uint2(io.BytesIO(b'\xff\xff'))
+    >>> read_uint2(io.BytesIO(b"\xff\xff"))
     65535
     """
 
@@ -258,9 +258,9 @@ uint2 = ArgumentDescriptor(
 def read_int4(f):
     r"""
     >>> import io
-    >>> read_int4(io.BytesIO(b'\xff\x00\x00\x00'))
+    >>> read_int4(io.BytesIO(b"\xff\x00\x00\x00"))
     255
-    >>> read_int4(io.BytesIO(b'\x00\x00\x00\x80')) == -(2**31)
+    >>> read_int4(io.BytesIO(b"\x00\x00\x00\x80")) == -(2**31)
     True
     """
 
@@ -281,9 +281,9 @@ int4 = ArgumentDescriptor(
 def read_uint4(f):
     r"""
     >>> import io
-    >>> read_uint4(io.BytesIO(b'\xff\x00\x00\x00'))
+    >>> read_uint4(io.BytesIO(b"\xff\x00\x00\x00"))
     255
-    >>> read_uint4(io.BytesIO(b'\x00\x00\x00\x80')) == 2**31
+    >>> read_uint4(io.BytesIO(b"\x00\x00\x00\x80")) == 2**31
     True
     """
 
@@ -304,9 +304,9 @@ uint4 = ArgumentDescriptor(
 def read_uint8(f):
     r"""
     >>> import io
-    >>> read_uint8(io.BytesIO(b'\xff\x00\x00\x00\x00\x00\x00\x00'))
+    >>> read_uint8(io.BytesIO(b"\xff\x00\x00\x00\x00\x00\x00\x00"))
     255
-    >>> read_uint8(io.BytesIO(b'\xff' * 8)) == 2**64-1
+    >>> read_uint8(io.BytesIO(b"\xff" * 8)) == 2**64 - 1
     True
     """
 
@@ -347,7 +347,7 @@ def read_stringnl(f, decode=True, stripquotes=True):
     ValueError: no newline found when trying to read stringnl
 
     Embedded escapes are undone in the result.
-    >>> read_stringnl(io.BytesIO(br"'a\n\\b\x00c\td'" + b"\n'e'"))
+    >>> read_stringnl(io.BytesIO(rb"'a\n\\b\x00c\td'" + b"\n'e'"))
     'a\n\\b\x00c\td'
     """
 
@@ -571,8 +571,8 @@ def read_bytes8(f):
     b''
     >>> read_bytes8(io.BytesIO(b"\x03\x00\x00\x00\x00\x00\x00\x00abcdef"))
     b'abc'
-    >>> bigsize8 = struct.pack("<Q", sys.maxsize//3)
-    >>> read_bytes8(io.BytesIO(bigsize8 + b"abcdef"))  #doctest: +ELLIPSIS
+    >>> bigsize8 = struct.pack("<Q", sys.maxsize // 3)
+    >>> read_bytes8(io.BytesIO(bigsize8 + b"abcdef"))  # doctest: +ELLIPSIS
     Traceback (most recent call last):
     ...
     ValueError: expected ... bytes in a bytes8, but only 6 remain
@@ -609,8 +609,8 @@ def read_bytearray8(f):
     bytearray(b'')
     >>> read_bytearray8(io.BytesIO(b"\x03\x00\x00\x00\x00\x00\x00\x00abcdef"))
     bytearray(b'abc')
-    >>> bigsize8 = struct.pack("<Q", sys.maxsize//3)
-    >>> read_bytearray8(io.BytesIO(bigsize8 + b"abcdef"))  #doctest: +ELLIPSIS
+    >>> bigsize8 = struct.pack("<Q", sys.maxsize // 3)
+    >>> read_bytearray8(io.BytesIO(bigsize8 + b"abcdef"))  # doctest: +ELLIPSIS
     Traceback (most recent call last):
     ...
     ValueError: expected ... bytes in a bytearray8, but only 6 remain
@@ -643,7 +643,7 @@ bytearray8 = ArgumentDescriptor(
 def read_unicodestringnl(f):
     r"""
     >>> import io
-    >>> read_unicodestringnl(io.BytesIO(b"abc\\uabcd\njunk")) == 'abc\uabcd'
+    >>> read_unicodestringnl(io.BytesIO(b"abc\\uabcd\njunk")) == "abc\uabcd"
     True
     """
 
@@ -670,12 +670,12 @@ unicodestringnl = ArgumentDescriptor(
 def read_unicodestring1(f):
     r"""
     >>> import io
-    >>> s = 'abcd\uabcd'
-    >>> enc = s.encode('utf-8')
+    >>> s = "abcd\uabcd"
+    >>> enc = s.encode("utf-8")
     >>> enc
     b'abcd\xea\xaf\x8d'
     >>> n = bytes([len(enc)])  # little-endian 1-byte length
-    >>> t = read_unicodestring1(io.BytesIO(n + enc + b'junk'))
+    >>> t = read_unicodestring1(io.BytesIO(n + enc + b"junk"))
     >>> s == t
     True
 
@@ -712,12 +712,12 @@ unicodestring1 = ArgumentDescriptor(
 def read_unicodestring4(f):
     r"""
     >>> import io
-    >>> s = 'abcd\uabcd'
-    >>> enc = s.encode('utf-8')
+    >>> s = "abcd\uabcd"
+    >>> enc = s.encode("utf-8")
     >>> enc
     b'abcd\xea\xaf\x8d'
     >>> n = bytes([len(enc), 0, 0, 0])  # little-endian 4-byte length
-    >>> t = read_unicodestring4(io.BytesIO(n + enc + b'junk'))
+    >>> t = read_unicodestring4(io.BytesIO(n + enc + b"junk"))
     >>> s == t
     True
 
@@ -756,12 +756,12 @@ unicodestring4 = ArgumentDescriptor(
 def read_unicodestring8(f):
     r"""
     >>> import io
-    >>> s = 'abcd\uabcd'
-    >>> enc = s.encode('utf-8')
+    >>> s = "abcd\uabcd"
+    >>> enc = s.encode("utf-8")
     >>> enc
     b'abcd\xea\xaf\x8d'
-    >>> n = bytes([len(enc)]) + b'\0' * 7  # little-endian 8-byte length
-    >>> t = read_unicodestring8(io.BytesIO(n + enc + b'junk'))
+    >>> n = bytes([len(enc)]) + b"\0" * 7  # little-endian 8-byte length
+    >>> t = read_unicodestring8(io.BytesIO(n + enc + b"junk"))
     >>> s == t
     True
 

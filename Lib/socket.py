@@ -908,7 +908,7 @@ def create_server(
     connections. When false it will explicitly disable this option on
     platforms that enable it by default (e.g. Linux).
 
-    >>> with create_server(('', 8000)) as server:
+    >>> with create_server(("", 8000)) as server:
     ...     while True:
     ...         conn, addr = server.accept()
     ...         # handle new connection

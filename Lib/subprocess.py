@@ -492,9 +492,7 @@ def check_output(*popenargs, timeout=None, **kwargs):
     The stdout argument is not allowed as it is used internally.
     To capture standard error in the result, use stderr=STDOUT.
 
-    >>> check_output(["/bin/sh", "-c",
-    ...               "ls -l non_existent_file ; exit 0"],
-    ...              stderr=STDOUT)
+    >>> check_output(["/bin/sh", "-c", "ls -l non_existent_file ; exit 0"], stderr=STDOUT)
     b'ls: non_existent_file: No such file or directory\n'
 
     There is an additional optional argument, "input", allowing you to
@@ -502,8 +500,9 @@ def check_output(*popenargs, timeout=None, **kwargs):
     you may not also use the Popen constructor's "stdin" argument, as
     it too will be used internally.  Example:
 
-    >>> check_output(["sed", "-e", "s/foo/bar/"],
-    ...              input=b"when in the course of fooman events\n")
+    >>> check_output(
+    ...     ["sed", "-e", "s/foo/bar/"], input=b"when in the course of fooman events\n"
+    ... )
     b'when in the course of barman events\n'
 
     By default, all communication is in bytes, and therefore any "input"
@@ -731,13 +730,13 @@ def getstatusoutput(cmd, *, encoding=None, errors=None):
     according to the rules for the function 'wait'. Example:
 
     >>> import subprocess
-    >>> subprocess.getstatusoutput('ls /bin/ls')
+    >>> subprocess.getstatusoutput("ls /bin/ls")
     (0, '/bin/ls')
-    >>> subprocess.getstatusoutput('cat /bin/junk')
+    >>> subprocess.getstatusoutput("cat /bin/junk")
     (1, 'cat: /bin/junk: No such file or directory')
-    >>> subprocess.getstatusoutput('/bin/junk')
+    >>> subprocess.getstatusoutput("/bin/junk")
     (127, 'sh: /bin/junk: not found')
-    >>> subprocess.getstatusoutput('/bin/kill $$')
+    >>> subprocess.getstatusoutput("/bin/kill $$")
     (-15, '')
     """
     try:
@@ -760,7 +759,7 @@ def getoutput(cmd, *, encoding=None, errors=None):
     value is a string containing the command's output.  Example:
 
     >>> import subprocess
-    >>> subprocess.getoutput('ls /bin/ls')
+    >>> subprocess.getoutput("ls /bin/ls")
     '/bin/ls'
     """
     return getstatusoutput(cmd, encoding=encoding, errors=errors)[1]

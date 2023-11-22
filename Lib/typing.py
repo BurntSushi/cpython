@@ -213,7 +213,7 @@ def _should_unflatten_callable_args(typ, args):
     For example::
 
         >>> import collections.abc
-        >>> P = ParamSpec('P')
+        >>> P = ParamSpec("P")
         >>> collections.abc.Callable[[int, int], str].__args__ == (int, int, str)
         True
         >>> collections.abc.Callable[P, str].__args__ == (P, str)
@@ -258,8 +258,8 @@ def _collect_parameters(args):
 
     For example::
 
-        >>> P = ParamSpec('P')
-        >>> T = TypeVar('T')
+        >>> P = ParamSpec("P")
+        >>> T = TypeVar("T")
         >>> _collect_parameters((T, Callable[P, T]))
         (~T, ~P)
     """
@@ -2357,7 +2357,7 @@ def get_origin(tp):
 
     Examples::
 
-        >>> P = ParamSpec('P')
+        >>> P = ParamSpec("P")
         >>> assert get_origin(Literal[42]) is Literal
         >>> assert get_origin(int) is None
         >>> assert get_origin(ClassVar[int]) is ClassVar
@@ -2387,7 +2387,7 @@ def get_args(tp):
 
     Examples::
 
-        >>> T = TypeVar('T')
+        >>> T = TypeVar("T")
         >>> assert get_args(Dict[str, int]) == (str, int)
         >>> assert get_args(int) == ()
         >>> assert get_args(Union[int, Union[T, int], str][int]) == (int, str)
@@ -2415,7 +2415,6 @@ def is_typeddict(tp):
         >>> class Film(TypedDict):
         ...     title: str
         ...     year: int
-        ...
         >>> is_typeddict(Film)
         True
         >>> is_typeddict(dict)
@@ -3057,10 +3056,9 @@ def TypedDict(typename, fields=_sentinel, /, *, total=True):
         ...     x: int
         ...     y: int
         ...     label: str
-        ...
-        >>> a: Point2D = {'x': 1, 'y': 2, 'label': 'good'}  # OK
-        >>> b: Point2D = {'z': 3, 'label': 'bad'}           # Fails type check
-        >>> Point2D(x=1, y=2, label='first') == dict(x=1, y=2, label='first')
+        >>> a: Point2D = {"x": 1, "y": 2, "label": "good"}  # OK
+        >>> b: Point2D = {"z": 3, "label": "bad"}  # Fails type check
+        >>> Point2D(x=1, y=2, label="first") == dict(x=1, y=2, label="first")
         True
 
     The type info can be accessed via the Point2D.__annotations__ dict, and
@@ -3543,7 +3541,9 @@ def is_protocol(tp: type, /) -> bool:
 
         >>> from typing import Protocol, is_protocol
         >>> class P(Protocol):
-        ...     def a(self) -> str: ...
+        ...     def a(self) -> str:
+        ...         ...
+        ...
         ...     b: int
         >>> is_protocol(P)
         True
@@ -3562,9 +3562,11 @@ def get_protocol_members(tp: type, /) -> frozenset[str]:
 
         >>> from typing import Protocol, get_protocol_members
         >>> class P(Protocol):
-        ...     def a(self) -> str: ...
+        ...     def a(self) -> str:
+        ...         ...
+        ...
         ...     b: int
-        >>> get_protocol_members(P) == frozenset({'a', 'b'})
+        >>> get_protocol_members(P) == frozenset({"a", "b"})
         True
 
     Raise a TypeError for arguments that are not Protocols.

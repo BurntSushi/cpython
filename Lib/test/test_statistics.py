@@ -43,21 +43,21 @@ def sign(x):
 def _nan_equal(a, b):
     """Return True if a and b are both the same kind of NAN.
 
-    >>> _nan_equal(Decimal('NAN'), Decimal('NAN'))
+    >>> _nan_equal(Decimal("NAN"), Decimal("NAN"))
     True
-    >>> _nan_equal(Decimal('sNAN'), Decimal('sNAN'))
+    >>> _nan_equal(Decimal("sNAN"), Decimal("sNAN"))
     True
-    >>> _nan_equal(Decimal('NAN'), Decimal('sNAN'))
+    >>> _nan_equal(Decimal("NAN"), Decimal("sNAN"))
     False
-    >>> _nan_equal(Decimal(42), Decimal('NAN'))
-    False
-
-    >>> _nan_equal(float('NAN'), float('NAN'))
-    True
-    >>> _nan_equal(float('NAN'), 0.5)
+    >>> _nan_equal(Decimal(42), Decimal("NAN"))
     False
 
-    >>> _nan_equal(float('NAN'), Decimal('NAN'))
+    >>> _nan_equal(float("NAN"), float("NAN"))
+    True
+    >>> _nan_equal(float("NAN"), 0.5)
+    False
+
+    >>> _nan_equal(float("NAN"), Decimal("NAN"))
     False
 
     NAN payloads are not compared.
@@ -229,14 +229,14 @@ class NumericTestCase(unittest.TestCase):
 
         >>> class MyTest(NumericTestCase):
         ...     def test_number(self):
-        ...         x = 1.0/6
-        ...         y = sum([x]*6)
+        ...         x = 1.0 / 6
+        ...         y = sum([x] * 6)
         ...         self.assertApproxEqual(y, 1.0, tol=1e-15)
+        ...
         ...     def test_sequence(self):
         ...         a = [1.001, 1.001e-10, 1.001e10]
         ...         b = [1.0, 1e-10, 1e10]
         ...         self.assertApproxEqual(a, b, rel=1e-3)
-        ...
         >>> import unittest
         >>> from io import StringIO  # Suppress test runner output.
         >>> suite = unittest.TestLoader().loadTestsFromTestCase(MyTest)

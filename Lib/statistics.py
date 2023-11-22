@@ -384,14 +384,14 @@ def _rank(data, /, *, key=None, reverse=False, ties="average", start=1) -> list[
     highest value has rank 1.  Also, a key-function can extract
     the field to be ranked:
 
-        >>> goals = [('eagles', 45), ('bears', 48), ('lions', 44)]
+        >>> goals = [("eagles", 45), ("bears", 48), ("lions", 44)]
         >>> _rank(goals, key=itemgetter(1), reverse=True)
         [2.0, 1.0, 3.0]
 
     Ranks are conventionally numbered starting from one; however,
     setting *start* to zero allows the ranks to be used as array indices:
 
-        >>> prize = ['Gold', 'Silver', 'Bronze', 'Certificate']
+        >>> prize = ["Gold", "Silver", "Bronze", "Certificate"]
         >>> scores = [8.1, 7.3, 9.4, 8.3]
         >>> [prize[int(i)] for i in _rank(scores, start=0, reverse=True)]
         ['Bronze', 'Certificate', 'Gold', 'Silver']
@@ -691,13 +691,15 @@ def median_grouped(data, interval=1.0):
     consecutive ten-year age groups with each group being represented
     by the 5-year midpoints of the intervals:
 
-        >>> demographics = Counter({
-        ...    25: 172,   # 20 to 30 years old
-        ...    35: 484,   # 30 to 40 years old
-        ...    45: 387,   # 40 to 50 years old
-        ...    55:  22,   # 50 to 60 years old
-        ...    65:   6,   # 60 to 70 years old
-        ... })
+        >>> demographics = Counter(
+        ...     {
+        ...         25: 172,  # 20 to 30 years old
+        ...         35: 484,  # 30 to 40 years old
+        ...         45: 387,  # 40 to 50 years old
+        ...         55: 22,  # 50 to 60 years old
+        ...         65: 6,  # 60 to 70 years old
+        ...     }
+        ... )
 
     The 50th percentile (median) is the 536th person out of the 1071
     member cohort.  That person is in the 30 to 40 year old age group.
@@ -767,7 +769,7 @@ def mode(data):
     If there are multiple modes with same frequency, return the first one
     encountered:
 
-        >>> mode(['red', 'red', 'green', 'blue', 'blue'])
+        >>> mode(["red", "red", "green", "blue", "blue"])
         'red'
 
     If *data* is empty, ``mode``, raises StatisticsError.
@@ -786,11 +788,11 @@ def multimode(data):
     Will return more than one result if there are multiple modes
     or an empty list if *data* is empty.
 
-    >>> multimode('aabbbbbbbbcc')
+    >>> multimode("aabbbbbbbbcc")
     ['b']
-    >>> multimode('aabbbbccddddeeffffgg')
+    >>> multimode("aabbbbccddddeeffffgg")
     ['b', 'd', 'f']
-    >>> multimode('')
+    >>> multimode("")
     []
     """
     counts = Counter(iter(data))
@@ -1156,7 +1158,7 @@ def linear_regression(x, y, /, *, proportional=False):
     >>> x = [1, 2, 3, 4, 5]
     >>> noise = NormalDist().samples(5, seed=42)
     >>> y = [3 * x[i] + 2 + noise[i] for i in range(5)]
-    >>> linear_regression(x, y)  #doctest: +ELLIPSIS
+    >>> linear_regression(x, y)  # doctest: +ELLIPSIS
     LinearRegression(slope=3.17495..., intercept=1.00925...)
 
     If *proportional* is true, the independent variable *x* and the
@@ -1169,7 +1171,7 @@ def linear_regression(x, y, /, *, proportional=False):
         y = slope * x + noise
 
     >>> y = [3 * x[i] + noise[i] for i in range(5)]
-    >>> linear_regression(x, y, proportional=True)  #doctest: +ELLIPSIS
+    >>> linear_regression(x, y, proportional=True)  # doctest: +ELLIPSIS
     LinearRegression(slope=2.90475..., intercept=0.0)
 
     """

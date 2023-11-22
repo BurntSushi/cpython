@@ -354,7 +354,7 @@ class POP3:
 
     def capa(self):
         """Return server capabilities (RFC 2449) as a dictionary
-        >>> c=poplib.POP3('localhost')
+        >>> c = poplib.POP3("localhost")
         >>> c.capa()
         {'IMPLEMENTATION': ['Cyrus', 'POP3', 'server', 'v2.2.12'],
          'TOP': [], 'LOGIN-DELAY': ['0'], 'AUTH-RESP-CODE': [],

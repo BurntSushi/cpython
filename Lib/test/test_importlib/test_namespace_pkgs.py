@@ -42,8 +42,7 @@ def namespace_tree_context(**kwargs):
     Save import state and sys.modules cache and restore it on exit.
     Typical usage:
 
-    >>> with namespace_tree_context(path=['/tmp/xxyy/portion1',
-    ...         '/tmp/xxyy/portion2']):
+    >>> with namespace_tree_context(path=["/tmp/xxyy/portion1", "/tmp/xxyy/portion2"]):
     ...     pass
     """
     # use default meta_path and path_hooks unless specified otherwise

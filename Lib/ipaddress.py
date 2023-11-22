@@ -201,9 +201,8 @@ def summarize_address_range(first, last):
     """Summarize a network range given the first and last IP addresses.
 
     Example:
-        >>> list(summarize_address_range(IPv4Address('192.0.2.0'),
-        ...                              IPv4Address('192.0.2.130')))
-        ...                                #doctest: +NORMALIZE_WHITESPACE
+        >>> list(summarize_address_range(IPv4Address("192.0.2.0"), IPv4Address("192.0.2.130")))
+        ... # doctest: +NORMALIZE_WHITESPACE
         [IPv4Network('192.0.2.0/25'), IPv4Network('192.0.2.128/31'),
          IPv4Network('192.0.2.130/32')]
 

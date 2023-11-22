@@ -359,23 +359,23 @@ except ImportError:
 def namedtuple(typename, field_names, *, rename=False, defaults=None, module=None):
     """Returns a new subclass of tuple with named fields.
 
-    >>> Point = namedtuple('Point', ['x', 'y'])
-    >>> Point.__doc__                   # docstring for the new class
+    >>> Point = namedtuple("Point", ["x", "y"])
+    >>> Point.__doc__  # docstring for the new class
     'Point(x, y)'
-    >>> p = Point(11, y=22)             # instantiate with positional args or keywords
-    >>> p[0] + p[1]                     # indexable like a plain tuple
+    >>> p = Point(11, y=22)  # instantiate with positional args or keywords
+    >>> p[0] + p[1]  # indexable like a plain tuple
     33
-    >>> x, y = p                        # unpack like a regular tuple
+    >>> x, y = p  # unpack like a regular tuple
     >>> x, y
     (11, 22)
-    >>> p.x + p.y                       # fields also accessible by name
+    >>> p.x + p.y  # fields also accessible by name
     33
-    >>> d = p._asdict()                 # convert to a dictionary
-    >>> d['x']
+    >>> d = p._asdict()  # convert to a dictionary
+    >>> d["x"]
     11
-    >>> Point(**d)                      # convert from a dictionary
+    >>> Point(**d)  # convert from a dictionary
     Point(x=11, y=22)
-    >>> p._replace(x=100)               # _replace() is like str.replace() but targets named fields
+    >>> p._replace(x=100)  # _replace() is like str.replace() but targets named fields
     Point(x=100, y=22)
 
     """
@@ -562,42 +562,42 @@ class Counter(dict):
     or multiset.  Elements are stored as dictionary keys and their counts
     are stored as dictionary values.
 
-    >>> c = Counter('abcdeabcdabcaba')  # count elements from a string
+    >>> c = Counter("abcdeabcdabcaba")  # count elements from a string
 
-    >>> c.most_common(3)                # three most common elements
+    >>> c.most_common(3)  # three most common elements
     [('a', 5), ('b', 4), ('c', 3)]
-    >>> sorted(c)                       # list all unique elements
+    >>> sorted(c)  # list all unique elements
     ['a', 'b', 'c', 'd', 'e']
-    >>> ''.join(sorted(c.elements()))   # list elements with repetitions
+    >>> "".join(sorted(c.elements()))  # list elements with repetitions
     'aaaaabbbbcccdde'
-    >>> sum(c.values())                 # total of all counts
+    >>> sum(c.values())  # total of all counts
     15
 
-    >>> c['a']                          # count of letter 'a'
+    >>> c["a"]  # count of letter 'a'
     5
-    >>> for elem in 'shazam':           # update counts from an iterable
-    ...     c[elem] += 1                # by adding 1 to each element's count
-    >>> c['a']                          # now there are seven 'a'
+    >>> for elem in "shazam":  # update counts from an iterable
+    ...     c[elem] += 1  # by adding 1 to each element's count
+    >>> c["a"]  # now there are seven 'a'
     7
-    >>> del c['b']                      # remove all 'b'
-    >>> c['b']                          # now there are zero 'b'
+    >>> del c["b"]  # remove all 'b'
+    >>> c["b"]  # now there are zero 'b'
     0
 
-    >>> d = Counter('simsalabim')       # make another counter
-    >>> c.update(d)                     # add in the second counter
-    >>> c['a']                          # now there are nine 'a'
+    >>> d = Counter("simsalabim")  # make another counter
+    >>> c.update(d)  # add in the second counter
+    >>> c["a"]  # now there are nine 'a'
     9
 
-    >>> c.clear()                       # empty the counter
+    >>> c.clear()  # empty the counter
     >>> c
     Counter()
 
     Note:  If a count is set to zero or reduced to zero, it will remain
     in the counter until the entry is deleted or the counter is cleared:
 
-    >>> c = Counter('aaabbc')
-    >>> c['b'] -= 2                     # reduce the count of 'b' by two
-    >>> c.most_common()                 # 'b' is still in, but its count is zero
+    >>> c = Counter("aaabbc")
+    >>> c["b"] -= 2  # reduce the count of 'b' by two
+    >>> c.most_common()  # 'b' is still in, but its count is zero
     [('a', 3), ('c', 1), ('b', 0)]
 
     """
@@ -614,10 +614,10 @@ class Counter(dict):
         from an input iterable.  Or, initialize the count from another mapping
         of elements to their counts.
 
-        >>> c = Counter()                           # a new, empty counter
-        >>> c = Counter('gallahad')                 # a new counter from an iterable
-        >>> c = Counter({'a': 4, 'b': 2})           # a new counter from a mapping
-        >>> c = Counter(a=4, b=2)                   # a new counter from keyword args
+        >>> c = Counter()  # a new, empty counter
+        >>> c = Counter("gallahad")  # a new counter from an iterable
+        >>> c = Counter({"a": 4, "b": 2})  # a new counter from a mapping
+        >>> c = Counter(a=4, b=2)  # a new counter from keyword args
 
         """
         super().__init__()
@@ -636,7 +636,7 @@ class Counter(dict):
         """List the n most common elements and their counts from the most
         common to the least.  If n is None, then list all element counts.
 
-        >>> Counter('abracadabra').most_common(3)
+        >>> Counter("abracadabra").most_common(3)
         [('a', 5), ('b', 2), ('r', 2)]
 
         """
@@ -652,7 +652,7 @@ class Counter(dict):
     def elements(self):
         """Iterator over elements repeating each as many times as its count.
 
-        >>> c = Counter('ABCABC')
+        >>> c = Counter("ABCABC")
         >>> sorted(c.elements())
         ['A', 'A', 'B', 'B', 'C', 'C']
 
@@ -689,11 +689,11 @@ class Counter(dict):
 
         Source can be an iterable, a dictionary, or another Counter instance.
 
-        >>> c = Counter('which')
-        >>> c.update('witch')           # add elements from another iterable
-        >>> d = Counter('watch')
-        >>> c.update(d)                 # add elements from another counter
-        >>> c['h']                      # four 'h' in which, witch, and watch
+        >>> c = Counter("which")
+        >>> c.update("witch")  # add elements from another iterable
+        >>> d = Counter("watch")
+        >>> c.update(d)  # add elements from another counter
+        >>> c["h"]  # four 'h' in which, witch, and watch
         4
 
         """
@@ -725,12 +725,12 @@ class Counter(dict):
 
         Source can be an iterable, a dictionary, or another Counter instance.
 
-        >>> c = Counter('which')
-        >>> c.subtract('witch')             # subtract elements from another iterable
-        >>> c.subtract(Counter('watch'))    # subtract elements from another counter
-        >>> c['h']                          # 2 in which, minus 1 in witch, minus 1 in watch
+        >>> c = Counter("which")
+        >>> c.subtract("witch")  # subtract elements from another iterable
+        >>> c.subtract(Counter("watch"))  # subtract elements from another counter
+        >>> c["h"]  # 2 in which, minus 1 in witch, minus 1 in watch
         0
-        >>> c['w']                          # 1 in which, minus 1 in witch, minus 1 in watch
+        >>> c["w"]  # 1 in which, minus 1 in witch, minus 1 in watch
         -1
 
         """
@@ -841,7 +841,7 @@ class Counter(dict):
     def __add__(self, other):
         """Add counts from two counters.
 
-        >>> Counter('abbb') + Counter('bcc')
+        >>> Counter("abbb") + Counter("bcc")
         Counter({'b': 4, 'c': 2, 'a': 1})
 
         """
@@ -860,7 +860,7 @@ class Counter(dict):
     def __sub__(self, other):
         """Subtract count, but keep only results with positive counts.
 
-        >>> Counter('abbbc') - Counter('bccd')
+        >>> Counter("abbbc") - Counter("bccd")
         Counter({'b': 2, 'a': 1})
 
         """
@@ -879,7 +879,7 @@ class Counter(dict):
     def __or__(self, other):
         """Union is the maximum of value in either of the input counters.
 
-        >>> Counter('abbb') | Counter('bcc')
+        >>> Counter("abbb") | Counter("bcc")
         Counter({'b': 3, 'c': 2, 'a': 1})
 
         """
@@ -899,7 +899,7 @@ class Counter(dict):
     def __and__(self, other):
         """Intersection is the minimum of corresponding counts.
 
-        >>> Counter('abbb') & Counter('bcc')
+        >>> Counter("abbb") & Counter("bcc")
         Counter({'b': 1})
 
         """
@@ -942,8 +942,8 @@ class Counter(dict):
     def __iadd__(self, other):
         """Inplace add from another counter, keeping only positive counts.
 
-        >>> c = Counter('abbb')
-        >>> c += Counter('bcc')
+        >>> c = Counter("abbb")
+        >>> c += Counter("bcc")
         >>> c
         Counter({'b': 4, 'c': 2, 'a': 1})
 
@@ -955,8 +955,8 @@ class Counter(dict):
     def __isub__(self, other):
         """Inplace subtract counter, but keep only results with positive counts.
 
-        >>> c = Counter('abbbc')
-        >>> c -= Counter('bccd')
+        >>> c = Counter("abbbc")
+        >>> c -= Counter("bccd")
         >>> c
         Counter({'b': 2, 'a': 1})
 
@@ -968,8 +968,8 @@ class Counter(dict):
     def __ior__(self, other):
         """Inplace union is the maximum of value from either counter.
 
-        >>> c = Counter('abbb')
-        >>> c |= Counter('bcc')
+        >>> c = Counter("abbb")
+        >>> c |= Counter("bcc")
         >>> c
         Counter({'b': 3, 'c': 2, 'a': 1})
 
@@ -983,8 +983,8 @@ class Counter(dict):
     def __iand__(self, other):
         """Inplace intersection is the minimum of corresponding counts.
 
-        >>> c = Counter('abbb')
-        >>> c &= Counter('bcc')
+        >>> c = Counter("abbb")
+        >>> c &= Counter("bcc")
         >>> c
         Counter({'b': 1})
 

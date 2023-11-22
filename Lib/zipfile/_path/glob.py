@@ -5,11 +5,11 @@ def translate(pattern):
     r"""
     Given a glob pattern, produce a regex that matches it.
 
-    >>> translate('*.txt')
+    >>> translate("*.txt")
     '[^/]*\\.txt'
-    >>> translate('a?txt')
+    >>> translate("a?txt")
     'a.txt'
-    >>> translate('**/*')
+    >>> translate("**/*")
     '.*/[^/]*'
     """
     return "".join(map(replace, separate(pattern)))
@@ -19,9 +19,9 @@ def separate(pattern):
     """
     Separate out character sets to avoid translating their contents.
 
-    >>> [m.group(0) for m in separate('*.txt')]
+    >>> [m.group(0) for m in separate("*.txt")]
     ['*.txt']
-    >>> [m.group(0) for m in separate('a[?]txt')]
+    >>> [m.group(0) for m in separate("a[?]txt")]
     ['a', '[?]', 'txt']
     """
     return re.finditer(r"([^\[]+)|(?P<set>[\[].*?[\]])|([\[][^\]]*$)", pattern)

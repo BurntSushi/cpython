@@ -170,7 +170,7 @@ def bin(num, max_bits=None):
 
     >>> bin(10)
     '0b0 1010'
-    >>> bin(~10)   # ~10 is -11
+    >>> bin(~10)  # ~10 is -11
     '0b1 0101'
     """
 
@@ -1166,7 +1166,7 @@ class Enum(metaclass=EnumType):
 
     - name lookup:
 
-      >>> Color['RED']
+      >>> Color["RED"]
       <Color.RED: 1>
 
     Enumerations can be iterated over, and know how many members they have:

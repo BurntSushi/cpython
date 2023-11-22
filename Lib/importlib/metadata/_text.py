@@ -9,24 +9,24 @@ class FoldedCase(str):
     A case insensitive string class; behaves just like str
     except compares equal when the only variation is case.
 
-    >>> s = FoldedCase('hello world')
+    >>> s = FoldedCase("hello world")
 
-    >>> s == 'Hello World'
+    >>> s == "Hello World"
     True
 
-    >>> 'Hello World' == s
+    >>> "Hello World" == s
     True
 
-    >>> s != 'Hello World'
+    >>> s != "Hello World"
     False
 
-    >>> s.index('O')
+    >>> s.index("O")
     4
 
-    >>> s.split('O')
+    >>> s.split("O")
     ['hell', ' w', 'rld']
 
-    >>> sorted(map(FoldedCase, ['GAMMA', 'alpha', 'Beta']))
+    >>> sorted(map(FoldedCase, ["GAMMA", "alpha", "Beta"]))
     ['alpha', 'Beta', 'GAMMA']
 
     Sequence membership is straightforward.
@@ -52,15 +52,15 @@ class FoldedCase(str):
 
     But not if the FoldedCase object is on the left:
 
-    >>> FoldedCase('hello') in 'Hello World'
+    >>> FoldedCase("hello") in "Hello World"
     False
 
     In that case, use in_:
 
-    >>> FoldedCase('hello').in_('Hello World')
+    >>> FoldedCase("hello").in_("Hello World")
     True
 
-    >>> FoldedCase('hello') > FoldedCase('Hello')
+    >>> FoldedCase("hello") > FoldedCase("Hello")
     False
     """
 

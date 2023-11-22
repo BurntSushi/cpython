@@ -44,18 +44,18 @@ def build(
     the content. Content may be a nested directory.
 
     >>> spec = {
-    ...     'README.txt': "A README file",
+    ...     "README.txt": "A README file",
     ...     "foo": {
     ...         "__init__.py": "",
     ...         "bar": {
     ...             "__init__.py": "",
     ...         },
     ...         "baz.py": "# Some code",
-    ...     }
+    ...     },
     ... }
-    >>> target = getfixture('tmp_path')
+    >>> target = getfixture("tmp_path")
     >>> build(spec, target)
-    >>> target.joinpath('foo/baz.py').read_text(encoding='utf-8')
+    >>> target.joinpath("foo/baz.py").read_text(encoding="utf-8")
     '# Some code'
     """
     for name, contents in spec.items():
@@ -88,7 +88,7 @@ class Recording:
     A TreeMaker object that records everything that would be written.
 
     >>> r = Recording()
-    >>> build({'foo': {'foo1.txt': 'yes'}, 'bar.txt': 'abc'}, r)
+    >>> build({"foo": {"foo1.txt": "yes"}, "bar.txt": "abc"}, r)
     >>> r.record
     ['foo/foo1.txt', 'bar.txt']
     """

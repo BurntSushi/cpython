@@ -17,9 +17,10 @@ import zipfile
 def main():
     """
     >>> from unittest import mock
-    >>> monkeypatch = getfixture('monkeypatch')
-    >>> monkeypatch.setattr(zipfile, 'ZipFile', mock.MagicMock())
-    >>> print(); main()  # print workaround for bpo-32509
+    >>> monkeypatch = getfixture("monkeypatch")
+    >>> monkeypatch.setattr(zipfile, "ZipFile", mock.MagicMock())
+    >>> print()
+    ... main()  # print workaround for bpo-32509
     <BLANKLINE>
     ...data01... -> ziptestdata/...
     ...

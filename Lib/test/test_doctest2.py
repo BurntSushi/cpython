@@ -35,13 +35,13 @@ class C(object):
     def __init__(self):
         """C.__init__.
 
-        >>> print(C()) # 3
+        >>> print(C())  # 3
         42
         """
 
     def __str__(self):
         """
-        >>> print(C()) # 4
+        >>> print(C())  # 4
         42
         """
         return "42"
@@ -49,20 +49,20 @@ class C(object):
     class D(object):
         """A nested D class.
 
-        >>> print("In D!")   # 5
+        >>> print("In D!")  # 5
         In D!
         """
 
         def nested(self):
             """
-            >>> print(3) # 6
+            >>> print(3)  # 6
             3
             """
 
     def getx(self):
         """
-        >>> c = C()    # 7
-        >>> c.x = 12   # 8
+        >>> c = C()  # 7
+        >>> c.x = 12  # 8
         >>> print(c.x)  # 9
         -12
         """
@@ -70,9 +70,9 @@ class C(object):
 
     def setx(self, value):
         """
-        >>> c = C()     # 10
-        >>> c.x = 12    # 11
-        >>> print(c.x)   # 12
+        >>> c = C()  # 10
+        >>> c.x = 12  # 11
+        >>> print(c.x)  # 12
         -12
         """
         self._x = value
@@ -93,7 +93,7 @@ class C(object):
         """
         A static method.
 
-        >>> print(C.statm())    # 16
+        >>> print(C.statm())  # 16
         666
         >>> print(C().statm())  # 17
         666
@@ -105,7 +105,7 @@ class C(object):
         """
         A class method.
 
-        >>> print(C.clsm(22))    # 18
+        >>> print(C.clsm(22))  # 18
         22
         >>> print(C().clsm(23))  # 19
         23

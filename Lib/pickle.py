@@ -401,7 +401,7 @@ def encode_long(x):
 def decode_long(data):
     r"""Decode a long from a two's complement little-endian binary string.
 
-    >>> decode_long(b'')
+    >>> decode_long(b"")
     0
     >>> decode_long(b"\xff\x00")
     255

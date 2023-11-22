@@ -15,10 +15,10 @@ testing the running of these tests.
 def foo():
     """
 
-    >>> 2+2
+    >>> 2 + 2
     5
 
-    >>> 2+2
+    >>> 2 + 2
     4
     """
 
@@ -26,7 +26,7 @@ def foo():
 def bar():
     """
 
-    >>> 2+2
+    >>> 2 + 2
     4
     """
 
@@ -43,9 +43,9 @@ def test_silly_setup():
 def w_blank():
     """
     >>> if 1:
-    ...    print('a')
-    ...    print()
-    ...    print('b')
+    ...     print("a")
+    ...     print()
+    ...     print("b")
     a
     <BLANKLINE>
     b

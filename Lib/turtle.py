@@ -1100,7 +1100,7 @@ class Shape(object):
         --   s.addcomponent(((0,0), (10,10), (-10,10)), "red", "blue")
 
         Example:
-        >>> poly = ((0,0),(10,-5),(0,10),(-10,-5))
+        >>> poly = ((0, 0), (10, -5), (0, 10), (-10, -5))
         >>> s = Shape("compound")
         >>> s.addcomponent(poly, "red", "blue")
         >>> # .. add more components and then use register_shape()
@@ -1295,7 +1295,7 @@ class TurtleScreen(TurtleScreenBase):
             'logo'        upward    (north)         clockwise
 
         Examples:
-        >>> mode('logo')   # resets turtle heading to north
+        >>> mode("logo")  # resets turtle heading to north
         >>> mode()
         'logo'
         """
@@ -1332,7 +1332,7 @@ class TurtleScreen(TurtleScreenBase):
         distorted. (see Screen.mode())
 
         Example (for a TurtleScreen instance named screen):
-        >>> screen.setworldcoordinates(-10,-0.5,50,1.5)
+        >>> screen.setworldcoordinates(-10, -0.5, 50, 1.5)
         >>> for _ in range(36):
         ...     left(10)
         ...     forward(0.5)
@@ -1374,7 +1374,7 @@ class TurtleScreen(TurtleScreenBase):
         --or: register_shape("tri", ((0,0), (10,10), (-10,10)))
 
         Example (for a TurtleScreen instance named screen):
-        >>> screen.register_shape("triangle", ((5,-3),(0,5),(-5,-3)))
+        >>> screen.register_shape("triangle", ((5, -3), (0, 5), (-5, -3)))
 
         """
         if shape is None:
@@ -1440,7 +1440,7 @@ class TurtleScreen(TurtleScreenBase):
         >>> screen.colormode()
         1.0
         >>> screen.colormode(255)
-        >>> pencolor(240,160,80)
+        >>> pencolor(240, 160, 80)
         """
         if cmode is None:
             return self._colormode
@@ -1480,7 +1480,7 @@ class TurtleScreen(TurtleScreenBase):
         >>> screen.bgcolor("orange")
         >>> screen.bgcolor()
         'orange'
-        >>> screen.bgcolor(0.5,0,0.5)
+        >>> screen.bgcolor(0.5, 0, 0.5)
         >>> screen.bgcolor()
         '#800080'
         """
@@ -1628,7 +1628,6 @@ class TurtleScreen(TurtleScreenBase):
         >>> def f():
         ...     fd(50)
         ...     lt(60)
-        ...
         >>> screen.onkey(f, "Up")
         >>> screen.listen()
 
@@ -1660,7 +1659,6 @@ class TurtleScreen(TurtleScreenBase):
         >>> def f():
         ...     fd(50)
         ...     lt(60)
-        ...
         >>> screen.onkeypress(f, "Up")
         >>> screen.listen()
 
@@ -1699,11 +1697,10 @@ class TurtleScreen(TurtleScreenBase):
         >>> running = True
         >>> def f():
         ...     if running:
-        ...             fd(50)
-        ...             lt(60)
-        ...             screen.ontimer(f, 250)
-        ...
-        >>> f()   # makes the turtle marching around
+        ...         fd(50)
+        ...         lt(60)
+        ...         screen.ontimer(f, 250)
+        >>> f()  # makes the turtle marching around
         >>> running = False
         """
         self._ontimer(fun, t)
@@ -1746,7 +1743,7 @@ class TurtleScreen(TurtleScreenBase):
         of a drawing, which were outside the canvas before!)
 
         Example (for a Turtle instance named turtle):
-        >>> turtle.screensize(2000,1500)
+        >>> turtle.screensize(2000, 1500)
         >>> # e.g. to search for an erroneously escaped turtle ;-)
         """
         return self._resize(canvwidth, canvheight, bg)
@@ -2018,10 +2015,10 @@ class TNavigator(object):
         >>> tp = turtle.pos()
         >>> tp
         (0.00, 0.00)
-        >>> turtle.setpos(60,30)
+        >>> turtle.setpos(60, 30)
         >>> turtle.pos()
         (60.00,30.00)
-        >>> turtle.setpos((20,80))
+        >>> turtle.setpos((20, 80))
         >>> turtle.pos()
         (20.00,80.00)
         >>> turtle.setpos(tp)
@@ -2098,7 +2095,7 @@ class TNavigator(object):
         Example (for a Turtle instance named turtle):
         >>> turtle.pos()
         (0.00, 0.00)
-        >>> turtle.distance(30,40)
+        >>> turtle.distance(30, 40)
         50.0
         >>> pen = Turtle()
         >>> pen.forward(77)
@@ -2134,7 +2131,7 @@ class TNavigator(object):
         Example (for a Turtle instance named turtle):
         >>> turtle.pos()
         (10.00, 10.00)
-        >>> turtle.towards(0,0)
+        >>> turtle.towards(0, 0)
         225.0
         """
         if y is not None:
@@ -2345,7 +2342,7 @@ class TPen(object):
         Example (for a Turtle instance named turtle):
         >>> turtle.pensize()
         1
-        >>> turtle.pensize(10)   # from here on lines of width 10 are drawn
+        >>> turtle.pensize(10)  # from here on lines of width 10 are drawn
         """
         if width is None:
             return self._pensize
@@ -2456,7 +2453,7 @@ class TPen(object):
         For more info see: pencolor, fillcolor
 
         Example (for a Turtle instance named turtle):
-        >>> turtle.color('red', 'green')
+        >>> turtle.color("red", "green")
         >>> turtle.color()
         ('red', 'green')
         >>> colormode(255)
@@ -2501,7 +2498,7 @@ class TPen(object):
         with the newly set pencolor.
 
         Example (for a Turtle instance named turtle):
-        >>> turtle.pencolor('brown')
+        >>> turtle.pencolor("brown")
         >>> tup = (0.2, 0.8, 0.55)
         >>> turtle.pencolor(tup)
         >>> turtle.pencolor()
@@ -2538,10 +2535,10 @@ class TPen(object):
         with the newly set fillcolor.
 
         Example (for a Turtle instance named turtle):
-        >>> turtle.fillcolor('violet')
+        >>> turtle.fillcolor("violet")
         >>> col = turtle.pencolor()
         >>> turtle.fillcolor(col)
-        >>> turtle.fillcolor(0, .5, 0)
+        >>> turtle.fillcolor(0, 0.5, 0)
         """
         if args:
             color = self._colorstr(args)
@@ -2635,8 +2632,8 @@ class TPen(object):
         {'pensize': 10, 'shown': True, 'resizemode': 'auto', 'outline': 1,
         'pencolor': 'red', 'pendown': True, 'fillcolor': 'black',
         'stretchfactor': (1,1), 'speed': 3, 'shearfactor': 0.0}
-        >>> penstate=turtle.pen()
-        >>> turtle.color("yellow","")
+        >>> penstate = turtle.pen()
+        >>> turtle.color("yellow", "")
         >>> turtle.penup()
         >>> turtle.pen()
         {'pensize': 10, 'shown': True, 'resizemode': 'auto', 'outline': 1,
@@ -3158,7 +3155,7 @@ class RawTurtle(TPen, TNavigator):
 
         Examples (for a Turtle instance named turtle):
         >>> turtle.shape("circle")
-        >>> turtle.shapesize(5,2)
+        >>> turtle.shapesize(5, 2)
         >>> turtle.shearfactor(0.5)
         >>> turtle.shearfactor()
         >>> 0.5
@@ -3214,7 +3211,7 @@ class RawTurtle(TPen, TNavigator):
 
         Examples (for a Turtle instance named turtle):
         >>> turtle.shape("circle")
-        >>> turtle.shapesize(5,2)
+        >>> turtle.shapesize(5, 2)
         >>> turtle.tilt(30)
         >>> turtle.fd(50)
         >>> turtle.tilt(30)
@@ -3237,7 +3234,7 @@ class RawTurtle(TPen, TNavigator):
 
         Examples (for a Turtle instance named turtle):
         >>> turtle.shape("square")
-        >>> turtle.shapesize(4,2)
+        >>> turtle.shapesize(4, 2)
         >>> turtle.shearfactor(-0.5)
         >>> turtle.shapetransform()
         (4.0, -1.0, -0.0, 2.0)
@@ -3466,8 +3463,8 @@ class RawTurtle(TPen, TNavigator):
 
         Example (for a Turtle instance named turtle):
         >>> for i in range(8):
-        ...     turtle.stamp(); turtle.fd(30)
-        ...
+        ...     turtle.stamp()
+        ...     turtle.fd(30)
         >>> turtle.clearstamps(2)
         >>> turtle.clearstamps(-2)
         >>> turtle.clearstamps()
@@ -3715,7 +3712,9 @@ class RawTurtle(TPen, TNavigator):
 
         Example (for a Turtle instance named turtle):
         >>> turtle.dot()
-        >>> turtle.fd(50); turtle.dot(20, "blue"); turtle.fd(50)
+        >>> turtle.fd(50)
+        ... turtle.dot(20, "blue")
+        ... turtle.fd(50)
         """
         if not color:
             if isinstance(size, (str, tuple)):
@@ -3771,8 +3770,8 @@ class RawTurtle(TPen, TNavigator):
         of the text. By default, move is False.
 
         Example (for a Turtle instance named turtle):
-        >>> turtle.write('Home = ', True, align="center")
-        >>> turtle.write((0,0), True)
+        >>> turtle.write("Home = ", True, align="center")
+        >>> turtle.write((0, 0), True)
         """
         if self.undobuffer:
             self.undobuffer.push(["seq"])
@@ -3881,7 +3880,6 @@ class RawTurtle(TPen, TNavigator):
 
         >>> def turn(x, y):
         ...     left(360)
-        ...
         >>> onclick(turn)  # Now clicking into the turtle will turn it.
         >>> onclick(None)  # event-binding will be removed
         """
@@ -3898,11 +3896,11 @@ class RawTurtle(TPen, TNavigator):
 
         Example (for a MyTurtle instance named joe):
         >>> class MyTurtle(Turtle):
-        ...     def glow(self,x,y):
-        ...             self.fillcolor("red")
-        ...     def unglow(self,x,y):
-        ...             self.fillcolor("")
+        ...     def glow(self, x, y):
+        ...         self.fillcolor("red")
         ...
+        ...     def unglow(self, x, y):
+        ...         self.fillcolor("")
         >>> joe = MyTurtle()
         >>> joe.onclick(joe.glow)
         >>> joe.onrelease(joe.unglow)
@@ -3974,11 +3972,10 @@ class RawTurtle(TPen, TNavigator):
 
         Example (for a Turtle instance named turtle):
         >>> for i in range(4):
-        ...     turtle.fd(50); turtle.lt(80)
-        ...
+        ...     turtle.fd(50)
+        ...     turtle.lt(80)
         >>> for i in range(8):
         ...     turtle.undo()
-        ...
         """
         if self.undobuffer is None:
             return
@@ -4053,11 +4050,11 @@ class _Screen(TurtleScreen):
           Default, starty=None is to center window vertically.
 
         Examples (for a Screen instance named screen):
-        >>> screen.setup (width=200, height=200, startx=0, starty=0)
+        >>> screen.setup(width=200, height=200, startx=0, starty=0)
 
         sets window to 200x200 pixels, in upper left of screen
 
-        >>> screen.setup(width=.75, height=0.5, startx=None, starty=None)
+        >>> screen.setup(width=0.75, height=0.5, startx=None, starty=None)
 
         sets window to 75% of screen by 50% of screen and centers
         """

@@ -100,7 +100,7 @@ class samplecmdclass(cmd.Cmd):
     <BLANKLINE>
 
     Test for the function print_topics():
-    >>> mycmd.print_topics("header", ["command1", "command2"], 2 ,10)
+    >>> mycmd.print_topics("header", ["command1", "command2"], 2, 10)
     header
     ======
     command1
@@ -123,9 +123,9 @@ class samplecmdclass(cmd.Cmd):
     and let it execute
     This test includes the preloop(), postloop(), default(), emptyline(),
     parseline(), do_help() functions
-    >>> mycmd.use_rawinput=0
+    >>> mycmd.use_rawinput = 0
 
-    >>> mycmd.cmdqueue=["add", "add 4 5", "", "help", "help add", "exit"]
+    >>> mycmd.cmdqueue = ["add", "add 4 5", "", "help", "help add", "exit"]
     >>> mycmd.cmdloop()  # doctest: +REPORT_NDIFF
     Hello from preloop
     *** invalid number of arguments

@@ -18,18 +18,18 @@ def build(spec: FilesSpec, prefix=pathlib.Path()):
     the content. Content may be a nested directory.
 
     >>> spec = {
-    ...     'README.txt': "A README file",
+    ...     "README.txt": "A README file",
     ...     "foo": {
     ...         "__init__.py": "",
     ...         "bar": {
     ...             "__init__.py": "",
     ...         },
     ...         "baz.py": "# Some code",
-    ...     }
+    ...     },
     ... }
-    >>> target = getfixture('tmp_path')
+    >>> target = getfixture("tmp_path")
     >>> build(spec, target)
-    >>> target.joinpath('foo/baz.py').read_text(encoding='utf-8')
+    >>> target.joinpath("foo/baz.py").read_text(encoding="utf-8")
     '# Some code'
     """
     for name, contents in spec.items():

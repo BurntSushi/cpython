@@ -17,15 +17,15 @@ def _parents(path):
     Given a path with elements separated by
     posixpath.sep, generate all parents of that path.
 
-    >>> list(_parents('b/d'))
+    >>> list(_parents("b/d"))
     ['b']
-    >>> list(_parents('/b/d/'))
+    >>> list(_parents("/b/d/"))
     ['/b']
-    >>> list(_parents('b/d/f/'))
+    >>> list(_parents("b/d/f/"))
     ['b/d', 'b']
-    >>> list(_parents('b'))
+    >>> list(_parents("b"))
     []
-    >>> list(_parents(''))
+    >>> list(_parents(""))
     []
     """
     return itertools.islice(_ancestry(path), 1, None)
@@ -36,15 +36,15 @@ def _ancestry(path):
     Given a path with elements separated by
     posixpath.sep, generate all elements of that path
 
-    >>> list(_ancestry('b/d'))
+    >>> list(_ancestry("b/d"))
     ['b/d', 'b']
-    >>> list(_ancestry('/b/d/'))
+    >>> list(_ancestry("/b/d/"))
     ['/b/d', '/b']
-    >>> list(_ancestry('b/d/f/'))
+    >>> list(_ancestry("b/d/f/"))
     ['b/d/f', 'b/d', 'b']
-    >>> list(_ancestry('b'))
+    >>> list(_ancestry("b"))
     ['b']
-    >>> list(_ancestry(''))
+    >>> list(_ancestry(""))
     []
     """
     path = path.rstrip(posixpath.sep)
@@ -88,9 +88,9 @@ class CompleteDirs(InitializedState, zipfile.ZipFile):
     A ZipFile subclass that ensures that implied directories
     are always included in the namelist.
 
-    >>> list(CompleteDirs._implied_dirs(['foo/bar.txt', 'foo/bar/baz.txt']))
+    >>> list(CompleteDirs._implied_dirs(["foo/bar.txt", "foo/bar/baz.txt"]))
     ['foo/', 'foo/bar/']
-    >>> list(CompleteDirs._implied_dirs(['foo/bar.txt', 'foo/bar/baz.txt', 'foo/bar/']))
+    >>> list(CompleteDirs._implied_dirs(["foo/bar.txt", "foo/bar/baz.txt", "foo/bar/"]))
     ['foo/']
     """
 
@@ -186,11 +186,11 @@ class Path:
                 └── e.txt
 
     >>> data = io.BytesIO()
-    >>> zf = ZipFile(data, 'w')
-    >>> zf.writestr('a.txt', 'content of a')
-    >>> zf.writestr('b/c.txt', 'content of c')
-    >>> zf.writestr('b/d/e.txt', 'content of e')
-    >>> zf.filename = 'mem/abcde.zip'
+    >>> zf = ZipFile(data, "w")
+    >>> zf.writestr("a.txt", "content of a")
+    >>> zf.writestr("b/c.txt", "content of c")
+    >>> zf.writestr("b/d/e.txt", "content of e")
+    >>> zf.filename = "mem/abcde.zip"
 
     Path accepts the zipfile object itself or a filename
 
@@ -213,7 +213,7 @@ class Path:
 
     join with divide operator:
 
-    >>> c = b / 'c.txt'
+    >>> c = b / "c.txt"
     >>> c
     Path('mem/abcde.zip', 'b/c.txt')
     >>> c.name
@@ -221,14 +221,14 @@ class Path:
 
     Read text:
 
-    >>> c.read_text(encoding='utf-8')
+    >>> c.read_text(encoding="utf-8")
     'content of c'
 
     existence:
 
     >>> c.exists()
     True
-    >>> (b / 'missing.txt').exists()
+    >>> (b / "missing.txt").exists()
     False
 
     Coercion to string:
@@ -267,7 +267,7 @@ class Path:
 
     def __eq__(self, other):
         """
-        >>> Path(zipfile.ZipFile(io.BytesIO(), 'w')) == 'foo'
+        >>> Path(zipfile.ZipFile(io.BytesIO(), "w")) == "foo"
         False
         """
         if self.__class__ is not other.__class__:

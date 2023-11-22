@@ -123,7 +123,7 @@ class ParseMap(dict):
     Anything not specifically mapped otherwise becomes 'x'.
     Example: replace everything except whitespace with 'x'.
 
-    >>> keepwhite = ParseMap((ord(c), ord(c)) for c in ' \t\n\r')
+    >>> keepwhite = ParseMap((ord(c), ord(c)) for c in " \t\n\r")
     >>> "a + b\tc\nd".translate(keepwhite)
     'x x x\tx\nx'
     """

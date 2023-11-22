@@ -910,11 +910,11 @@ def _basename(path):
     path: Union[PathLike, str]
 
     e.g.
-    >>> os.path.basename('/bar/foo')
+    >>> os.path.basename("/bar/foo")
     'foo'
-    >>> os.path.basename('/bar/foo/')
+    >>> os.path.basename("/bar/foo/")
     ''
-    >>> _basename('/bar/foo/')
+    >>> _basename("/bar/foo/")
     'foo'
     """
     path = os.fspath(path)

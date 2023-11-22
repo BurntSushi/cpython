@@ -82,9 +82,11 @@ class SequenceMatcher:
 
     Example, comparing two strings, and considering blanks to be "junk":
 
-    >>> s = SequenceMatcher(lambda x: x == " ",
-    ...                     "private Thread currentThread;",
-    ...                     "private volatile Thread currentThread;")
+    >>> s = SequenceMatcher(
+    ...     lambda x: x == " ",
+    ...     "private Thread currentThread;",
+    ...     "private volatile Thread currentThread;",
+    ... )
     >>>
 
     .ratio() returns a float in [0, 1], measuring the "similarity" of the
@@ -350,7 +352,7 @@ class SequenceMatcher:
         end of the second sequence directly.  Instead only the "abcd" can
         match, and matches the leftmost "abcd" in the second sequence:
 
-        >>> s = SequenceMatcher(lambda x: x==" ", " abcd", "abcd abcd")
+        >>> s = SequenceMatcher(lambda x: x == " ", " abcd", "abcd abcd")
         >>> s.find_longest_match(0, 5, 0, 9)
         Match(a=1, b=0, size=4)
 
@@ -534,8 +536,9 @@ class SequenceMatcher:
         >>> b = "abycdf"
         >>> s = SequenceMatcher(None, a, b)
         >>> for tag, i1, i2, j1, j2 in s.get_opcodes():
-        ...    print(("%7s a[%d:%d] (%s) b[%d:%d] (%s)" %
-        ...           (tag, i1, i2, a[i1:i2], j1, j2, b[j1:j2])))
+        ...     print(
+        ...         ("%7s a[%d:%d] (%s) b[%d:%d] (%s)" % (tag, i1, i2, a[i1:i2], j1, j2, b[j1:j2]))
+        ...     )
          delete a[0:1] (q) b[0:0] ()
           equal a[1:3] (ab) b[0:2] (ab)
         replace a[3:4] (x) b[2:3] (y)
@@ -576,13 +579,13 @@ class SequenceMatcher:
         Each group is in the same format as returned by get_opcodes().
 
         >>> from pprint import pprint
-        >>> a = list(map(str, range(1,40)))
+        >>> a = list(map(str, range(1, 40)))
         >>> b = a[:]
-        >>> b[8:8] = ['i']     # Make an insertion
-        >>> b[20] += 'x'       # Make a replacement
-        >>> b[23:28] = []      # Make a deletion
-        >>> b[30] += 'y'       # Make another replacement
-        >>> pprint(list(SequenceMatcher(None,a,b).get_grouped_opcodes()))
+        >>> b[8:8] = ["i"]  # Make an insertion
+        >>> b[20] += "x"  # Make a replacement
+        >>> b[23:28] = []  # Make a deletion
+        >>> b[30] += "y"  # Make another replacement
+        >>> pprint(list(SequenceMatcher(None, a, b).get_grouped_opcodes()))
         [[('equal', 5, 8, 5, 8), ('insert', 8, 8, 8, 9), ('equal', 8, 11, 9, 12)],
          [('equal', 16, 19, 17, 20),
           ('replace', 19, 20, 20, 21),
@@ -819,7 +822,7 @@ class Differ:
 
     As a single multi-line string it looks like this:
 
-    >>> print(''.join(result), end="")
+    >>> print("".join(result), end="")
         1. Beautiful is better than ugly.
     -   2. Explicit is better than implicit.
     -   3. Simple is better than complex.
@@ -867,9 +870,14 @@ class Differ:
 
         Example:
 
-        >>> print(''.join(Differ().compare('one\ntwo\nthree\n'.splitlines(True),
-        ...                                'ore\ntree\nemu\n'.splitlines(True))),
-        ...       end="")
+        >>> print(
+        ...     "".join(
+        ...         Differ().compare(
+        ...             "one\ntwo\nthree\n".splitlines(True), "ore\ntree\nemu\n".splitlines(True)
+        ...         )
+        ...     ),
+        ...     end="",
+        ... )
         - one
         ?  ^
         + ore
@@ -925,9 +933,8 @@ class Differ:
         Example:
 
         >>> d = Differ()
-        >>> results = d._fancy_replace(['abcDefghiJkl\n'], 0, 1,
-        ...                            ['abcdefGhijkl\n'], 0, 1)
-        >>> print(''.join(results), end="")
+        >>> results = d._fancy_replace(["abcDefghiJkl\n"], 0, 1, ["abcdefGhijkl\n"], 0, 1)
+        >>> print("".join(results), end="")
         - abcDefghiJkl
         ?    ^  ^  ^
         + abcdefGhijkl
@@ -1030,10 +1037,11 @@ class Differ:
         Example:
 
         >>> d = Differ()
-        >>> results = d._qformat('\tabcDefghiJkl\n', '\tabcdefGhijkl\n',
-        ...                      '  ^ ^  ^      ', '  ^ ^  ^      ')
-        >>> for line in results: print(repr(line))
-        ...
+        >>> results = d._qformat(
+        ...     "\tabcDefghiJkl\n", "\tabcdefGhijkl\n", "  ^ ^  ^      ", "  ^ ^  ^      "
+        ... )
+        >>> for line in results:
+        ...     print(repr(line))
         '- \tabcDefghiJkl\n'
         '? \t ^ ^  ^\n'
         '+ \tabcdefGhijkl\n'
@@ -1077,11 +1085,11 @@ def IS_LINE_JUNK(line, pat=re.compile(r"\s*(?:#\s*)?$").match):
 
     Examples:
 
-    >>> IS_LINE_JUNK('\n')
+    >>> IS_LINE_JUNK("\n")
     True
-    >>> IS_LINE_JUNK('  #   \n')
+    >>> IS_LINE_JUNK("  #   \n")
     True
-    >>> IS_LINE_JUNK('hello\n')
+    >>> IS_LINE_JUNK("hello\n")
     False
     """
 
@@ -1094,13 +1102,13 @@ def IS_CHARACTER_JUNK(ch, ws=" \t"):
 
     Examples:
 
-    >>> IS_CHARACTER_JUNK(' ')
+    >>> IS_CHARACTER_JUNK(" ")
     True
-    >>> IS_CHARACTER_JUNK('\t')
+    >>> IS_CHARACTER_JUNK("\t")
     True
-    >>> IS_CHARACTER_JUNK('\n')
+    >>> IS_CHARACTER_JUNK("\n")
     False
-    >>> IS_CHARACTER_JUNK('x')
+    >>> IS_CHARACTER_JUNK("x")
     False
     """
 
@@ -1150,11 +1158,16 @@ def unified_diff(
 
     Example:
 
-    >>> for line in unified_diff('one two three four'.split(),
-    ...             'zero one tree four'.split(), 'Original', 'Current',
-    ...             '2005-01-26 23:30:50', '2010-04-02 10:20:52',
-    ...             lineterm=''):
-    ...     print(line)                 # doctest: +NORMALIZE_WHITESPACE
+    >>> for line in unified_diff(
+    ...     "one two three four".split(),
+    ...     "zero one tree four".split(),
+    ...     "Original",
+    ...     "Current",
+    ...     "2005-01-26 23:30:50",
+    ...     "2010-04-02 10:20:52",
+    ...     lineterm="",
+    ... ):
+    ...     print(line)  # doctest: +NORMALIZE_WHITESPACE
     --- Original        2005-01-26 23:30:50
     +++ Current         2010-04-02 10:20:52
     @@ -1,4 +1,4 @@
@@ -1239,9 +1252,17 @@ def context_diff(
 
     Example:
 
-    >>> print(''.join(context_diff('one\ntwo\nthree\nfour\n'.splitlines(True),
-    ...       'zero\none\ntree\nfour\n'.splitlines(True), 'Original', 'Current')),
-    ...       end="")
+    >>> print(
+    ...     "".join(
+    ...         context_diff(
+    ...             "one\ntwo\nthree\nfour\n".splitlines(True),
+    ...             "zero\none\ntree\nfour\n".splitlines(True),
+    ...             "Original",
+    ...             "Current",
+    ...         )
+    ...     ),
+    ...     end="",
+    ... )
     *** Original
     --- Current
     ***************
@@ -1373,9 +1394,11 @@ def ndiff(a, b, linejunk=None, charjunk=IS_CHARACTER_JUNK):
 
     Example:
 
-    >>> diff = ndiff('one\ntwo\nthree\n'.splitlines(keepends=True),
-    ...              'ore\ntree\nemu\n'.splitlines(keepends=True))
-    >>> print(''.join(diff), end="")
+    >>> diff = ndiff(
+    ...     "one\ntwo\nthree\n".splitlines(keepends=True),
+    ...     "ore\ntree\nemu\n".splitlines(keepends=True),
+    ... )
+    >>> print("".join(diff), end="")
     - one
     ?  ^
     + ore
@@ -2125,14 +2148,16 @@ def restore(delta, which):
 
     Examples:
 
-    >>> diff = ndiff('one\ntwo\nthree\n'.splitlines(keepends=True),
-    ...              'ore\ntree\nemu\n'.splitlines(keepends=True))
+    >>> diff = ndiff(
+    ...     "one\ntwo\nthree\n".splitlines(keepends=True),
+    ...     "ore\ntree\nemu\n".splitlines(keepends=True),
+    ... )
     >>> diff = list(diff)
-    >>> print(''.join(restore(diff, 1)), end="")
+    >>> print("".join(restore(diff, 1)), end="")
     one
     two
     three
-    >>> print(''.join(restore(diff, 2)), end="")
+    >>> print("".join(restore(diff, 2)), end="")
     ore
     tree
     emu

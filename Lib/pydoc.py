@@ -2611,7 +2611,7 @@ def _start_server(urlhandler, hostname, port):
         Then get or generate some text or HTML code and return it.
 
         >>> def my_url_handler(url, content_type):
-        ...     text = 'the URL sent was: (%s, %s)' % (url, content_type)
+        ...     text = "the URL sent was: (%s, %s)" % (url, content_type)
         ...     return text
 
         Start server thread on port 0.
@@ -2625,7 +2625,7 @@ def _start_server(urlhandler, hostname, port):
         and get first page.  Use serverthread.url as the starting page.
 
         >>> if serverthread.serving:
-        ...    import webbrowser
+        ...     import webbrowser
 
         The next two lines are commented out so a browser doesn't open if
         doctest is run on this module.
@@ -2637,15 +2637,15 @@ def _start_server(urlhandler, hostname, port):
         Use time.sleep so the loop doesn't hog the CPU.
 
         >>> starttime = time.monotonic()
-        >>> timeout = 1                    #seconds
+        >>> timeout = 1  # seconds
 
         This is a short timeout for testing purposes.
 
         >>> while serverthread.serving:
-        ...     time.sleep(.01)
+        ...     time.sleep(0.01)
         ...     if serverthread.serving and time.monotonic() - starttime > timeout:
-        ...          serverthread.stop()
-        ...          break
+        ...         serverthread.stop()
+        ...         break
 
         Print any errors that may have occurred.
 

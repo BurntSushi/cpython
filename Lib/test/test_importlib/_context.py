@@ -8,6 +8,6 @@ class suppress(contextlib.suppress, contextlib.ContextDecorator):
 
     >>> @suppress(KeyError)
     ... def key_error():
-    ...     {}['']
+    ...     {}[""]
     >>> key_error()
     """

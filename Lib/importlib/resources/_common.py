@@ -24,7 +24,7 @@ def package_to_anchor(func):
 
     Other errors should fall through.
 
-    >>> files('a', 'b')
+    >>> files("a", "b")
     Traceback (most recent call last):
     TypeError: files() takes from 0 to 1 positional arguments but 2 were given
     """

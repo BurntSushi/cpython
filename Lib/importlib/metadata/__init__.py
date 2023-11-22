@@ -125,8 +125,8 @@ class DeprecatedTuple:
     """
     Provide subscript item access for backward compatibility.
 
-    >>> recwarn = getfixture('recwarn')
-    >>> ep = EntryPoint(name='name', value='value', group='group')
+    >>> recwarn = getfixture("recwarn")
+    >>> ep = EntryPoint(name="name", value="value", group="group")
     >>> ep[:]
     ('name', 'value', 'group')
     >>> ep[0]
@@ -155,8 +155,7 @@ class EntryPoint(DeprecatedTuple):
     <https://packaging.python.org/specifications/entry-points/>`_
     for more information.
 
-    >>> ep = EntryPoint(
-    ...     name=None, group=None, value='package.module:attr [extra1, extra2]')
+    >>> ep = EntryPoint(name=None, group=None, value="package.module:attr [extra1, extra2]")
     >>> ep.module
     'package.module'
     >>> ep.attr
@@ -228,20 +227,20 @@ class EntryPoint(DeprecatedTuple):
         """
         EntryPoint matches the given parameters.
 
-        >>> ep = EntryPoint(group='foo', name='bar', value='bing:bong [extra1, extra2]')
-        >>> ep.matches(group='foo')
+        >>> ep = EntryPoint(group="foo", name="bar", value="bing:bong [extra1, extra2]")
+        >>> ep.matches(group="foo")
         True
-        >>> ep.matches(name='bar', value='bing:bong [extra1, extra2]')
+        >>> ep.matches(name="bar", value="bing:bong [extra1, extra2]")
         True
-        >>> ep.matches(group='foo', name='other')
+        >>> ep.matches(group="foo", name="other")
         False
         >>> ep.matches()
         True
-        >>> ep.matches(extras=['extra1', 'extra2'])
+        >>> ep.matches(extras=["extra1", "extra2"])
         True
-        >>> ep.matches(module='bing')
+        >>> ep.matches(module="bing")
         True
-        >>> ep.matches(attr='bong')
+        >>> ep.matches(attr="bong")
         True
         """
         attrs = (getattr(self, param) for param in params)
@@ -660,7 +659,7 @@ class FastPath:
     Micro-optimized class for searching a path for
     children.
 
-    >>> FastPath('').children()
+    >>> FastPath("").children()
     ['...']
     """
 
@@ -836,13 +835,13 @@ class PathDistribution(Distribution):
     @staticmethod
     def _name_from_stem(stem):
         """
-        >>> PathDistribution._name_from_stem('foo-3.0.egg-info')
+        >>> PathDistribution._name_from_stem("foo-3.0.egg-info")
         'foo'
-        >>> PathDistribution._name_from_stem('CherryPy-3.0.dist-info')
+        >>> PathDistribution._name_from_stem("CherryPy-3.0.dist-info")
         'CherryPy'
-        >>> PathDistribution._name_from_stem('face.egg-info')
+        >>> PathDistribution._name_from_stem("face.egg-info")
         'face'
-        >>> PathDistribution._name_from_stem('foo.bar')
+        >>> PathDistribution._name_from_stem("foo.bar")
         """
         filename, ext = os.path.splitext(stem)
         if ext not in (".dist-info", ".egg-info"):

@@ -206,19 +206,19 @@ class Fraction(numbers.Rational):
         Fraction(1, 35)
         >>> Fraction(Fraction(1, 7), Fraction(2, 3))
         Fraction(3, 14)
-        >>> Fraction('314')
+        >>> Fraction("314")
         Fraction(314, 1)
-        >>> Fraction('-35/4')
+        >>> Fraction("-35/4")
         Fraction(-35, 4)
-        >>> Fraction('3.1415') # conversion from numeric string
+        >>> Fraction("3.1415")  # conversion from numeric string
         Fraction(6283, 2000)
-        >>> Fraction('-47e-2') # string may include a decimal exponent
+        >>> Fraction("-47e-2")  # string may include a decimal exponent
         Fraction(-47, 100)
         >>> Fraction(1.47)  # direct construction from float (exact conversion)
         Fraction(6620291452234629, 4503599627370496)
         >>> Fraction(2.25)
         Fraction(9, 4)
-        >>> Fraction(Decimal('1.47'))
+        >>> Fraction(Decimal("1.47"))
         Fraction(147, 100)
 
         """
@@ -350,9 +350,9 @@ class Fraction(numbers.Rational):
     def limit_denominator(self, max_denominator=1000000):
         """Closest Fraction to self with denominator at most max_denominator.
 
-        >>> Fraction('3.141592653589793').limit_denominator(10)
+        >>> Fraction("3.141592653589793").limit_denominator(10)
         Fraction(22, 7)
-        >>> Fraction('3.141592653589793').limit_denominator(100)
+        >>> Fraction("3.141592653589793").limit_denominator(100)
         Fraction(311, 99)
         >>> Fraction(4321, 8765).limit_denominator(10000)
         Fraction(4321, 8765)
